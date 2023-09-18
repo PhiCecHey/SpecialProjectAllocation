@@ -7,4 +7,11 @@ public class Exceptions {
             super(str);
         }
     }
+
+    public static class AbbrevTakenException extends Exception {
+        // quality of life improvement: throw a warning as an exception
+        public AbbrevTakenException(String str) {
+            super(str);
+        }
+    }
 }

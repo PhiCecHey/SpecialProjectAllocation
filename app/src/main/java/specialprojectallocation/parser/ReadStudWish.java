@@ -9,14 +9,8 @@ import specialprojectallocation.*;
 import specialprojectallocation.objects.*;
 
 public class ReadStudWish {
-    private World world;
-
     // configs
     private int name = -1, immaNum = -1, email = -1, studProg = -1, first = -1, second = -1, third = -1, fourth = -1;
-
-    public ReadStudWish(World w) {
-        this.world = w;
-    }
 
     public boolean read(File csv, String delim) {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
@@ -27,10 +21,11 @@ public class ReadStudWish {
 
             while ((line = bufferedReader.readLine()) != null) {
                 String[] cells = line.split(delim);
-                if (this.world.findStudent(cells[this.immaNum]) == null) {
+                if (World.findStudent(cells[this.immaNum]) == null) {
                     Student student = new Student(cells[this.immaNum], cells[this.name], cells[this.email],
                             StudyProgram.StrToStudy(cells[this.studProg]));
-                    this.world.students.add(student);
+                    student.selectProjStr(cells[this.first], cells[this.second], cells[this.third], cells[this.fourth]);
+                    World.students.add(student);
                 } else {
                     // TODO: what to do with douplicate?
                 }
@@ -71,5 +66,4 @@ public class ReadStudWish {
         return (this.name != -1 && this.email != -1 && this.immaNum != -1 && this.studProg != -1 && this.first != -1
                 && this.second != -1 && this.third != -1 && this.fourth != -1);
     }
-
 }

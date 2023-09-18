@@ -5,6 +5,7 @@ public class Student {
     private String name;
     private String email;
     private StudyProgram study;
+    private StudWish selectedProjs;
 
     public Student(String imma, String na, String em, StudyProgram stu) {
         this.immatNum = imma;
@@ -27,5 +28,29 @@ public class Student {
 
     public StudyProgram study() {
         return this.study;
+    }
+
+    public void selectProj(Project first, Project second, Project third, Project fourth) {
+        this.selectedProjs = new StudWish(first, second, third, fourth);
+    }
+
+    public boolean selectProjStr(String firstStr, String secondStr, String thirdStr, String fourthStr) {
+        Project firstPr = null, secondPr = null, thirdPr = null, fourthPr = null;
+        for (Project project : World.projects) {
+            if (project.abbrev().equals(firstStr)) {
+                firstPr = project;
+            } else if (project.abbrev().equals(secondStr)) {
+                secondPr = project;
+            } else if (project.abbrev().equals(thirdStr)) {
+                thirdPr = project;
+            } else if (project.abbrev().equals(fourthStr)) {
+                fourthPr = project;
+            }
+        }
+        if (firstPr == null || secondPr == null || thirdPr == null || fourthPr == null) {
+            return false;
+        }
+        this.selectProj(firstPr, secondPr, thirdPr, fourthPr);
+        return true;
     }
 }
