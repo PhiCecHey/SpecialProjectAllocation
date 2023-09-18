@@ -5,6 +5,9 @@
 		}
     ],
     "settings": {
-        "java.compile.nullAnalysis.mode": "automatic"
+        "java.compile.nullAnalysis.mode": "automatic",
+        "cSpell.words": [
+            "specialprojectallocation"
+        ]
     }
 }
