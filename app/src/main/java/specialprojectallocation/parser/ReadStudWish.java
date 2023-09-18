@@ -10,24 +10,28 @@ import specialprojectallocation.objects.*;
 
 public class ReadStudWish {
     // configs
-    private int name = -1, immaNum = -1, email = -1, studProg = -1, first = -1, second = -1, third = -1, fourth = -1;
+    private static int name = -1, immaNum = -1, email = -1, studProg = -1, first = -1, second = -1, third = -1,
+            fourth = -1;
 
-    public boolean read(File csv, String delim) {
+    public static boolean read(File csv, String delim) {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
             String line = bufferedReader.readLine();
-            if (!this.evalHeading(line, delim)) {
+            if (!ReadStudWish.evalHeading(line, delim)) {
                 return false;
             }
 
             while ((line = bufferedReader.readLine()) != null) {
                 String[] cells = line.split(delim);
-                if (World.findStudent(cells[this.immaNum]) == null) {
-                    Student student = new Student(cells[this.immaNum], cells[this.name], cells[this.email],
-                            StudyProgram.StrToStudy(cells[this.studProg]));
-                    student.selectProjStr(cells[this.first], cells[this.second], cells[this.third], cells[this.fourth]);
+                if (World.findStudent(cells[ReadStudWish.immaNum]) == null) {
+                    Student student = new Student(cells[ReadStudWish.immaNum], cells[ReadStudWish.name],
+                            cells[ReadStudWish.email],
+                            StudyProgram.StrToStudy(cells[ReadStudWish.studProg]));
+                    student.selectProjStr(cells[ReadStudWish.first], cells[ReadStudWish.second],
+                            cells[ReadStudWish.third], cells[ReadStudWish.fourth]);
                     World.students.add(student);
                 } else {
                     // TODO: what to do with douplicate?
+                    int debug = 4;
                 }
             }
         } catch (IOException e) {
@@ -38,32 +42,34 @@ public class ReadStudWish {
         return true;
     }
 
-    private boolean evalHeading(String line, String delim) {
+    private static boolean evalHeading(String line, String delim) {
         if (line == null) {
             return false;
         }
         String[] cells = line.split(delim);
         for (int i = 0; i < cells.length; ++i) {
             String cell = cells[i];
+            int debug = 4;
             if (cell.contains(Config.projSelFullName)) {
-                this.name = i;
+                ReadStudWish.name = i;
             } else if (cell.contains(Config.projSelImmaNum)) {
-                this.immaNum = i;
+                ReadStudWish.immaNum = i;
             } else if (cell.contains(Config.projSelEmail)) {
-                this.email = i;
+                ReadStudWish.email = i;
             } else if (cell.contains(Config.projSelStudProg)) {
-                this.studProg = i;
+                ReadStudWish.studProg = i;
             } else if (cell.contains(Config.projSelFirst)) {
-                this.first = i;
+                ReadStudWish.first = i;
             } else if (cell.contains(Config.projSelSecond)) {
-                this.second = i;
+                ReadStudWish.second = i;
             } else if (cell.contains(Config.projSelThird)) {
-                this.third = i;
+                ReadStudWish.third = i;
             } else if (cell.contains(Config.projSelFourth)) {
-                this.fourth = i;
+                ReadStudWish.fourth = i;
             }
         }
-        return (this.name != -1 && this.email != -1 && this.immaNum != -1 && this.studProg != -1 && this.first != -1
-                && this.second != -1 && this.third != -1 && this.fourth != -1);
+        return (ReadStudWish.name != -1 && ReadStudWish.email != -1 && ReadStudWish.immaNum != -1
+                && ReadStudWish.studProg != -1 && ReadStudWish.first != -1
+                && ReadStudWish.second != -1 && ReadStudWish.third != -1 && ReadStudWish.fourth != -1);
     }
 }

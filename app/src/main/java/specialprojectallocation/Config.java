@@ -2,7 +2,7 @@ package specialprojectallocation;
 
 public class Config {
     // project selection: read student wishes
-    public static final String projSelFullName = "sndiger Name";
+    public static final String projSelFullName = "ndiger Name";
     public static final String projSelFirst = "Q01_1";
     public static final String projSelSecond = "Q02_2";
     public static final String projSelThird = "Q03_3";

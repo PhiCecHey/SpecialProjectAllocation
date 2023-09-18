@@ -5,13 +5,9 @@ import java.util.List;
 
 public class World {
     // DTO
-    public static List<Student> students;
-    public static List<Project> projects;
-    public static StudWish studWish;
-
-    public World() {
-        World.students = new ArrayList<>();
-    }
+    public static List<Student> students = new ArrayList<>();
+    public static List<Project> projects = new ArrayList<>();
+    public static List<StudWish> studWish = new ArrayList<>();
 
     public static Student findStudent(String immatNum) {
         for (Student student : World.students) {

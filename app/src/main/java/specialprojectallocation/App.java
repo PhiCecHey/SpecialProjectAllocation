@@ -3,12 +3,17 @@
  */
 package specialprojectallocation;
 
+import java.io.File;
+
+import specialprojectallocation.parser.ReadStudWish;
+
 public class App {
     public String getGreeting() {
         return "Hello World!";
     }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        System.out.println(System.getProperty("user.dir"));
+        ReadStudWish.read(new File("app/files/Special_project_selection_Kopie_.csv"), ",");
     }
 }
