@@ -14,4 +14,25 @@ public class Exceptions {
             super(str);
         }
     }
+
+    public static class StudentDuplicateException extends Exception {
+        // quality of life improvement: throw a warning as an exception
+        public StudentDuplicateException(String str) {
+            super(str);
+        }
+    }
+
+    public static class ProjectDuplicateException extends Exception {
+        // quality of life improvement: throw a warning as an exception
+        public ProjectDuplicateException(String str) {
+            super(str);
+        }
+    }
+
+    public static class StudentNotFoundException extends Exception {
+        // quality of life improvement: throw a warning as an exception
+        public StudentNotFoundException(String str) {
+            super(str);
+        }
+    }
 }

@@ -1,15 +1,15 @@
 package specialprojectallocation;
 
 public class Log {
-    private String log;
+    private static String log;
 
     public Log() {
-        log = "";
+        Log.log = "";
     }
 
     public void append(String s) {
         if (s != null && !s.equals("")) {
-            this.log += "\n" + s + "\n";
+            Log.log += "\n" + s + "\n";
         }
     }
 
@@ -22,14 +22,14 @@ public class Log {
         for (int i = 0; i < sectionName.length() * 3; i++) {
             line += "-";
         }
-        this.log += line + "\n\t" + sectionName + "\t\n" + line;
+        Log.log += line + "\n\t" + sectionName + "\t\n" + line;
     }
 
-    public String log() {
-        return this.log;
+    public static String log() {
+        return Log.log;
     }
 
-    public void clear() {
-        this.log = "";
+    public static void clear() {
+        Log.log = "";
     }
 }

@@ -14,6 +14,7 @@ public class Project {
     private String abbrev;
     private String[] supervisors;
     private int maxNumStuds;
+    private int minNumStuds;
     private Group[] groups; // main group is first in array
     private Student[] fixedStuds;
 
@@ -26,6 +27,7 @@ public class Project {
             }
         }
 
+        // TODO: minNumStuds
         this.title = ti;
         this.abbrev = ab;
         this.supervisors = sups;

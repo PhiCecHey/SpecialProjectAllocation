@@ -13,6 +13,7 @@ public class StudyProgram {
         ZertifikatWBA,
         Other,
         All,
+        NotSpecified,
     }
 
     private AvailProgram program;
@@ -31,7 +32,9 @@ public class StudyProgram {
 
     public static StudyProgram StrToStudy(String str) {
         str = str.toLowerCase();
-        if (str.contains("natural") && str.contains("hazards") && str.contains("risk")) {
+        if (str.equals("")) {
+            return new StudyProgram(AvailProgram.NotSpecified);
+        } else if (str.contains("natural") && str.contains("hazards") && str.contains("risk")) {
             return new StudyProgram(AvailProgram.NaturalHazardsAndRiskInStructuralEngineering);
         } else if (str.contains("bauingenieurwesen") && str.contains("konstrukt") && str.contains("bau")) {
             return new StudyProgram(AvailProgram.BauingenieurwesenKonstruktiverIngenieurbau);

@@ -5,7 +5,13 @@ package specialprojectallocation;
 
 import java.io.File;
 
+import specialprojectallocation.Exceptions.AbbrevTakenException;
+import specialprojectallocation.Exceptions.ProjectDuplicateException;
+import specialprojectallocation.Exceptions.StudentDuplicateException;
+import specialprojectallocation.Exceptions.StudentNotFoundException;
+import specialprojectallocation.objects.World;
 import specialprojectallocation.parser.ReadStudWish;
+import specialprojectallocation.parser.RegisterProject;
 
 public class App {
     public String getGreeting() {
@@ -14,6 +20,16 @@ public class App {
 
     public static void main(String[] args) {
         System.out.println(System.getProperty("user.dir"));
-        ReadStudWish.read(new File("app/files/Special_project_selection_Kopie_.csv"), ",");
+        try {
+            ReadStudWish.read(new File("app/files/Special_project_selection_Kopie_.csv"), ",");
+            RegisterProject.read(new File("app/files/Anmeldung_Special_project_Special_project_registration.csv"));
+            var projects = World.projects;
+            var students = World.students;
+            int debug = 4;
+        } catch (StudentDuplicateException | NumberFormatException | ProjectDuplicateException | AbbrevTakenException
+                | StudentNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

@@ -6,14 +6,15 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import specialprojectallocation.*;
+import specialprojectallocation.Exceptions.StudentDuplicateException;
 import specialprojectallocation.objects.*;
 
-public class ReadStudWish {
+public class ReadStudWish extends MyParser {
     // configs
     private static int name = -1, immaNum = -1, email = -1, studProg = -1, first = -1, second = -1, third = -1,
             fourth = -1;
 
-    public static boolean read(File csv, String delim) {
+    public static boolean read(File csv, String delim) throws StudentDuplicateException {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
             String line = bufferedReader.readLine();
             if (!ReadStudWish.evalHeading(line, delim)) {
@@ -21,8 +22,9 @@ public class ReadStudWish {
             }
 
             while ((line = bufferedReader.readLine()) != null) {
-                String[] cells = line.split(delim);
-                if (World.findStudent(cells[ReadStudWish.immaNum]) == null) {
+                String[] cells = ReadStudWish.readLineInCsvWithQuotesAndDelim(line);
+                Student found = World.findStudentByImma(cells[ReadStudWish.immaNum]);
+                if (found == null) {
                     Student student = new Student(cells[ReadStudWish.immaNum], cells[ReadStudWish.name],
                             cells[ReadStudWish.email],
                             StudyProgram.StrToStudy(cells[ReadStudWish.studProg]));
@@ -31,11 +33,12 @@ public class ReadStudWish {
                     World.students.add(student);
                 } else {
                     // TODO: what to do with douplicate?
-                    int debug = 4;
+                    throw new StudentDuplicateException(
+                            "Student " + found.name() + " applied for a project more than once!");
                 }
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+            System.out.println("Something went wrong while trying to read the student file: " + csv.getAbsolutePath());
             e.printStackTrace();
             return false;
         }
