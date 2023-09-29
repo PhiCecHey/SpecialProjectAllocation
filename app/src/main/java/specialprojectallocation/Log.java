@@ -1,19 +1,15 @@
 package specialprojectallocation;
 
 public class Log {
-    private static String log;
+    private static String log = "";
 
-    public Log() {
-        Log.log = "";
-    }
-
-    public void append(String s) {
+    public static void append(String s) {
         if (s != null && !s.equals("")) {
             Log.log += "\n" + s + "\n";
         }
     }
 
-    public void newSection(String sectionName) {
+    public static void newSection(String sectionName) {
         if (sectionName == null || sectionName.equals("")) {
             return;
         }
