@@ -5,7 +5,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.decimal4j.util.DoubleRounder;
 
-import gurobi.*;
+import gurobi.GRB;
+import gurobi.GRBEnv;
+import gurobi.GRBException;
+import gurobi.GRBLinExpr;
+import gurobi.GRBModel;
+import gurobi.GRBVar;
 import specialprojectallocation.Log;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
@@ -23,8 +28,8 @@ public class Gurobi {
     private GRBVar[][] grbVars;
     private double[][] results;
 
-    public Gurobi(final ArrayList<Gurobi.RULES> r, final ArrayList<Student> students,
-            final ArrayList<Project> projects) throws GRBException {
+    public Gurobi(/* final ArrayList<Gurobi.RULES> r, */ final ArrayList<Project> projects,
+            final ArrayList<Student> students) throws GRBException {
         Log.clear();
 
         try {
@@ -41,6 +46,8 @@ public class Gurobi {
             this.model.optimize();
 
             boolean worked = this.extractResults();
+            String printConsole = this.print(true, worked);
+            System.out.println(printConsole);
 
             model.dispose();
             env.dispose();
@@ -65,10 +72,10 @@ public class Gurobi {
 
     private GRBLinExpr calculateObjectiveLinExpr(double extraRandomness) {
         GRBLinExpr objective = new GRBLinExpr();
-        for (int p = 0; p < this.allocs.numProjs(); ++p) {
-            for (int s = 0; s < this.allocs.numStuds(); ++s) {
+        for (int p = 0; p < this.allocs.numProjs(); p++) {
+            for (int s = 0; s < this.allocs.numStuds(); s++) {
                 double random;
-                if (extraRandomness > 0.001) {
+                if (extraRandomness > 0.01) {
                     random = ThreadLocalRandom.current().nextDouble(extraRandomness);
                 } else {
                     random = ThreadLocalRandom.current().nextDouble(1);
@@ -121,84 +128,82 @@ public class Gurobi {
         return worked;
     }
 
-    /*
-     * private String print(boolean all, boolean worked) {
-     * String print = Log.log() + "\n\n\n";
-     * if (!worked) {
-     * return print;
-     * }
-     * 
-     * if (all) {
-     * print += "\n-------------------- SCORE MATRIX --------------------\n";
-     * }
-     * 
-     * // maximum score:
-     * double max = 0;
-     * for (int t = 0; t < this.teams.size(); ++t) {
-     * double m = 0;
-     * for (int r = 0; r < this.rooms.size(); ++r) {
-     * if (m < this.allocations.get(r, t).score()) {
-     * m = this.allocations.get(r, t).score();
-     * }
-     * }
-     * max += m;
-     * }
-     * 
-     * print += "Maximum score: \t" + max;
-     * 
-     * // current score:
-     * double cur = 0;
-     * for (int r = 0; r < this.rooms.size(); r++) {
-     * for (int t = 0; t < this.teams.size(); t++) {
-     * if (this.results[r][t] == 1) {
-     * cur += this.allocations.get(r, t).score();
-     * }
-     * }
-     * }
-     * print += "\nCurrent score: \t\t" + cur;
-     * print += "\nDifference: \t\t" + Math.abs(max - cur) + "\n\n";
-     * 
-     * if (max == 0 && cur == 0) {
-     * return null;
-     * }
-     * 
-     * String teamNames = "";
-     * for (int t = 0; t < this.teams.size(); t++) {
-     * teamNames += this.teams.get(t).name() + "\t";
-     * }
-     * 
-     * // score matrix:
-     * if (all) {
-     * print += "\n\n--------------------- Score matrix: ---------------------";
-     * print += "\n" + "ZimmerNr" + teamNames;
-     * for (int r = 0; r < this.rooms.size(); ++r) {
-     * String str = "";
-     * for (int s = 0; s < this.teams.size(); ++s) {
-     * str += DoubleRounder.round(this.allocations.get(r, s).score(), 1) + "\t\t";
-     * }
-     * print += "\n" + this.rooms.get(r).officialRoomNumber() + str;
-     * }
-     * 
-     * print += "\n\n--------------------- ALLOCATION ---------------------";
-     * }
-     * 
-     * print += "\n" + "ZimmerNr" + "\t" + teamNames;
-     * 
-     * for (int r = 0; r < this.rooms.size(); r++) {
-     * String allocated = "";
-     * for (int t = 0; t < this.teams.size(); t++) {
-     * if (this.results[r][t] == 0) {
-     * allocated += "\t        -\t";
-     * } else {
-     * allocated += "\t        #\t";
-     * }
-     * }
-     * if (allocated.contains("#")) {
-     * print += "\n" + this.rooms.get(r).officialRoomNumber() + allocated + " ";
-     * }
-     * }
-     * return print;
-     * }
-     */
+    private String print(boolean all, boolean worked) {
+        String print = Log.log() + "\n\n\n";
+        if (!worked) {
+            return print;
+        }
+
+        if (all) {
+            print += "\n-------------------- SCORE MATRIX --------------------\n";
+        }
+
+        // maximum score:
+        double max = 0;
+        for (int p = 0; p < this.allocs.numProjs(); ++p) {
+            double m = 0;
+            for (int s = 0; s < this.allocs.numStuds(); ++s) {
+                if (m < this.allocs.get(p, s).score()) {
+                    m = this.allocs.get(p, s).score();
+                }
+            }
+            max += m;
+        }
+
+        print += "Maximum score: \t" + max;
+
+        // current score:
+        double cur = 0;
+        for (int p = 0; p < this.allocs.numProjs(); p++) {
+            for (int s = 0; s < this.allocs.numStuds(); s++) {
+                if (this.results[p][s] == 1) {
+                    cur += this.allocs.get(p, s).score();
+                }
+            }
+        }
+        print += "\nCurrent score: \t\t" + cur;
+        print += "\nDifference: \t\t" + Math.abs(max - cur) + "\n\n";
+
+        if (max == 0 && cur == 0) {
+            return null;
+        }
+
+        String immas = "";
+        for (int s = 0; s < this.allocs.numStuds(); s++) {
+            immas += this.allocs.get(0, s).student().immatNum() + "\t";
+        }
+
+        // score matrix:
+        if (all) {
+            print += "\n\n--------------------- Score matrix: ---------------------";
+            print += "\n" + "ZimmerNr" + immas;
+            for (int p = 0; p < this.allocs.numProjs(); ++p) {
+                String str = "";
+                for (int s = 0; s < this.allocs.numStuds(); ++s) {
+                    str += DoubleRounder.round(this.allocs.get(p, s).score(), 1) + "\t\t";
+                }
+                print += "\n" + this.allocs.get(p, 0).project().abbrev() + str;
+            }
+
+            print += "\n\n--------------------- ALLOCATION ---------------------";
+        }
+
+        print += "\n" + "Abbrevs" + "\t" + immas;
+
+        for (int p = 0; p < this.allocs.numProjs(); p++) {
+            String allocated = "";
+            for (int s = 0; s < this.allocs.numStuds(); s++) {
+                if (this.results[p][s] == 0) {
+                    allocated += "\t        -\t";
+                } else {
+                    allocated += "\t        #\t";
+                }
+            }
+            if (allocated.contains("#")) {
+                print += "\n" + this.allocs.get(p, 0).project().abbrev() + allocated + " ";
+            }
+        }
+        return print;
+    }
 
 }

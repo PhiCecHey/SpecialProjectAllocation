@@ -1,13 +1,12 @@
 package specialprojectallocation.objects;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class World {
     // DTO
-    public static List<Student> students = new ArrayList<>();
-    public static List<Project> projects = new ArrayList<>();
-    public static List<StudWish> studWish = new ArrayList<>();
+    public static ArrayList<Student> students = new ArrayList<>();
+    public static ArrayList<Project> projects = new ArrayList<>();
+    public static ArrayList<StudWish> studWish = new ArrayList<>();
 
     public static Student findStudentByImma(String immatNum) {
         immatNum = immatNum.trim();

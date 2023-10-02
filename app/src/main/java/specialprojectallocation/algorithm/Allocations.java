@@ -26,16 +26,17 @@ class Allocations {
         this.numStuds = students.size();
         this.allocs = new Allocation[this.numProjs][this.numStuds];
 
-        int s = 0, p = 0;
+        int p = 0;
         for (Project project : projects) {
+            int s = 0;
             for (Student student : students) {
                 String st = "SpecProjAlloc_" + student.immatNum() + "_" + project.abbrev();
                 GRBVar var = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, st);
                 this.allocs[p][s] = new Allocation(student, project, var);
+                s++;
             }
-            s++;
+            p++;
         }
-        p++;
     }
 
     Allocation get(final int p, final int s) {
@@ -47,10 +48,10 @@ class Allocations {
     }
 
     int numStuds() {
-        return this.numProjs;
-    }
-
-    int numProjs() {
         return this.numStuds;
+    }
+    
+    int numProjs() {
+        return this.numProjs;
     }
 }

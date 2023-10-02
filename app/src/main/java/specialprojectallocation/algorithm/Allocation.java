@@ -16,8 +16,8 @@ class Allocation {
         this.grbVar = g;
     }
 
-    float score() {
-        return this.score();
+    double score() {
+        return this.score;
     }
 
     void addToScore(double s) {

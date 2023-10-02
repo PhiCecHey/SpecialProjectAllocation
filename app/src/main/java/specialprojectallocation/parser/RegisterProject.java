@@ -44,6 +44,7 @@ public class RegisterProject extends MyParser{
                         fix = RegisterProject.getFixed(cells[RegisterProject.fixed]);
                     } catch (StudentNotFoundException e) {
                         // TODO
+                        e.printStackTrace();
                     }
                     int maxNum = oneStudent ? 1 : Integer.MAX_VALUE;
                     if (!cells[RegisterProject.maxNum].equals("")) {
@@ -134,7 +135,8 @@ public class RegisterProject extends MyParser{
             if ((student = World.findStudentByImma(imma)) == null) {
                 if ((student = World.findStudentByName(name, false)) == null) {
                     if ((student = World.findStudentByName(name, true)) == null) {
-                        throw new StudentNotFoundException("Cannot find fixed student " + name + ", " + imma);
+                        return null;
+                        //throw new StudentNotFoundException("Cannot find fixed student " + name + ", " + imma);
                     }
                 }
             }
