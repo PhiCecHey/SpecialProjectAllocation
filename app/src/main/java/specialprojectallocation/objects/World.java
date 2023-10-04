@@ -10,7 +10,7 @@ public class World {
 
     public static Student findStudentByImma(String immatNum) {
         immatNum = immatNum.trim();
-        if (immatNum == null || immatNum.equals("")) {
+        if (immatNum.isEmpty()) {
             return null;
         }
         for (Student student : World.students) {

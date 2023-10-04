@@ -4,20 +4,18 @@ public class Log {
     private static String log = "";
 
     public static void append(String s) {
-        if (s != null && !s.equals("")) {
+        if (s != null && !s.isEmpty()) {
             Log.log += "\n" + s + "\n";
         }
     }
 
     public static void newSection(String sectionName) {
-        if (sectionName == null || sectionName.equals("")) {
+        if (sectionName == null || sectionName.isEmpty()) {
             return;
         }
 
-        String line = "";
-        for (int i = 0; i < sectionName.length() * 3; i++) {
-            line += "-";
-        }
+        StringBuilder line = new StringBuilder();
+        line.append("-".repeat(Math.max(0, sectionName.length() * 3)));
         Log.log += line + "\n\t" + sectionName + "\t\n" + line;
     }
 

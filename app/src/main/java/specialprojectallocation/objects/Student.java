@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Student {
-    private String immatNum;
-    private String name;
-    private String email;
-    private StudyProgram study;
+    private final String immatNum;
+    private final String name;
+    private final String email;
+    private final StudyProgram study;
     private StudWish selectedProjs;
-    private List<Project> projects;
+    private final List<Project> projects;
 
     public Student(String imma, String na, String em, StudyProgram stu) {
         this.immatNum = imma;

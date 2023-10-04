@@ -11,9 +11,9 @@ public class MyParser {
         boolean inQuotes = false;
         StringBuilder cellInLine = new StringBuilder();
         for (char charInLine : lineInCsv.toCharArray()) {
-            if (charInLine == Config.projAdminQuotes) {
+            if (charInLine == Config.ProjectAdministration.quotes) {
                 inQuotes = !inQuotes;
-            } else if (!inQuotes && charInLine == Config.projAdminCsvDelim) {
+            } else if (!inQuotes && charInLine == Config.ProjectAdministration.csvDelim) {
                 cells.add(cellInLine.toString());
                 cellInLine = new StringBuilder();
             } else {

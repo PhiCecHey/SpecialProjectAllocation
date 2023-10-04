@@ -2,6 +2,7 @@ package specialprojectallocation.objects;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.checkerframework.checker.units.qual.g;
 
@@ -9,23 +10,23 @@ import specialprojectallocation.Exceptions.AbbrevTakenException;
 import specialprojectallocation.Exceptions.ProjectOverfullException;
 
 public class Project {
-    private static List<String> allAbbrevs = new ArrayList<>();
+    private static final List<String> allAbbrevs = new ArrayList<>();
 
-    private String title;
-    private String abbrev;
-    private String[] supervisors;
-    private int maxNumStuds;
+    private final String title;
+    private final String abbrev;
+    private final String[] supervisors;
+    private final int maxNumStuds;
     private int minNumStuds;
-    private Group[] groups; // main group is first in array
-    private Student[] fixedStuds;
-    private List<Student> students;
+    private final Group[] groups; // main group is first in array
+    private final Student[] fixedStuds;
+    private final List<Student> students;
 
     public Project(String ti, String ab, String[] sups, int max, Group[] gr, Student[] fixed)
             throws AbbrevTakenException {
         for (String str : allAbbrevs) {
             if (str.equals(ab)) {
                 throw new AbbrevTakenException(
-                        "Abbrev " + ab + " already taken by project " + World.findProject(ab).title());
+                        "Abbrev " + ab + " already taken by project " + Objects.requireNonNull(World.findProject(ab)).title());
             }
         }
 

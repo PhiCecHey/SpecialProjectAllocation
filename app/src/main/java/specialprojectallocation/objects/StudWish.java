@@ -1,10 +1,10 @@
 package specialprojectallocation.objects;
 
 public class StudWish {
-    private Project first;
-    private Project second;
-    private Project third;
-    private Project fourth;
+    private final Project first;
+    private final Project second;
+    private final Project third;
+    private final Project fourth;
     private Student student;
 
     public StudWish(Project fi, Project se, Project th, Project fo) {

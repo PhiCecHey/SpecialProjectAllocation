@@ -26,13 +26,15 @@ public class App {
     public static void main(String[] args) {
         System.out.println(System.getProperty("user.dir"));
         try {
-            ReadStudWish.read(new File("app/files/Special_project_selection_Kopie_.csv"), ",");
-            RegisterProject.read(new File("app/files/Anmeldung_Special_project_Special_project_registration.csv"));
+            ReadStudWish.read(new File("files/Special_project_selection_Kopie_.csv"), ",");
+            RegisterProject.read(new File("files/Anmeldung_Special_project_Special_project_registration.csv"));
             ArrayList<Project> projects = World.projects;
             ArrayList<Student> students = World.students;
+            ArrayList<Gurobi.RULES> rules = new ArrayList<>();
+            rules.add(Gurobi.RULES.projectPerStudent);
             int debug = 4;
 
-            Gurobi g = new Gurobi(projects, students);
+            Gurobi g = new Gurobi(rules, projects, students);
 
             debug = 3;
         } catch (StudentDuplicateException | NumberFormatException | ProjectDuplicateException | AbbrevTakenException

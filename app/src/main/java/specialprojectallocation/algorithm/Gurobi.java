@@ -11,26 +11,30 @@ import gurobi.GRBException;
 import gurobi.GRBLinExpr;
 import gurobi.GRBModel;
 import gurobi.GRBVar;
+import specialprojectallocation.Config;
 import specialprojectallocation.Log;
+import specialprojectallocation.objects.Group;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
 
 public class Gurobi {
     public enum RULES {
-        // TODO
+        projectPerStudent,
     }
 
-    private ArrayList<Gurobi.RULES> rules;
-    private Allocations allocs;
-    private GRBModel model;
-    private GRBEnv env;
-    private GRBLinExpr objective;
+    private final Allocations allocs;
+    private final GRBModel model;
+    private final GRBEnv env;
+    private final GRBLinExpr objective;
     private GRBVar[][] grbVars;
     private double[][] results;
 
-    public Gurobi(/* final ArrayList<Gurobi.RULES> r, */ final ArrayList<Project> projects,
-            final ArrayList<Student> students) throws GRBException {
+    private final ArrayList<Gurobi.RULES> rules;
+
+    public Gurobi(final ArrayList<Gurobi.RULES> r, final ArrayList<Project> projects,
+                  final ArrayList<Student> students) throws GRBException {
         Log.clear();
+        this.rules = r;
 
         try {
             this.env = new GRBEnv();
@@ -38,11 +42,9 @@ public class Gurobi {
             this.model.set(GRB.StringAttr.ModelName, "SpecialProjectAlloc");
             this.allocs = new Allocations(projects, students, this.model);
 
-            // TODO: add constraints
-
+            this.addConstraints();
             this.objective = this.calculateObjectiveLinExpr(0);
             this.model.setObjective(this.objective, GRB.MAXIMIZE);
-
             this.model.optimize();
 
             boolean worked = this.extractResults();
@@ -129,13 +131,13 @@ public class Gurobi {
     }
 
     private String print(boolean all, boolean worked) {
-        String print = Log.log() + "\n\n\n";
+        StringBuilder print = new StringBuilder(Log.log() + "\n\n\n");
         if (!worked) {
-            return print;
+            return print.toString();
         }
 
         if (all) {
-            print += "\n-------------------- SCORE MATRIX --------------------\n";
+            print.append("\n-------------------- SCORE MATRIX --------------------\n");
         }
 
         // maximum score:
@@ -150,7 +152,7 @@ public class Gurobi {
             max += m;
         }
 
-        print += "Maximum score: \t" + max;
+        print.append("Maximum score: \t\t").append(max);
 
         // current score:
         double cur = 0;
@@ -161,49 +163,78 @@ public class Gurobi {
                 }
             }
         }
-        print += "\nCurrent score: \t\t" + cur;
-        print += "\nDifference: \t\t" + Math.abs(max - cur) + "\n\n";
+        print.append("\nCurrent score: \t\t").append(cur);
+        print.append("\nDifference: \t\t").append(Math.abs(max - cur)).append("\n\n");
 
         if (max == 0 && cur == 0) {
             return null;
         }
 
-        String immas = "";
+        StringBuilder immas = new StringBuilder();
         for (int s = 0; s < this.allocs.numStuds(); s++) {
-            immas += this.allocs.get(0, s).student().immatNum() + "\t";
+            immas.append(this.allocs.get(0, s).student().immatNum()).append("\t");
         }
 
         // score matrix:
         if (all) {
-            print += "\n\n--------------------- Score matrix: ---------------------";
-            print += "\n" + "ZimmerNr" + immas;
+            print.append("\n\n--------------------- Score matrix: ---------------------");
+            print.append("\n" + "Abbrev" + "\t\t").append(immas);
             for (int p = 0; p < this.allocs.numProjs(); ++p) {
-                String str = "";
+                StringBuilder str = new StringBuilder("\t\t");
                 for (int s = 0; s < this.allocs.numStuds(); ++s) {
-                    str += DoubleRounder.round(this.allocs.get(p, s).score(), 1) + "\t\t";
+                    str.append(DoubleRounder.round(this.allocs.get(p, s).score(), 1)).append("\t\t");
                 }
-                print += "\n" + this.allocs.get(p, 0).project().abbrev() + str;
+                print.append("\n").append(this.allocs.get(p, 0).project().abbrev()).append(str);
             }
 
-            print += "\n\n--------------------- ALLOCATION ---------------------";
+            print.append("\n\n--------------------- ALLOCATION ---------------------");
         }
 
-        print += "\n" + "Abbrevs" + "\t" + immas;
+        print.append("\n" + "Abbrevs" + "\t\t").append(immas);
 
         for (int p = 0; p < this.allocs.numProjs(); p++) {
-            String allocated = "";
+            StringBuilder allocated = new StringBuilder();
             for (int s = 0; s < this.allocs.numStuds(); s++) {
                 if (this.results[p][s] == 0) {
-                    allocated += "\t        -\t";
+                    allocated.append("\t        -\t");
                 } else {
-                    allocated += "\t        #\t";
+                    allocated.append("\t        #\t");
                 }
             }
-            if (allocated.contains("#")) {
-                print += "\n" + this.allocs.get(p, 0).project().abbrev() + allocated + " ";
+            if (allocated.toString().contains("#")) {
+                print.append("\n").append(this.allocs.get(p, 0).project().abbrev()).append(allocated).append(" ");
             }
         }
-        return print;
+        return print.toString();
+    }
+
+    /*
+     * ++=============++
+     * || CONSTRAINTS ||
+     * ++=============++
+     */
+
+    private void addConstraints() {
+        if (this.rules.contains(RULES.projectPerStudent)) {
+            this.projectPerStudent();
+        }
+    }
+
+    private void projectPerStudent() {
+        try {
+            GRBLinExpr expr;
+            for (int s = 0; s < this.allocs.numStuds(); ++s) {
+                expr = new GRBLinExpr();
+                for (int p = 0; p < this.allocs.numProjs(); ++p) {
+                    expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
+                }
+                String st = "projPerStud" + s;
+                this.model.addConstr(expr, GRB.LESS_EQUAL, Config.Constraints.constrMaxNumProjectsPerStudent, st);
+                this.model.addConstr(expr, GRB.GREATER_EQUAL, Config.Constraints.constrMinNumProjectsPerStudent, st);
+            }
+        } catch (GRBException e) {
+            System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
+        }
     }
 
 }

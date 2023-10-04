@@ -53,21 +53,21 @@ public class ReadStudWish extends MyParser {
         for (int i = 0; i < cells.length; ++i) {
             String cell = cells[i];
             int debug = 4;
-            if (cell.contains(Config.projSelFullName)) {
+            if (cell.contains(Config.ProjectSelection.fullName)) {
                 ReadStudWish.name = i;
-            } else if (cell.contains(Config.projSelImmaNum)) {
+            } else if (cell.contains(Config.ProjectSelection.immaNum)) {
                 ReadStudWish.immaNum = i;
-            } else if (cell.contains(Config.projSelEmail)) {
+            } else if (cell.contains(Config.ProjectSelection.email)) {
                 ReadStudWish.email = i;
-            } else if (cell.contains(Config.projSelStudProg)) {
+            } else if (cell.contains(Config.ProjectSelection.studProg)) {
                 ReadStudWish.studProg = i;
-            } else if (cell.contains(Config.projSelFirst)) {
+            } else if (cell.contains(Config.ProjectSelection.first)) {
                 ReadStudWish.first = i;
-            } else if (cell.contains(Config.projSelSecond)) {
+            } else if (cell.contains(Config.ProjectSelection.second)) {
                 ReadStudWish.second = i;
-            } else if (cell.contains(Config.projSelThird)) {
+            } else if (cell.contains(Config.ProjectSelection.third)) {
                 ReadStudWish.third = i;
-            } else if (cell.contains(Config.projSelFourth)) {
+            } else if (cell.contains(Config.ProjectSelection.fourth)) {
                 ReadStudWish.fourth = i;
             }
         }

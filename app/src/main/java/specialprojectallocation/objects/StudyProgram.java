@@ -16,7 +16,7 @@ public class StudyProgram {
         NotSpecified,
     }
 
-    private AvailProgram program;
+    private final AvailProgram program;
     private String other;
 
     public StudyProgram(final AvailProgram p) {
@@ -32,7 +32,7 @@ public class StudyProgram {
 
     public static StudyProgram StrToStudy(String str) {
         str = str.toLowerCase();
-        if (str.equals("")) {
+        if (str.isEmpty()) {
             return new StudyProgram(AvailProgram.NotSpecified);
         } else if (str.contains("natural") && str.contains("hazards") && str.contains("risk")) {
             return new StudyProgram(AvailProgram.NaturalHazardsAndRiskInStructuralEngineering);

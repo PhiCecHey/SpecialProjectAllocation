@@ -34,9 +34,9 @@ public class RegisterProject extends MyParser{
                 String[] cells = RegisterProject.readLineInCsvWithQuotesAndDelim(line);
                 Project found = World.findProject(cells[RegisterProject.abbrev]);
                 if (found == null) {
-                    String[] supers = cells[RegisterProject.supers].split(Config.projAdminDelimSupers);
+                    String[] supers = cells[RegisterProject.supers].split(Config.ProjectAdministration.delimSupers);
                     boolean oneStudent = cells[RegisterProject.var].toLowerCase()
-                            .contains(Config.projAdminVarOneStudent);
+                            .contains(Config.ProjectAdministration.projAdminVarOneStudent);
                     Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
                             cells[RegisterProject.mainMaxNum], oneStudent);
                     Student[] fix = null;
@@ -47,15 +47,14 @@ public class RegisterProject extends MyParser{
                         e.printStackTrace();
                     }
                     int maxNum = oneStudent ? 1 : Integer.MAX_VALUE;
-                    if (!cells[RegisterProject.maxNum].equals("")) {
-                        maxNum = Integer.valueOf(cells[RegisterProject.maxNum]);
+                    if (!cells[RegisterProject.maxNum].isEmpty()) {
+                        maxNum = Integer.parseInt(cells[RegisterProject.maxNum]);
                     }
                     Project project = new Project(cells[RegisterProject.title], cells[RegisterProject.abbrev], supers,
                             maxNum, groups, fix);
                     World.projects.add(project);
                 } else {
                     // TODO: just take last entry?
-                    continue;
                     // throw new ProjectDuplicateException(
                     // "Project " + found.abbrev() + " was registired more than once!");
                 }
@@ -72,29 +71,29 @@ public class RegisterProject extends MyParser{
         if (line == null) {
             return false;
         }
-        String[] cells = line.split(String.valueOf(Config.projAdminCsvDelim));
+        String[] cells = line.split(String.valueOf(Config.ProjectAdministration.csvDelim));
         for (int i = 0; i < cells.length; ++i) {
             String cell = cells[i];
             // TODO: several study programs (priorities, max num)
-            if (cell.contains(Config.projAdminTitle)) {
+            if (cell.contains(Config.ProjectAdministration.title)) {
                 RegisterProject.title = i;
-            } else if (cell.contains(Config.projAdminAbbrev)) {
+            } else if (cell.contains(Config.ProjectAdministration.abbrev)) {
                 RegisterProject.abbrev = i;
-            } else if (cell.contains(Config.projAdminSupers)) {
+            } else if (cell.contains(Config.ProjectAdministration.supers)) {
                 RegisterProject.supers = i;
-            } else if (cell.contains(Config.projAdminChair)) {
+            } else if (cell.contains(Config.ProjectAdministration.chair)) {
                 RegisterProject.chair = i;
-            } else if (cell.contains(Config.porjAdminChairOther)) {
+            } else if (cell.contains(Config.ProjectAdministration.chairOther)) {
                 RegisterProject.chairOther = i;
-            } else if (cell.contains(Config.projAdminMaxNum)) {
+            } else if (cell.contains(Config.ProjectAdministration.maxNum)) {
                 RegisterProject.maxNum = i;
-            } else if (cell.contains(Config.projAdminMainGroup)) {
+            } else if (cell.contains(Config.ProjectAdministration.mainGroup)) {
                 RegisterProject.mainGroup = i;
-            } else if (cell.contains(Config.projAdminMainMaxNum)) {
+            } else if (cell.contains(Config.ProjectAdministration.mainMaxNum)) {
                 RegisterProject.mainMaxNum = i;
-            } else if (cell.contains(Config.projAdminVar)) {
+            } else if (cell.contains(Config.ProjectAdministration.var)) {
                 RegisterProject.var = i;
-            } else if (cell.contains(Config.projAdminFixed)) {
+            } else if (cell.contains(Config.ProjectAdministration.fixed)) {
                 RegisterProject.fixed = i;
             }
         }
@@ -109,21 +108,21 @@ public class RegisterProject extends MyParser{
         StudyProgram mainP = StudyProgram.StrToStudy(stMainStudProg);
         if (oneStudent) {
             return new Group[] { new Group(mainP, 1) };
-        } else if (!mainMax.equals("")) {
-            return new Group[] { new Group(mainP, Integer.valueOf(mainMax)) };
+        } else if (!mainMax.isEmpty()) {
+            return new Group[] { new Group(mainP, Integer.parseInt(mainMax)) };
         }
         return new Group[] { new Group(mainP, Integer.MAX_VALUE) };
     }
 
     private static Student[] getFixed(String stStuds) throws StudentNotFoundException {
-        if (stStuds.equals("")) {
+        if (stStuds.isEmpty()) {
             return null;
         }
-        String[] nameImmas = stStuds.split(Config.projAdminDelimFixedStuds);
+        String[] nameImmas = stStuds.split(Config.ProjectAdministration.projAdminDelimFixedStuds);
         Student[] fixed = new Student[nameImmas.length];
         int i = 0;
         for (String naIm : nameImmas) {
-            String[] split = naIm.split(Config.projAdminDelimFixedStudsNameImma);
+            String[] split = naIm.split(Config.ProjectAdministration.projAdminDelimFixedStudsNameImma);
             String name = "", imma = "";
             if (split.length > 0) {
                 name = split[0].trim();
