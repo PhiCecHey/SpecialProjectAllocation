@@ -13,13 +13,16 @@ import gurobi.GRBModel;
 import gurobi.GRBVar;
 import specialprojectallocation.Config;
 import specialprojectallocation.Log;
-import specialprojectallocation.objects.Group;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
 
 public class Gurobi {
-    public enum RULES {
-        projectPerStudent,
+    public enum CONSTRAINTS {
+        projectPerStudent, studentsPerProject,
+    }
+
+    public enum PREFERENCES {
+        projectPerStudent, studentsPerProject,
     }
 
     private final Allocations allocs;
@@ -29,12 +32,14 @@ public class Gurobi {
     private GRBVar[][] grbVars;
     private double[][] results;
 
-    private final ArrayList<Gurobi.RULES> rules;
+    private final ArrayList<CONSTRAINTS> constraints;
+    private final ArrayList<PREFERENCES> preferences;
 
-    public Gurobi(final ArrayList<Gurobi.RULES> r, final ArrayList<Project> projects,
+    public Gurobi(final ArrayList<CONSTRAINTS> c, final ArrayList<PREFERENCES> p, final ArrayList<Project> projects,
                   final ArrayList<Student> students) throws GRBException {
         Log.clear();
-        this.rules = r;
+        this.constraints = c;
+        this.preferences = p;
 
         try {
             this.env = new GRBEnv();
@@ -215,12 +220,24 @@ public class Gurobi {
      */
 
     private void addConstraints() {
-        if (this.rules.contains(RULES.projectPerStudent)) {
-            this.projectPerStudent();
+        if (this.constraints.contains(CONSTRAINTS.projectPerStudent)) {
+            this.constrProjectPerStudent();
+        }
+        if (this.constraints.contains(CONSTRAINTS.studentsPerProject)) {
+            this.constrStudentsPerProject();
         }
     }
 
-    private void projectPerStudent() {
+    private void addPreference() {
+        if (this.preferences.contains(PREFERENCES.studentsPerProject)) {
+            this.prefStudentsPerProj();
+        }
+        if (this.preferences.contains(PREFERENCES.projectPerStudent)) {
+            this.prefProjPerStud();
+        }
+    }
+
+    private void constrProjectPerStudent() {
         try {
             GRBLinExpr expr;
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
@@ -237,4 +254,35 @@ public class Gurobi {
         }
     }
 
+    private void constrStudentsPerProject() {
+        try {
+            GRBLinExpr expr;
+            for (int p = 0; p < this.allocs.numProjs(); ++p) {
+                expr = new GRBLinExpr();
+                for (int s = 0; s < this.allocs.numStuds(); ++s) {
+                    expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
+                }
+                String st = "studPerProj" + p;
+                this.model.addConstr(expr, GRB.LESS_EQUAL, this.allocs.getProj(p).max(), st);
+                this.model.addConstr(expr, GRB.GREATER_EQUAL, this.allocs.getProj(p).min(), st);
+                // TODO: groups
+            }
+        } catch (GRBException e) {
+            System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
+        }
+    }
+
+    /*
+     * ++=============++
+     * || PREFERENCES ||
+     * ++=============++
+     */
+
+    private void prefStudentsPerProj() {
+
+    }
+
+    private void prefProjPerStud() {
+
+    }
 }

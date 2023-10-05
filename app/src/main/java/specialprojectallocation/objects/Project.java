@@ -61,4 +61,12 @@ public class Project {
         }
         this.students.add(student);
     }
+
+    public int min() {
+        return this.minNumStuds;
+    }
+
+    public int max() {
+        return this.maxNumStuds;
+    }
 }

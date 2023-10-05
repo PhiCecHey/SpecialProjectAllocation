@@ -43,6 +43,14 @@ class Allocations {
         return this.allocs[p][s];
     }
 
+    Project getProj(final int p) {
+        return this.allocs[p][0].project();
+    }
+
+    Student getStud(final int s) {
+        return this.allocs[0][s].student();
+    }
+
     void set(final int p, final int s, final Allocation allocation) {
         this.allocs[p][s] = allocation;
     }
@@ -50,7 +58,7 @@ class Allocations {
     int numStuds() {
         return this.numStuds;
     }
-    
+
     int numProjs() {
         return this.numProjs;
     }

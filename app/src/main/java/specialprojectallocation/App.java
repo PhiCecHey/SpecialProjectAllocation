@@ -30,11 +30,13 @@ public class App {
             RegisterProject.read(new File("files/Anmeldung_Special_project_Special_project_registration.csv"));
             ArrayList<Project> projects = World.projects;
             ArrayList<Student> students = World.students;
-            ArrayList<Gurobi.RULES> rules = new ArrayList<>();
-            rules.add(Gurobi.RULES.projectPerStudent);
+            ArrayList<Gurobi.CONSTRAINTS> constraints = new ArrayList<>();
+            constraints.add(Gurobi.CONSTRAINTS.projectPerStudent);
+            constraints.add(Gurobi.CONSTRAINTS.studentsPerProject);
+            ArrayList<Gurobi.PREFERENCES> prefs = new ArrayList<>();
             int debug = 4;
 
-            Gurobi g = new Gurobi(rules, projects, students);
+            Gurobi g = new Gurobi(constraints, prefs, projects, students);
 
             debug = 3;
         } catch (StudentDuplicateException | NumberFormatException | ProjectDuplicateException | AbbrevTakenException
