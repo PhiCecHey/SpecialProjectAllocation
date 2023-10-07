@@ -7,6 +7,8 @@ import java.util.Objects;
 import org.checkerframework.checker.units.qual.g;
 
 import specialprojectallocation.Exceptions.AbbrevTakenException;
+import specialprojectallocation.Exceptions.IllegalWishException;
+import specialprojectallocation.Exceptions.ProgramsDontMatchOrGroupsFullException;
 import specialprojectallocation.Exceptions.ProjectOverfullException;
 
 public class Project {
@@ -19,14 +21,16 @@ public class Project {
     private int minNumStuds;
     private final Group[] groups; // main group is first in array
     private final Student[] fixedStuds;
-    private final List<Student> students;
+    private final List<List<Student>> students;
+    private final List<Student> allocatedStudents;
 
     public Project(String ti, String ab, String[] sups, int max, Group[] gr, Student[] fixed)
             throws AbbrevTakenException {
         for (String str : allAbbrevs) {
             if (str.equals(ab)) {
                 throw new AbbrevTakenException(
-                        "Abbrev " + ab + " already taken by project " + Objects.requireNonNull(World.findProject(ab)).title());
+                        "Abbrev " + ab + " already taken by project "
+                                + Objects.requireNonNull(World.findProject(ab)).title());
             }
         }
 
@@ -37,7 +41,12 @@ public class Project {
         this.maxNumStuds = max;
         this.groups = gr;
         this.fixedStuds = fixed;
+        this.allocatedStudents = new ArrayList<>();
+
         this.students = new ArrayList<>();
+        for (Group g : this.groups) {
+            this.students.add(g.students());
+        }
     }
 
     public String abbrev() {
@@ -48,18 +57,80 @@ public class Project {
         return this.title;
     }
 
-    public void addStudent(Student student, boolean ignoreExceptions) throws Exception {
-        if (this.students.size() >= maxNumStuds && !ignoreExceptions) {
-            throw new ProjectOverfullException(
-                    this.abbrev + " has " + this.students.size() + " of " + this.maxNumStuds + " students already!");
+    private int currentNumStuds() {
+        int num = 0;
+        for (List<Student> list : this.students) {
+            num += list.size();
         }
-        // TODO: check program of student and max num studs of that program for this project
-        for (Student s : this.students) {
-            if (student.immatNum().equals(s.immatNum())) {
-                throw new Exception("TODO");
+        return num;
+    }
+
+    private boolean studentNotDuplicate(Student student) {
+        for (List<Student> list : this.students) {
+            for (Student s : list) {
+                if (student.immatNum().equals(s.immatNum())) {
+                    return false;
+                }
             }
         }
-        this.students.add(student);
+        return true;
+    }
+
+    private Group checkStudyProgram(Student student) {
+        for (Group g : this.groups) {
+            if (g.checkAddStudent(student)) {
+                return g;
+            }
+        }
+        return null;
+    }
+
+    private boolean addToGroup(Student student) {
+        for (Group g : this.groups) {
+            if (g.addStudent(student)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkAddStudent(Student student) {
+        return (this.currentNumStuds() < maxNumStuds) && this.studentNotDuplicate(student)
+                && (this.checkStudyProgram(student) != null);
+    }
+
+    public boolean addStudent(Student student, boolean ignoreExceptions)
+            throws ProjectOverfullException, IllegalWishException, ProgramsDontMatchOrGroupsFullException {
+        if (this.currentNumStuds() >= maxNumStuds) {
+            if (!ignoreExceptions) {
+                throw new ProjectOverfullException(
+                        this.abbrev + " has " + this.students.size() + " of " + this.maxNumStuds
+                                + " students already!");
+            } else {
+                System.out.println(this.abbrev + " has " + this.students.size() + " of " + this.maxNumStuds
+                        + " students already!");
+                return false;
+            }
+        }
+        if (!this.studentNotDuplicate(student)) {
+            if (!ignoreExceptions) {
+                throw new IllegalWishException(
+                        "Student " + student.immatNum() + " added to project " + this.abbrev + " already!");
+            }
+            System.out.println("Student " + student.immatNum() + " added to project " + this.abbrev + " already!");
+            return false;
+        }
+        boolean studentWasAdded = this.addToGroup(student);
+        if (!studentWasAdded) {
+            if (!ignoreExceptions) {
+                throw new ProgramsDontMatchOrGroupsFullException(
+                        "Student " + student.immatNum() + " cannot be added to" + " project " + this.abbrev
+                                + " because study program does not match or groups are full.");
+            }
+            System.out.println("Student " + student.immatNum() + " cannot be added to project " + this.abbrev
+                    + " because study program does not match or groups are full.");
+        }
+        return studentWasAdded;
     }
 
     public int min() {

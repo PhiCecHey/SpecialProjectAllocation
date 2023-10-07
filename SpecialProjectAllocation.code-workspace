@@ -7,7 +7,14 @@
     "settings": {
         "java.compile.nullAnalysis.mode": "automatic",
         "cSpell.words": [
+            "alloc",
+            "allocs",
+            "Dont",
+            "grbvars",
+            "Gurobi",
             "immas",
+            "optimstatus",
+            "Projs",
             "specialprojectallocation"
         ],
         "java.debug.settings.onBuildFailureProceed": true

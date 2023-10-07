@@ -59,4 +59,8 @@ public class StudyProgram {
         }
         return new StudyProgram(AvailProgram.Other, str);
     }
+
+    public String other() {
+        return this.other;
+    }
 }

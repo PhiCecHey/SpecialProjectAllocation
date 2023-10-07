@@ -9,14 +9,14 @@ public class Student {
     private final String email;
     private final StudyProgram study;
     private StudWish selectedProjs;
-    private final List<Project> projects;
+    private final List<Project> allocatedProjects;
 
     public Student(String imma, String na, String em, StudyProgram stu) {
         this.immatNum = imma;
         this.name = na;
         this.email = em;
         this.study = stu;
-        this.projects = new ArrayList<>();
+        this.allocatedProjects = new ArrayList<>();
     }
 
     public String immatNum() {
@@ -61,11 +61,11 @@ public class Student {
 
     public void addProject(Project project) throws Exception {
         // TODO: see addStudent to project
-        for (Project p : this.projects) {
+        for (Project p : this.allocatedProjects) {
             if (p.abbrev().equals(project.abbrev())) {
                 throw new Exception("TODO");
             }
         }
-        this.projects.add(project);
+        this.allocatedProjects.add(project);
     }
 }

@@ -18,7 +18,7 @@ import specialprojectallocation.objects.Student;
 
 public class Gurobi {
     public enum CONSTRAINTS {
-        projectPerStudent, studentsPerProject,
+        projectPerStudent, studentsPerProject, studentAcceptedInProject,
     }
 
     public enum PREFERENCES {
@@ -36,7 +36,7 @@ public class Gurobi {
     private final ArrayList<PREFERENCES> preferences;
 
     public Gurobi(final ArrayList<CONSTRAINTS> c, final ArrayList<PREFERENCES> p, final ArrayList<Project> projects,
-                  final ArrayList<Student> students) throws GRBException {
+            final ArrayList<Student> students) throws GRBException {
         Log.clear();
         this.constraints = c;
         this.preferences = p;
@@ -48,6 +48,7 @@ public class Gurobi {
             this.allocs = new Allocations(projects, students, this.model);
 
             this.addConstraints();
+            this.addPreferences();
             this.objective = this.calculateObjectiveLinExpr(0);
             this.model.setObjective(this.objective, GRB.MAXIMIZE);
             this.model.optimize();
@@ -101,8 +102,7 @@ public class Gurobi {
             int optimstatus = model.get(GRB.IntAttr.Status);
             if (optimstatus != GRB.OPTIMAL) {
                 System.out.println("Model infeasible.");
-                Log.append("\n\n\nEs konnte keine Zuteilung gefunden werden. Eine Zuteilung koennte nach Aenderung "
-                        + "der Parameter im Tab Gurobi moeglich sein.");
+                Log.append("\n\n\nEs konnte keine Zuteilung gefunden werden.");
                 model.dispose();
                 env.dispose();
                 return false;
@@ -169,7 +169,7 @@ public class Gurobi {
             }
         }
         print.append("\nCurrent score: \t\t").append(cur);
-        print.append("\nDifference: \t\t").append(Math.abs(max - cur)).append("\n\n");
+        print.append("\nDifference: \t\t").append(Math.abs(max - cur)).append("\n");
 
         if (max == 0 && cur == 0) {
             return null;
@@ -182,8 +182,8 @@ public class Gurobi {
 
         // score matrix:
         if (all) {
-            print.append("\n\n--------------------- Score matrix: ---------------------");
-            print.append("\n" + "Abbrev" + "\t\t").append(immas);
+            print.append("......................................................");
+            print.append("\n" + "Abbrevs/Immas" + "\t").append(immas);
             for (int p = 0; p < this.allocs.numProjs(); ++p) {
                 StringBuilder str = new StringBuilder("\t\t");
                 for (int s = 0; s < this.allocs.numStuds(); ++s) {
@@ -195,7 +195,7 @@ public class Gurobi {
             print.append("\n\n--------------------- ALLOCATION ---------------------");
         }
 
-        print.append("\n" + "Abbrevs" + "\t\t").append(immas);
+        print.append("\n" + "Abbrevs/Immas" + "\t").append(immas);
 
         for (int p = 0; p < this.allocs.numProjs(); p++) {
             StringBuilder allocated = new StringBuilder();
@@ -226,9 +226,12 @@ public class Gurobi {
         if (this.constraints.contains(CONSTRAINTS.studentsPerProject)) {
             this.constrStudentsPerProject();
         }
+        if (this.constraints.contains(CONSTRAINTS.studentAcceptedInProject)) {
+            this.constrStudentAcceptedInProject();
+        }
     }
 
-    private void addPreference() {
+    private void addPreferences() {
         if (this.preferences.contains(PREFERENCES.studentsPerProject)) {
             this.prefStudentsPerProj();
         }
@@ -266,6 +269,26 @@ public class Gurobi {
                 this.model.addConstr(expr, GRB.LESS_EQUAL, this.allocs.getProj(p).max(), st);
                 this.model.addConstr(expr, GRB.GREATER_EQUAL, this.allocs.getProj(p).min(), st);
                 // TODO: groups
+            }
+        } catch (GRBException e) {
+            System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
+        }
+    }
+
+    // TODO: buggy, doesnt work
+    private void constrStudentAcceptedInProject() {
+        try {
+            GRBLinExpr expr;
+            for (int s = 0; s < this.allocs.numStuds(); ++s) {
+                expr = new GRBLinExpr();
+                for (int p = 0; p < this.allocs.numProjs(); ++p) {
+                    expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
+                    Project proj = this.allocs.getProj(p);
+                    Student stud = this.allocs.getStud(s);
+                    int accepted = proj.checkAddStudent(stud) ? 1 : 0;
+                    String st = "studAcceptedInProj" + s + p;
+                    this.model.addConstr(expr, GRB.EQUAL, accepted, st);
+                }
             }
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());

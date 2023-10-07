@@ -38,7 +38,13 @@ public class RegisterProject extends MyParser{
                     boolean oneStudent = cells[RegisterProject.var].toLowerCase()
                             .contains(Config.ProjectAdministration.projAdminVarOneStudent);
                     Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
-                            cells[RegisterProject.mainMaxNum], oneStudent);
+                            cells[RegisterProject.maxNum], oneStudent);
+
+                    // TODO: several groups
+                    // mainMaxNum not usable currently, has to be maxNum
+                    /*Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
+                            cells[RegisterProject.mainMaxNum], oneStudent);*/
+
                     Student[] fix = null;
                     try {
                         fix = RegisterProject.getFixed(cells[RegisterProject.fixed]);

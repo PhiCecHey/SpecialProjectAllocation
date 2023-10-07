@@ -35,4 +35,18 @@ public class Exceptions {
             super(str);
         }
     }
+
+    public static class IllegalWishException extends Exception {
+        // quality of life improvement: throw a warning as an exception
+        public IllegalWishException(String str) {
+            super(str);
+        }
+    }
+
+    public static class ProgramsDontMatchOrGroupsFullException extends Exception {
+        // quality of life improvement: throw a warning as an exception
+        public ProgramsDontMatchOrGroupsFullException(String str) {
+            super(str);
+        }
+    }
 }
