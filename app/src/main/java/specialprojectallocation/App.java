@@ -19,10 +19,6 @@ import specialprojectallocation.parser.ReadStudWish;
 import specialprojectallocation.parser.RegisterProject;
 
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
-
     public static void main(String[] args) {
         System.out.println(System.getProperty("user.dir"));
         try {

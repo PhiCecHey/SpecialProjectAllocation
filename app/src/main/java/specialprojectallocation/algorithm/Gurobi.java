@@ -334,13 +334,14 @@ public class Gurobi {
     }
 
     /*
-     * min students per group project so that there are no projects with only 1 student
+     * min students per group project so that there are no projects with only 1
+     * student
      */
-    private void constrMinStudentsPerGroupProject() { // TODO: test in combi with maxStudsPerProj
+    private void constrMinStudentsPerGroupProject() {
         try {
             GRBLinExpr expr;
             for (int p = 0; p < this.allocs.numProjs(); ++p) {
-                if (this.allocs.getProj(p).min() > 1) { //
+                if (this.allocs.getProj(p).max() > 1) { //
                     expr = new GRBLinExpr();
                     for (int s = 0; s < this.allocs.numStuds(); ++s) {
                         expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
