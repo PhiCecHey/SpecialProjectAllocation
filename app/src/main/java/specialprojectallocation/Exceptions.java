@@ -29,6 +29,13 @@ public class Exceptions {
         }
     }
 
+    public static class ProjectNotFoundException extends Exception {
+        // quality of life improvement: throw a warning as an exception
+        public ProjectNotFoundException(String str) {
+            super(str);
+        }
+    }
+
     public static class ProjectOverfullException extends Exception {
         // quality of life improvement: throw a warning as an exception
         public ProjectOverfullException(String str) {

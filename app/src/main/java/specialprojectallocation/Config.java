@@ -40,4 +40,12 @@ public class Config {
         public static final int minNumProjectsPerStudent = 1;
         public static final int minNumStudsPerGroupProj = 2;
     }
+
+    public static class Preferences {
+        // Gurobi preferences values
+        public static final double proj1 = 100.0;
+        public static final double proj2 = 80.0;
+        public static final double proj3 = 50.0;
+        public static final double proj4 = 30.0;
+    }
 }

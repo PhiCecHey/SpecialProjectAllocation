@@ -23,7 +23,8 @@ public class Gurobi {
     }
 
     public enum PREFERENCES {
-        projectPerStudent, studentsPerProject, studentsPerStudy,
+        projectPerStudent, studentsPerProject, studentAcceptedInProject, studentsPerStudy, minStudentsPerGroupProject,
+        selectedProjs,
     }
 
     private final Allocations allocs;
@@ -220,19 +221,19 @@ public class Gurobi {
 
     private void addConstraints() {
         if (this.constraints.contains(CONSTRAINTS.projectPerStudent)) {
-            this.constrProjectPerStudent();
+            this.constrProjPerStud();
         }
         if (this.constraints.contains(CONSTRAINTS.studentsPerProject)) {
-            this.constrStudentsPerProject();
+            this.constrStudsPerProj();
         }
         if (this.constraints.contains(CONSTRAINTS.studentAcceptedInProject)) {
-            this.constrStudentAcceptedInProject();
+            this.constrStudAcceptedInProj();
         }
         if (this.constraints.contains(CONSTRAINTS.studentsPerStudy)) {
-            this.constrStudentsPerStudy();
+            this.constrStudsPerStudy();
         }
         if (this.constraints.contains(CONSTRAINTS.minStudentsPerGroupProject)) {
-            this.constrMinStudentsPerGroupProject();
+            this.constrMinStudsPerGroupProj();
         }
     }
 
@@ -243,12 +244,24 @@ public class Gurobi {
         if (this.preferences.contains(PREFERENCES.projectPerStudent)) {
             this.prefProjPerStud();
         }
+        if (this.preferences.contains(PREFERENCES.studentAcceptedInProject)) {
+            this.prefStudsAcceptedInProj();
+        }
+        if (this.preferences.contains(PREFERENCES.studentsPerStudy)) {
+            this.prefStudsPerStudy();
+        }
+        if (this.preferences.contains(PREFERENCES.minStudentsPerGroupProject)) {
+            this.prefMinStudsPerGroupProj();
+        }
+        if (this.preferences.contains(PREFERENCES.selectedProjs)) {
+            this.prefSelectedProj();
+        }
     }
 
     /*
      * how many projects a student can have
      */
-    private void constrProjectPerStudent() {
+    private void constrProjPerStud() {
         try {
             GRBLinExpr expr;
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
@@ -268,7 +281,7 @@ public class Gurobi {
     /*
      * how many students a project can have, ignores groups
      */
-    private void constrStudentsPerProject() {
+    private void constrStudsPerProj() {
         try {
             GRBLinExpr expr;
             for (int p = 0; p < this.allocs.numProjs(); ++p) {
@@ -287,7 +300,7 @@ public class Gurobi {
     /*
      * check if student has right study program
      */
-    private void constrStudentAcceptedInProject() {
+    private void constrStudAcceptedInProj() {
         try {
             GRBLinExpr expr;
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
@@ -313,7 +326,7 @@ public class Gurobi {
     /*
      * how many students per study program a project can have
      */
-    private void constrStudentsPerStudy() { // TODO: test
+    private void constrStudsPerStudy() { // TODO: test
         try {
             GRBLinExpr expr;
             for (int p = 0; p < this.allocs.numProjs(); ++p) {
@@ -321,7 +334,6 @@ public class Gurobi {
                 for (Group group : project.groups()) {
                     expr = new GRBLinExpr();
                     for (int s = 0; s < this.allocs.numStuds(); ++s) {
-                        Student student = this.allocs.getStud(s);
                         expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
                     }
                     String st = "studPerStudy" + p + group.program();
@@ -337,7 +349,7 @@ public class Gurobi {
      * min students per group project so that there are no projects with only 1
      * student
      */
-    private void constrMinStudentsPerGroupProject() {
+    private void constrMinStudsPerGroupProj() {
         try {
             GRBLinExpr expr;
             for (int p = 0; p < this.allocs.numProjs(); ++p) {
@@ -377,7 +389,51 @@ public class Gurobi {
 
     }
 
+    private void prefStudsAcceptedInProj() {
+
+    }
+
+    private void prefStudsPerStudy() {
+
+    }
+
+    private void prefMinStudsPerGroupProj() {
+
+    }
+
+    /*
+     * student made mistakes when filling out the form
+     * TODO
+     */
+
     /*
      * prios
      */
+
+    private void prefSelectedProj() {
+        for (int p = 0; p < this.allocs.numProjs(); p++) {
+            for (int s = 0; s < this.allocs.numStuds(); s++) {
+                Allocation alloc = this.allocs.get(p, s);
+                Student student = alloc.student();
+                Project project = alloc.project();
+
+                if (project.abbrev().equals(student.abbrevProj1())) {
+                    alloc.addToScore(Config.Preferences.proj1);
+                    continue;
+                }
+                if (project.abbrev().equals(student.abbrevProj2())) {
+                    alloc.addToScore(Config.Preferences.proj2);
+                    continue;
+                }
+                if (project.abbrev().equals(student.abbrevProj2())) {
+                    alloc.addToScore(Config.Preferences.proj3);
+                    continue;
+                }
+                if (project.abbrev().equals(student.abbrevProj4())) {
+                    alloc.addToScore(Config.Preferences.proj4);
+                    continue;
+                }
+            }
+        }
+    }
 }

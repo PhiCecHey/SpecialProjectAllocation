@@ -13,4 +13,20 @@ public class StudWish {
         this.third = th;
         this.fourth = fo;
     }
+
+    Project proj1() {
+        return this.first;
+    }
+
+    Project proj2() {
+        return this.second;
+    }
+
+    Project proj3() {
+        return this.third;
+    }
+
+    Project proj4() {
+        return this.fourth;
+    }
 }

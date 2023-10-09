@@ -15,7 +15,7 @@ import specialprojectallocation.algorithm.Gurobi;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
 import specialprojectallocation.objects.World;
-import specialprojectallocation.parser.ReadStudWish;
+import specialprojectallocation.parser.SelectProject;
 import specialprojectallocation.parser.RegisterProject;
 
 public class App {
@@ -24,11 +24,11 @@ public class App {
         try {
             boolean cmd = true;
             if (!cmd) {
-                ReadStudWish.read(new File("app/files/Special_project_selection.csv"), ",");
                 RegisterProject.read(new File("app/files/Anmeldung_Special_project_Special_project_registration.csv"));
+                SelectProject.read(new File("app/files/Special_project_selection.csv"), ",");
             } else {
-                ReadStudWish.read(new File("files/Special_project_selection.csv"), ",");
                 RegisterProject.read(new File("files/Anmeldung_Special_project_Special_project_registration.csv"));
+                SelectProject.read(new File("files/Special_project_selection.csv"), ",");
             }
             ArrayList<Project> projects = World.projects;
             ArrayList<Student> students = World.students;
@@ -38,6 +38,7 @@ public class App {
             constraints.add(Gurobi.CONSTRAINTS.studentAcceptedInProject);
             constraints.add(Gurobi.CONSTRAINTS.minStudentsPerGroupProject);
             ArrayList<Gurobi.PREFERENCES> prefs = new ArrayList<>();
+            prefs.add(Gurobi.PREFERENCES.selectedProjs);
             int debug = 4;
 
             Gurobi g = new Gurobi(constraints, prefs, projects, students);
