@@ -1,7 +1,5 @@
 package specialprojectallocation.objects;
 
-import java.util.ArrayList;
-
 public class Group {
     private final StudyProgram program;
     private final int maxNumStuds;

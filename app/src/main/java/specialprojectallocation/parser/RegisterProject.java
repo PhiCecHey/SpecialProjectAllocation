@@ -36,7 +36,7 @@ public class RegisterProject extends MyParser{
                 if (found == null) {
                     String[] supers = cells[RegisterProject.supers].split(Config.ProjectAdministration.delimSupers);
                     boolean oneStudent = cells[RegisterProject.var].toLowerCase()
-                            .contains(Config.ProjectAdministration.projAdminVarOneStudent);
+                            .contains(Config.ProjectAdministration.varOneStudent);
                     Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
                             cells[RegisterProject.maxNum], oneStudent);
 
@@ -124,11 +124,11 @@ public class RegisterProject extends MyParser{
         if (stStuds.isEmpty()) {
             return null;
         }
-        String[] nameImmas = stStuds.split(Config.ProjectAdministration.projAdminDelimFixedStuds);
+        String[] nameImmas = stStuds.split(Config.ProjectAdministration.delimFixedStuds);
         Student[] fixed = new Student[nameImmas.length];
         int i = 0;
         for (String naIm : nameImmas) {
-            String[] split = naIm.split(Config.ProjectAdministration.projAdminDelimFixedStudsNameImma);
+            String[] split = naIm.split(Config.ProjectAdministration.delimFixedStudsNameImma);
             String name = "", imma = "";
             if (split.length > 0) {
                 name = split[0].trim();

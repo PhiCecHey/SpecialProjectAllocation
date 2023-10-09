@@ -19,7 +19,7 @@ import specialprojectallocation.objects.Student;
 
 public class Gurobi {
     public enum CONSTRAINTS {
-        projectPerStudent, studentsPerProject, studentAcceptedInProject, studentsPerStudy,
+        projectPerStudent, studentsPerProject, studentAcceptedInProject, studentsPerStudy, minStudentsPerGroupProject,
     }
 
     public enum PREFERENCES {
@@ -176,7 +176,7 @@ public class Gurobi {
 
         StringBuilder immas = new StringBuilder();
         for (int s = 0; s < this.allocs.numStuds(); s++) {
-            immas.append(this.allocs.get(0, s).student().immatNum()).append("\t");
+            immas.append(this.allocs.get(0, s).student().immatNum()).append("\t\t");
         }
 
         // score matrix:
@@ -197,12 +197,12 @@ public class Gurobi {
         print.append("\n" + "Abbrevs/Immas" + "\t").append(immas);
 
         for (int p = 0; p < this.allocs.numProjs(); p++) {
-            StringBuilder allocated = new StringBuilder();
+            StringBuilder allocated = new StringBuilder("\t");
             for (int s = 0; s < this.allocs.numStuds(); s++) {
                 if (this.results[p][s] == 0) {
-                    allocated.append("\t        -\t");
+                    allocated.append("\t-\t");
                 } else {
-                    allocated.append("\t        #\t");
+                    allocated.append("\t#\t");
                 }
             }
             if (allocated.toString().contains("#")) {
@@ -231,6 +231,9 @@ public class Gurobi {
         if (this.constraints.contains(CONSTRAINTS.studentsPerStudy)) {
             this.constrStudentsPerStudy();
         }
+        if (this.constraints.contains(CONSTRAINTS.minStudentsPerGroupProject)) {
+            this.constrMinStudentsPerGroupProject();
+        }
     }
 
     private void addPreferences() {
@@ -254,8 +257,8 @@ public class Gurobi {
                     expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
                 }
                 String st = "projPerStud" + s;
-                this.model.addConstr(expr, GRB.LESS_EQUAL, Config.Constraints.constrMaxNumProjectsPerStudent, st);
-                this.model.addConstr(expr, GRB.GREATER_EQUAL, Config.Constraints.constrMinNumProjectsPerStudent, st);
+                this.model.addConstr(expr, GRB.LESS_EQUAL, Config.Constraints.maxNumProjectsPerStudent, st);
+                this.model.addConstr(expr, GRB.GREATER_EQUAL, Config.Constraints.minNumProjectsPerStudent, st);
             }
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
@@ -274,8 +277,7 @@ public class Gurobi {
                     expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
                 }
                 String st = "studPerProj" + p;
-                this.model.addConstr(expr, GRB.LESS_EQUAL, this.allocs.getProj(p).max(), st);
-                this.model.addConstr(expr, GRB.GREATER_EQUAL, this.allocs.getProj(p).min(), st);
+                this.model.addRange(expr, this.allocs.getProj(p).min(), this.allocs.getProj(p).max(), st);
             }
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
@@ -295,7 +297,7 @@ public class Gurobi {
                     boolean accepted = proj.checkStudyProgram(stud);
                     String st = "studAcceptedInProj" + s + p;
                     if (!accepted) {
-                        // student not allowed in pr    oject
+                        // student not allowed in pr oject
                         // make sure student cannot join this project
                         expr = new GRBLinExpr();
                         expr.addTerm(1, this.allocs.get(p, s).grbVar());
@@ -332,6 +334,35 @@ public class Gurobi {
     }
 
     /*
+     * min students per group project so that there are no projects with only 1 student
+     */
+    private void constrMinStudentsPerGroupProject() { // TODO: test in combi with maxStudsPerProj
+        try {
+            GRBLinExpr expr;
+            for (int p = 0; p < this.allocs.numProjs(); ++p) {
+                if (this.allocs.getProj(p).min() > 1) { //
+                    expr = new GRBLinExpr();
+                    for (int s = 0; s < this.allocs.numStuds(); ++s) {
+                        expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
+                    }
+                    String st = "studPerProj" + p;
+                    GRBVar z1 = this.model.addVar(0.0, 1.0, 0.0, GRB.BINARY, st);
+                    GRBVar z2 = this.model.addVar(0.0, 1.0, 0.0, GRB.BINARY, st);
+                    GRBLinExpr zExpr = new GRBLinExpr();
+                    zExpr.addTerm(1, z1);
+                    zExpr.addTerm(1, z2);
+                    this.model.addConstr(zExpr, GRB.EQUAL, 1, st);
+                    this.model.addGenConstrIndicator(z1, 1, expr, GRB.GREATER_EQUAL,
+                            Config.Constraints.minNumStudsPerGroupProj, st);
+                    this.model.addGenConstrIndicator(z2, 1, expr, GRB.LESS_EQUAL, 0, st);
+                }
+            }
+        } catch (GRBException e) {
+            System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
+        }
+    }
+
+    /*
      * ++=============++
      * || PREFERENCES ||
      * ++=============++
@@ -344,4 +375,8 @@ public class Gurobi {
     private void prefProjPerStud() {
 
     }
+
+    /*
+     * prios
+     */
 }
