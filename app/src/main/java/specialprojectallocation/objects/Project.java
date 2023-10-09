@@ -4,12 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.checkerframework.checker.units.qual.g;
-
 import specialprojectallocation.Exceptions.AbbrevTakenException;
-import specialprojectallocation.Exceptions.IllegalWishException;
-import specialprojectallocation.Exceptions.ProgramsDontMatchOrGroupsFullException;
-import specialprojectallocation.Exceptions.ProjectOverfullException;
 
 public class Project {
     private static final List<String> allAbbrevs = new ArrayList<>();
@@ -18,7 +13,7 @@ public class Project {
     private final String abbrev;
     private final String[] supervisors;
     private final int maxNumStuds;
-    private int minNumStuds;
+    private int minNumStuds;  // TODO
     private final Group[] groups; // main group is first in array
     private final Student[] fixedStuds;
 
@@ -64,5 +59,9 @@ public class Project {
 
     public int max() {
         return this.maxNumStuds;
+    }
+
+    public Group[] groups() {
+        return this.groups;
     }
 }

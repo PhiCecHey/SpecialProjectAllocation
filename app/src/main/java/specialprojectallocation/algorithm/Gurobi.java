@@ -13,16 +13,17 @@ import gurobi.GRBModel;
 import gurobi.GRBVar;
 import specialprojectallocation.Config;
 import specialprojectallocation.Log;
+import specialprojectallocation.objects.Group;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
 
 public class Gurobi {
     public enum CONSTRAINTS {
-        projectPerStudent, studentsPerProject, studentAcceptedInProject,
+        projectPerStudent, studentsPerProject, studentAcceptedInProject, studentsPerStudy,
     }
 
     public enum PREFERENCES {
-        projectPerStudent, studentsPerProject,
+        projectPerStudent, studentsPerProject, studentsPerStudy,
     }
 
     private final Allocations allocs;
@@ -114,8 +115,6 @@ public class Gurobi {
             return false;
         }
 
-        boolean worked = true;
-
         for (int p = 0; p < this.allocs.numProjs(); p++) {
             for (int s = 0; s < this.allocs.numStuds(); s++) {
                 if (this.results[p][s] != 0) {
@@ -128,12 +127,11 @@ public class Gurobi {
                         // no point in adding students and projects to data structures
                     } catch (Exception e) {
                         e.printStackTrace();
-                        worked = false;
                     }
                 }
             }
         }
-        return worked;
+        return true;
     }
 
     private String print(boolean all, boolean worked) {
@@ -230,6 +228,9 @@ public class Gurobi {
         if (this.constraints.contains(CONSTRAINTS.studentAcceptedInProject)) {
             this.constrStudentAcceptedInProject();
         }
+        if (this.constraints.contains(CONSTRAINTS.studentsPerStudy)) {
+            this.constrStudentsPerStudy();
+        }
     }
 
     private void addPreferences() {
@@ -294,7 +295,7 @@ public class Gurobi {
                     boolean accepted = proj.checkStudyProgram(stud);
                     String st = "studAcceptedInProj" + s + p;
                     if (!accepted) {
-                        // student not allowed in project
+                        // student not allowed in pr    oject
                         // make sure student cannot join this project
                         expr = new GRBLinExpr();
                         expr.addTerm(1, this.allocs.get(p, s).grbVar());
@@ -305,23 +306,25 @@ public class Gurobi {
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
         }
+    }
 
     /*
      * how many students per study program a project can have
      */
-    // TODO: just a template
-    private void constrStudentsPerStudy() {
+    private void constrStudentsPerStudy() { // TODO: test
         try {
             GRBLinExpr expr;
             for (int p = 0; p < this.allocs.numProjs(); ++p) {
-                expr = new GRBLinExpr();
-                for (int s = 0; s < this.allocs.numStuds(); ++s) {
-                    expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
+                Project project = this.allocs.getProj(p);
+                for (Group group : project.groups()) {
+                    expr = new GRBLinExpr();
+                    for (int s = 0; s < this.allocs.numStuds(); ++s) {
+                        Student student = this.allocs.getStud(s);
+                        expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
+                    }
+                    String st = "studPerStudy" + p + group.program();
+                    this.model.addConstr(expr, GRB.LESS_EQUAL, group.max(), st);
                 }
-                String st = "studPerProj" + p;
-                this.model.addConstr(expr, GRB.LESS_EQUAL, this.allocs.getProj(p).max(), st);
-                this.model.addConstr(expr, GRB.GREATER_EQUAL, this.allocs.getProj(p).min(), st);
-                // TODO: groups
             }
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
