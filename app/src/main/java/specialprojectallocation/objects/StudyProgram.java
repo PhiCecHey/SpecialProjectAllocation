@@ -63,4 +63,28 @@ public class StudyProgram {
     public String other() {
         return this.other;
     }
+
+    public boolean equals(StudyProgram p) {
+        if (this.program == AvailProgram.Other && p.program == AvailProgram.Other) {
+            return this.other.toLowerCase().equals(p.other.toLowerCase());
+        }
+        return p.program == this.program;
+    }
+
+    public boolean equals(AvailProgram p) {
+        if (p == AvailProgram.Other || this.program == AvailProgram.Other) {
+            // cannot check String other
+            return false;
+        }
+        return p == this.program;
+    }
+
+    public boolean equals(String p) {
+        StudyProgram pr = StudyProgram.StrToStudy(p);
+        AvailProgram pAvail = pr.program;
+        if (pAvail == AvailProgram.Other && this.program.equals(AvailProgram.Other)) {
+            return pr.other.toLowerCase().equals(this.other.toLowerCase());
+        }
+        return this.program.equals(pr.program);
+    }
 }
