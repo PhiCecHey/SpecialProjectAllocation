@@ -15,7 +15,7 @@ import specialprojectallocation.objects.Student;
 import specialprojectallocation.objects.StudyProgram;
 import specialprojectallocation.objects.World;
 
-public class RegisterProject extends MyParser{
+public class RegisterProject extends MyParser {
 
     private static int title = -1, abbrev = -1, supers = -1, chair = -1, chairOther = -1, maxNum = -1, mainGroup = -1,
             mainMaxNum = -1, var = -1, fixed = -1;
@@ -25,13 +25,14 @@ public class RegisterProject extends MyParser{
     public static boolean read(File csv)
             throws ProjectDuplicateException, NumberFormatException, AbbrevTakenException, StudentNotFoundException {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
+            System.out.println("READING FILE: " + csv.getAbsolutePath());
             String line = bufferedReader.readLine();
             if (!RegisterProject.evalHeading(line)) {
                 return false;
             }
 
             while ((line = bufferedReader.readLine()) != null) {
-                String[] cells = RegisterProject.readLineInCsvWithQuotesAndDelim(line);
+                String[] cells = RegisterProject.readLineInCsvWithQuotesAndDelim(line, Config.ProjectAdministration.csvDelim);
                 Project found = World.findProject(cells[RegisterProject.abbrev]);
                 if (found == null) {
                     String[] supers = cells[RegisterProject.supers].split(Config.ProjectAdministration.delimSupers);
@@ -42,8 +43,10 @@ public class RegisterProject extends MyParser{
 
                     // TODO: several groups
                     // mainMaxNum not usable currently, has to be maxNum
-                    /*Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
-                            cells[RegisterProject.mainMaxNum], oneStudent);*/
+                    /*
+                     * Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
+                     * cells[RegisterProject.mainMaxNum], oneStudent);
+                     */
 
                     Student[] fix = null;
                     try {
@@ -60,6 +63,7 @@ public class RegisterProject extends MyParser{
                             maxNum, groups, fix);
                     World.projects.add(project);
                 } else {
+                    int debug = 4;
                     // TODO: just take last entry?
                     // throw new ProjectDuplicateException(
                     // "Project " + found.abbrev() + " was registired more than once!");
@@ -103,10 +107,11 @@ public class RegisterProject extends MyParser{
                 RegisterProject.fixed = i;
             }
         }
-        return (RegisterProject.title != -1 && RegisterProject.abbrev != -1 && RegisterProject.supers != -1
+        boolean ret = (RegisterProject.title != -1 && RegisterProject.abbrev != -1 && RegisterProject.supers != -1
                 && RegisterProject.chair != -1 && RegisterProject.chairOther != -1 && RegisterProject.maxNum != -1
                 && RegisterProject.mainGroup != -1 && RegisterProject.mainMaxNum != -1 && RegisterProject.var != -1
                 && RegisterProject.fixed != -1);
+        return ret;
     }
 
     private static Group[] getGroups(String stMainStudProg, String mainMax, boolean oneStudent) {
@@ -141,7 +146,8 @@ public class RegisterProject extends MyParser{
                 if ((student = World.findStudentByName(name, false)) == null) {
                     if ((student = World.findStudentByName(name, true)) == null) {
                         return null;
-                        //throw new StudentNotFoundException("Cannot find fixed student " + name + ", " + imma);
+                        // throw new StudentNotFoundException("Cannot find fixed student " + name + ", "
+                        // + imma);
                     }
                 }
             }

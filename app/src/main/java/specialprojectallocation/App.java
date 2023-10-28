@@ -16,6 +16,7 @@ import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
 import specialprojectallocation.objects.World;
 import specialprojectallocation.parser.SelectProject;
+import specialprojectallocation.parser.MyParser;
 import specialprojectallocation.parser.RegisterProject;
 
 public class App {
@@ -23,13 +24,18 @@ public class App {
         System.out.println(System.getProperty("user.dir"));
         try {
             boolean cmd = true;
+            File one;
+            File two;
             if (!cmd) {
-                RegisterProject.read(new File("app/files/Anmeldung_Special_project_Special_project_registration.csv"));
-                SelectProject.read(new File("app/files/Special_project_selection.csv"), ",");
+                one = new File("app/files/Anmeldung_Special_project_Special_project_registration.csv");
+                two = new File("app/files/Special_project_selection.csv");
             } else {
-                RegisterProject.read(new File("files/Anmeldung_Special_project_Special_project_registration.csv"));
-                SelectProject.read(new File("files/Special_project_selection.csv"), ",");
+                one = new File("files/Anmeldung_Special_project_Special_project_registration.csv");
+                two = new File("files/Special_project_selection.csv");
             }
+            RegisterProject.read(one);
+            SelectProject.read(two, ",");
+
             ArrayList<Project> projects = World.projects;
             ArrayList<Student> students = World.students;
             ArrayList<Gurobi.CONSTRAINTS> constraints = new ArrayList<>();

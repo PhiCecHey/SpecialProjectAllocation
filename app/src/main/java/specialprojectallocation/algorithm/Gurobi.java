@@ -270,8 +270,10 @@ public class Gurobi {
                     expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
                 }
                 String st = "projPerStud" + s;
-                this.model.addConstr(expr, GRB.LESS_EQUAL, Config.Constraints.maxNumProjectsPerStudent, st);
-                this.model.addConstr(expr, GRB.GREATER_EQUAL, Config.Constraints.minNumProjectsPerStudent, st);
+                // TODO
+                this.model.addConstr(expr, GRB.EQUAL, 1, st);
+                //this.model.addConstr(expr, GRB.LESS_EQUAL, Config.Constraints.maxNumProjectsPerStudent, st);
+                //this.model.addConstr(expr, GRB.GREATER_EQUAL, Config.Constraints.minNumProjectsPerStudent, st);
             }
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
