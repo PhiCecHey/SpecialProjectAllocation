@@ -60,13 +60,7 @@ public class Student {
     }
 
     public String abbrevProj1() /* Project could not be found */ {
-        if (this.selectedProjs == null) {
-            System.out.println("Student did not select any projects!");
-            return "";
-            // throw new ProjectNotFoundException("Project could not be found");
-        }
-        if (this.selectedProjs.proj1() == null) {
-            System.out.println("Project could not be found");
+        if (this.selectedProjs == null || this.selectedProjs.proj1() == null) {
             return "";
             // throw new ProjectNotFoundException("Project could not be found");
         }
@@ -74,13 +68,7 @@ public class Student {
     }
 
     public String abbrevProj2() /* Project could not be found */ {
-        if (this.selectedProjs == null) {
-            System.out.println("Student did not select any projects!");
-            return "";
-            // throw new ProjectNotFoundException("Project could not be found");
-        }
-        if (this.selectedProjs.proj2() == null) {
-            System.out.println("Project could not be found");
+        if (this.selectedProjs == null || this.selectedProjs.proj2() == null) {
             return "";
             // throw new ProjectNotFoundException("Project could not be found");
         }
@@ -88,13 +76,7 @@ public class Student {
     }
 
     public String abbrevProj3() /* Project could not be found */ {
-        if (this.selectedProjs == null) {
-            System.out.println("Student did not select any projects!");
-            return "";
-            // throw new ProjectNotFoundException("Project could not be found");
-        }
-        if (this.selectedProjs.proj3() == null) {
-            System.out.println("Project could not be found");
+        if (this.selectedProjs == null || this.selectedProjs.proj3() == null) {
             return "";
             // throw new ProjectNotFoundException("Project could not be found");
         }
@@ -102,13 +84,7 @@ public class Student {
     }
 
     public String abbrevProj4() /* Project could not be found */ {
-        if (this.selectedProjs == null) {
-            System.out.println("Student did not select any projects!");
-            return "";
-            // throw new ProjectNotFoundException("Project could not be found");
-        }
-        if (this.selectedProjs.proj4() == null) {
-            System.out.println("Project could not be found");
+        if (this.selectedProjs == null || this.selectedProjs.proj4() == null) {
             return "";
             // throw new ProjectNotFoundException("Project could not be found");
         }

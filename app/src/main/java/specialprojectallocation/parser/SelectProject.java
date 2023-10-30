@@ -22,7 +22,7 @@ public class SelectProject extends MyParser {
             }
 
             while ((line = bufferedReader.readLine()) != null) {
-                String[] cells = SelectProject.readLineInCsvWithQuotesAndDelim(line);
+                String[] cells = SelectProject.readLineInCsvWithQuotesAndDelim(line, Config.ProjectSelection.csvDelim);
                 Student found = World.findStudentByImma(cells[SelectProject.immaNum]);
                 if (found == null) {
                     Student student = new Student(cells[SelectProject.immaNum], cells[SelectProject.name],

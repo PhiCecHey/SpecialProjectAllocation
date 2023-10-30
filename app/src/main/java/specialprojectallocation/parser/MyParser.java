@@ -1,19 +1,22 @@
 package specialprojectallocation.parser;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import specialprojectallocation.Config;
 
 public class MyParser {
-    protected static String[] readLineInCsvWithQuotesAndDelim(String lineInCsv) {
+    protected static String[] readLineInCsvWithQuotesAndDelim(String lineInCsv, char delim) {
+        lineInCsv = MyParser.replaceWeirdHtmlChars(lineInCsv);
         List<String> cells = new ArrayList<>();
         boolean inQuotes = false;
         StringBuilder cellInLine = new StringBuilder();
         for (char charInLine : lineInCsv.toCharArray()) {
             if (charInLine == Config.ProjectAdministration.quotes) {
                 inQuotes = !inQuotes;
-            } else if (!inQuotes && charInLine == Config.ProjectAdministration.csvDelim) {
+            } else if (!inQuotes && charInLine == delim) {
                 cells.add(cellInLine.toString());
                 cellInLine = new StringBuilder();
             } else {
@@ -31,5 +34,10 @@ public class MyParser {
             i++;
         }
         return array;
+    }
+
+    private static String replaceWeirdHtmlChars(String line) {
+        line = line.replaceAll("&amp;", "&");
+        return line;
     }
 }

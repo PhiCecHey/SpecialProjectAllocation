@@ -3,6 +3,7 @@ package specialprojectallocation;
 public class Config {
     // read student wishes
     public class ProjectSelection {
+        public static final char csvDelim = ',';
         public static final String fullName = "ndiger Name";
         public static final String first = "Q01_1";
         public static final String second = "Q02_2";
@@ -15,7 +16,7 @@ public class Config {
 
     public class ProjectAdministration {
         // read instructors wishes
-        public static final char csvDelim = ',';
+        public static final char csvDelim = ';';
         public static final String title = "Q01_1.1";
         public static final String abbrev = "Q02_1.2";
         public static final String supers = "Q03_1.3";
