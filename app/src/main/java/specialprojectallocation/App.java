@@ -33,8 +33,8 @@ public class App {
                 one = new File("files/Anmeldung_Special_project_Special_project_registration.csv");
                 two = new File("files/Special_project_selection.csv");
             }
-            RegisterProject.read(one);
-            SelectProject.read(two, ",");
+            RegisterProject.read(one, Config.ProjectAdministration.csvDelim);
+            SelectProject.read(two, Config.ProjectSelection.csvDelim);
 
             ArrayList<Project> projects = World.projects;
             ArrayList<Student> students = World.students;

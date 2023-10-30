@@ -14,7 +14,7 @@ public class SelectProject extends MyParser {
     private static int name = -1, immaNum = -1, email = -1, studProg = -1, first = -1, second = -1, third = -1,
             fourth = -1;
 
-    public static boolean read(File csv, String delim) throws StudentDuplicateException {
+    public static boolean read(File csv, char delim) throws StudentDuplicateException {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
             String line = bufferedReader.readLine();
             if (!SelectProject.evalHeading(line, delim)) {
@@ -45,11 +45,11 @@ public class SelectProject extends MyParser {
         return true;
     }
 
-    private static boolean evalHeading(String line, String delim) {
+    private static boolean evalHeading(String line, char delim) {
         if (line == null) {
             return false;
         }
-        String[] cells = line.split(delim);
+        String[] cells = line.split(String.valueOf(delim));
         for (int i = 0; i < cells.length; ++i) {
             String cell = cells[i];
             int debug = 4;

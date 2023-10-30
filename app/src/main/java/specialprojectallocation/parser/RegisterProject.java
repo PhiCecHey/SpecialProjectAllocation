@@ -22,7 +22,7 @@ public class RegisterProject extends MyParser {
 
     // TODO: test
     // TOOD: how to handle exceptions?
-    public static boolean read(File csv)
+    public static boolean read(File csv, char delim)
             throws ProjectDuplicateException, NumberFormatException, AbbrevTakenException, StudentNotFoundException {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
             System.out.println("READING FILE: " + csv.getAbsolutePath());
@@ -32,7 +32,7 @@ public class RegisterProject extends MyParser {
             }
 
             while ((line = bufferedReader.readLine()) != null) {
-                String[] cells = RegisterProject.readLineInCsvWithQuotesAndDelim(line, Config.ProjectAdministration.csvDelim);
+                String[] cells = RegisterProject.readLineInCsvWithQuotesAndDelim(line, delim);
                 Project found = World.findProject(cells[RegisterProject.abbrev]);
                 if (found == null) {
                     String[] supers = cells[RegisterProject.supers].split(Config.ProjectAdministration.delimSupers);
