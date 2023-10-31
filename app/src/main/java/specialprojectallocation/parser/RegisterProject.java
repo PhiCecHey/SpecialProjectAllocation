@@ -49,18 +49,12 @@ public class RegisterProject extends MyParser {
                      */
 
                     Student[] fix = null;
-                    try {
-                        fix = RegisterProject.getFixed(cells[RegisterProject.fixed]);
-                    } catch (StudentNotFoundException e) {
-                        // TODO
-                        e.printStackTrace();
-                    }
                     int maxNum = oneStudent ? 1 : Integer.MAX_VALUE;
                     if (!cells[RegisterProject.maxNum].isEmpty()) {
                         maxNum = Integer.parseInt(cells[RegisterProject.maxNum]);
                     }
                     Project project = new Project(cells[RegisterProject.title], cells[RegisterProject.abbrev], supers,
-                            maxNum, groups, fix);
+                            maxNum, groups, cells[RegisterProject.fixed]);
                     World.projects.add(project);
                 } else {
                     int debug = 4;
@@ -123,37 +117,5 @@ public class RegisterProject extends MyParser {
             return new Group[] { new Group(mainP, Integer.parseInt(mainMax)) };
         }
         return new Group[] { new Group(mainP, Integer.MAX_VALUE) };
-    }
-
-    private static Student[] getFixed(String stStuds) throws StudentNotFoundException {
-        if (stStuds.isEmpty()) {
-            return null;
-        }
-        String[] nameImmas = stStuds.split(Config.ProjectAdministration.delimFixedStuds);
-        Student[] fixed = new Student[nameImmas.length];
-        int i = 0;
-        for (String naIm : nameImmas) {
-            String[] split = naIm.split(Config.ProjectAdministration.delimFixedStudsNameImma);
-            String name = "", imma = "";
-            if (split.length > 0) {
-                name = split[0].trim();
-            }
-            if (split.length > 1) {
-                imma = split[1].trim();
-            }
-            Student student;
-            if ((student = World.findStudentByImma(imma)) == null) {
-                if ((student = World.findStudentByName(name, false)) == null) {
-                    if ((student = World.findStudentByName(name, true)) == null) {
-                        return null;
-                        // throw new StudentNotFoundException("Cannot find fixed student " + name + ", "
-                        // + imma);
-                    }
-                }
-            }
-            fixed[i] = student;
-            i++;
-        }
-        return fixed;
     }
 }

@@ -1,5 +1,7 @@
 package specialprojectallocation.objects;
 
+import specialprojectallocation.Exceptions;
+
 import java.util.ArrayList;
 
 public class World {
@@ -13,9 +15,9 @@ public class World {
         if (immatNum.isEmpty()) {
             return null;
         }
-        for (Student student : World.students) {
-            if (student.immatNum().equals(immatNum)) {
-                return student;
+        for (Student s : World.students) {
+            if (s.immatNum().equals(immatNum)) {
+                return s;
             }
         }
         return null;
@@ -23,13 +25,13 @@ public class World {
 
     // TODO: test
     public static Student findStudentByName(String name, boolean experimental) {
-        for (Student student : World.students) {
-            if (student.name().equals(name)) {
-                return student;
+        for (Student s : World.students) {
+            if (s.name().equals(name)) {
+                return s;
             }
 
             if (experimental) {
-                String[] studentsNames = student.name().split(" ");
+                String[] studentsNames = s.name().split(" ");
                 String[] findMeNames = name.split(" ");
                 int found = 0;
                 for (String n1 : studentsNames) {
@@ -40,7 +42,7 @@ public class World {
                     }
                 }
                 if (found >= (studentsNames.length + findMeNames.length)) {
-                    return student;
+                    return s;
                 }
             }
         }
@@ -54,5 +56,11 @@ public class World {
             }
         }
         return null;
+    }
+
+    public static void setFixed() throws Exceptions.StudentNotFoundException {
+        for (Project project : World.projects) {
+            project.setFixed();
+        }
     }
 }

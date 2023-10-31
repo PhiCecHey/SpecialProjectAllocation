@@ -20,6 +20,10 @@ import specialprojectallocation.parser.MyParser;
 import specialprojectallocation.parser.RegisterProject;
 
 public class App {
+
+    public static void run(boolean cmd){
+        
+    }
     public static void main(String[] args) {
         System.out.println(System.getProperty("user.dir"));
         try {
@@ -35,6 +39,7 @@ public class App {
             }
             RegisterProject.read(one, Config.ProjectAdministration.csvDelim);
             SelectProject.read(two, Config.ProjectSelection.csvDelim);
+            World.setFixed();
 
             ArrayList<Project> projects = World.projects;
             ArrayList<Student> students = World.students;
@@ -43,6 +48,7 @@ public class App {
             constraints.add(Gurobi.CONSTRAINTS.studentsPerProject);
             constraints.add(Gurobi.CONSTRAINTS.studentAcceptedInProject);
             constraints.add(Gurobi.CONSTRAINTS.minStudentsPerGroupProject);
+            constraints.add(Gurobi.CONSTRAINTS.fixedStuds);
             ArrayList<Gurobi.PREFERENCES> prefs = new ArrayList<>();
             prefs.add(Gurobi.PREFERENCES.selectedProjs);
             int debug = 4;
