@@ -17,8 +17,7 @@ import specialprojectallocation.objects.World;
 
 public class RegisterProject extends MyParser {
 
-    private static int title = -1, abbrev = -1, supers = -1, chair = -1, chairOther = -1, maxNum = -1, mainGroup = -1,
-            mainMaxNum = -1, var = -1, fixed = -1;
+    private static int abbrev = -1, maxNum = -1, mainGroup = -1, mainMaxNum = -1, var = -1, fixed = -1;
 
     // TODO: test
     // TOOD: how to handle exceptions?
@@ -35,7 +34,6 @@ public class RegisterProject extends MyParser {
                 String[] cells = RegisterProject.readLineInCsvWithQuotesAndDelim(line, delim);
                 Project found = World.findProject(cells[RegisterProject.abbrev]);
                 if (found == null) {
-                    String[] supers = cells[RegisterProject.supers].split(Config.ProjectAdministration.delimSupers);
                     boolean oneStudent = cells[RegisterProject.var].toLowerCase()
                             .contains(Config.ProjectAdministration.varOneStudent);
                     Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
@@ -53,8 +51,7 @@ public class RegisterProject extends MyParser {
                     if (!cells[RegisterProject.maxNum].isEmpty()) {
                         maxNum = Integer.parseInt(cells[RegisterProject.maxNum]);
                     }
-                    Project project = new Project(cells[RegisterProject.title], cells[RegisterProject.abbrev], supers,
-                            maxNum, groups, cells[RegisterProject.fixed]);
+                    Project project = new Project(cells[RegisterProject.abbrev], maxNum, groups, cells[RegisterProject.fixed]);
                     World.projects.add(project);
                 } else {
                     int debug = 4;
@@ -79,16 +76,8 @@ public class RegisterProject extends MyParser {
         for (int i = 0; i < cells.length; ++i) {
             String cell = cells[i];
             // TODO: several study programs (priorities, max num)
-            if (cell.contains(Config.ProjectAdministration.title)) {
-                RegisterProject.title = i;
-            } else if (cell.contains(Config.ProjectAdministration.abbrev)) {
+            if (cell.contains(Config.ProjectAdministration.abbrev)) {
                 RegisterProject.abbrev = i;
-            } else if (cell.contains(Config.ProjectAdministration.supers)) {
-                RegisterProject.supers = i;
-            } else if (cell.contains(Config.ProjectAdministration.chair)) {
-                RegisterProject.chair = i;
-            } else if (cell.contains(Config.ProjectAdministration.chairOther)) {
-                RegisterProject.chairOther = i;
             } else if (cell.contains(Config.ProjectAdministration.maxNum)) {
                 RegisterProject.maxNum = i;
             } else if (cell.contains(Config.ProjectAdministration.mainGroup)) {
@@ -101,10 +90,8 @@ public class RegisterProject extends MyParser {
                 RegisterProject.fixed = i;
             }
         }
-        boolean ret = (RegisterProject.title != -1 && RegisterProject.abbrev != -1 && RegisterProject.supers != -1
-                && RegisterProject.chair != -1 && RegisterProject.chairOther != -1 && RegisterProject.maxNum != -1
-                && RegisterProject.mainGroup != -1 && RegisterProject.mainMaxNum != -1 && RegisterProject.var != -1
-                && RegisterProject.fixed != -1);
+        boolean ret = (RegisterProject.abbrev != -1 && RegisterProject.maxNum != -1 && RegisterProject.mainGroup != -1
+                && RegisterProject.mainMaxNum != -1 && RegisterProject.var != -1 && RegisterProject.fixed != -1);
         return ret;
     }
 
@@ -112,10 +99,10 @@ public class RegisterProject extends MyParser {
         // TODO: get other/several groups
         StudyProgram mainP = StudyProgram.StrToStudy(stMainStudProg);
         if (oneStudent) {
-            return new Group[] { new Group(mainP, 1) };
+            return new Group[]{new Group(mainP, 1)};
         } else if (!mainMax.isEmpty()) {
-            return new Group[] { new Group(mainP, Integer.parseInt(mainMax)) };
+            return new Group[]{new Group(mainP, Integer.parseInt(mainMax))};
         }
-        return new Group[] { new Group(mainP, Integer.MAX_VALUE) };
+        return new Group[]{new Group(mainP, Integer.MAX_VALUE)};
     }
 }

@@ -11,29 +11,31 @@ import specialprojectallocation.Exceptions.StudentNotFoundException;
 public class Project {
     private static final List<String> allAbbrevs = new ArrayList<>();
 
-    private final String title;
     private final String abbrev;
-    private final String[] supervisors;
     private final int maxNumStuds;
     private int minNumStuds; // TODO
     private final Group[] groups; // main group is first in array
     private Student[] fixedStuds;
     private final String stringFixedStuds;
 
-    public Project(String ti, String ab, String[] sups, int max, Group[] gr, String fixed)
+    public Project(String ab, int max, Group[] gr, String fixed)
             throws AbbrevTakenException {
         for (String str : allAbbrevs) {
             if (str.equals(ab)) {
                 throw new AbbrevTakenException(
                         "Abbrev " + ab + " already taken by project "
-                                + Objects.requireNonNull(World.findProject(ab)).title());
+                                + Objects.requireNonNull(World.findProject(ab)).abbrev());
             }
         }
 
         // TODO: minNumStuds
-        this.title = ti;
-        this.abbrev = ab;
-        this.supervisors = sups;
+
+        StringBuilder sb = new StringBuilder(ab);
+        while (sb.length() < Config.ProjectAdministration.numCharsAbbrev) {
+            sb.append(" ");
+        }
+        this.abbrev = sb.substring(0, Config.ProjectAdministration.numCharsAbbrev);
+
         this.maxNumStuds = max;
         this.groups = gr;
         this.stringFixedStuds = fixed;
@@ -41,10 +43,6 @@ public class Project {
 
     public String abbrev() {
         return this.abbrev;
-    }
-
-    public String title() {
-        return this.title;
     }
 
     public boolean checkStudyProgram(Student student) {

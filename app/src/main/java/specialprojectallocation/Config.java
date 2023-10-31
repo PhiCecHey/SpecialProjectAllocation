@@ -17,11 +17,8 @@ public class Config {
     public class ProjectAdministration {
         // read instructors wishes
         public static final char csvDelim = ';';
-        public static final String title = "Q01_1.1";
+        public static final int numCharsAbbrev = 6;
         public static final String abbrev = "Q02_1.2";
-        public static final String supers = "Q03_1.3";
-        public static final String chair = "Q04_1.4";
-        public static final String chairOther = "Q06_1.4.2";
         public static final String var = "Q18_4.1";
         public static final String varOneStudent = "one student";
         public static final String maxNum = "Q20_4.3";
@@ -29,7 +26,6 @@ public class Config {
         public static final String mainMaxNum = "Q22_5.1";
         public static final String fixed = "Q24_6";
         // TODO: several study programs (priorities, max num)
-        public static final String delimSupers = ";";
         public static final String delimFixedStuds = ";";
         public static final String delimFixedStudsNameImma = ",";
         public static final char quotes = '\"';
