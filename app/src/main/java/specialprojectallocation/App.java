@@ -14,9 +14,7 @@ import specialprojectallocation.Exceptions.StudentNotFoundException;
 import specialprojectallocation.algorithm.Gurobi;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
-import specialprojectallocation.objects.World;
 import specialprojectallocation.parser.SelectProject;
-import specialprojectallocation.parser.MyParser;
 import specialprojectallocation.parser.RegisterProject;
 
 public class App {
@@ -38,12 +36,11 @@ public class App {
                 one = new File("files/Anmeldung_Special_project_Special_project_registration.csv");
                 two = new File("files/Special_project_selection.csv");
             }
-            RegisterProject.read(one, Config.ProjectAdministration.csvDelim);
-            SelectProject.read(two, Config.ProjectSelection.csvDelim);
-            World.setFixed();
 
-            ArrayList<Project> projects = World.projects;
-            ArrayList<Student> students = World.students;
+            ArrayList<Project> projects = RegisterProject.read(one, Config.ProjectAdministration.csvDelim);
+            ArrayList<Student> students = SelectProject.read(two, Config.ProjectSelection.csvDelim);
+            Project.setAllFixed();
+
             ArrayList<Gurobi.CONSTRAINTS> constraints = new ArrayList<>();
             constraints.add(Gurobi.CONSTRAINTS.projectPerStudent);
             constraints.add(Gurobi.CONSTRAINTS.studentsPerProject);

@@ -1,11 +1,14 @@
 package specialprojectallocation.objects;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import specialprojectallocation.Exceptions.ProjectNotFoundException;
 
 public class Student {
+    private static List<Student> students = new ArrayList<>();
+    private static ArrayList<Student> studsWithoutProj = new ArrayList<>();
     private final String immatNum;
     private final String name;
     private final String email;
@@ -17,6 +20,7 @@ public class Student {
         this.name = na;
         this.email = em;
         this.study = stu;
+        Student.students.add(this);
     }
 
     public String immatNum() {
@@ -41,7 +45,7 @@ public class Student {
 
     public boolean selectProjStr(String firstStr, String secondStr, String thirdStr, String fourthStr) {
         Project firstPr = null, secondPr = null, thirdPr = null, fourthPr = null;
-        for (Project project : World.projects) {
+        for (Project project : Project.projects()) {
             if (firstStr.contains(project.abbrev())) {
                 firstPr = project;
             } else if (secondStr.contains(project.abbrev())) {
@@ -106,5 +110,51 @@ public class Student {
         } else {
             return 0;
         }
+    }
+
+    public static Student findStudentByImma(String immatNum) {
+        immatNum = immatNum.trim();
+        if (immatNum.isEmpty()) {
+            return null;
+        }
+        for (Student s : Student.students) {
+            if (s.immatNum().equals(immatNum)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public static Student findStudentByName(String name, boolean experimental) {
+        for (Student s : Student.students) {
+            if (s.name().equals(name)) {
+                return s;
+            }
+
+            if (experimental) {
+                String[] studentsNames = s.name().split(" ");
+                String[] findMeNames = name.split(" ");
+                int found = 0;
+                for (String n1 : studentsNames) {
+                    for (String n2 : findMeNames) {
+                        if (n1.equals(n2)) {
+                            found++;
+                        }
+                    }
+                }
+                if (found >= (studentsNames.length + findMeNames.length)) {
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static ArrayList<Student> studsWithoutProj() {
+        return Student.studsWithoutProj;
+    }
+
+    public static void studsWithoutProj(ArrayList<Student> list) {
+        Student.studsWithoutProj = list;
     }
 }

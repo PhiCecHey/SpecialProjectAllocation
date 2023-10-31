@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import specialprojectallocation.*;
 import specialprojectallocation.Exceptions.StudentDuplicateException;
@@ -14,23 +15,24 @@ public class SelectProject extends MyParser {
     private static int name = -1, immaNum = -1, email = -1, studProg = -1, first = -1, second = -1, third = -1,
             fourth = -1;
 
-    public static boolean read(File csv, char delim) throws StudentDuplicateException {
+    public static ArrayList<Student> read(File csv, char delim) throws StudentDuplicateException {
+        ArrayList<Student> students = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
             String line = bufferedReader.readLine();
             if (!SelectProject.evalHeading(line, delim)) {
-                return false;
+                return null;
             }
 
             while ((line = bufferedReader.readLine()) != null) {
                 String[] cells = SelectProject.readLineInCsvWithQuotesAndDelim(line, Config.ProjectSelection.csvDelim);
-                Student found = World.findStudentByImma(cells[SelectProject.immaNum]);
+                Student found = Student.findStudentByImma(cells[SelectProject.immaNum]);
                 if (found == null) {
                     Student student = new Student(cells[SelectProject.immaNum], cells[SelectProject.name],
                             cells[SelectProject.email],
                             StudyProgram.StrToStudy(cells[SelectProject.studProg]));
                     student.selectProjStr(cells[SelectProject.first], cells[SelectProject.second],
                             cells[SelectProject.third], cells[SelectProject.fourth]);
-                    World.students.add(student);
+                    students.add(student);
                 } else {
                     // TODO: what to do with douplicate?
                     throw new StudentDuplicateException(
@@ -40,9 +42,9 @@ public class SelectProject extends MyParser {
         } catch (IOException e) {
             System.out.println("Something went wrong while trying to read the student file: " + csv.getAbsolutePath());
             e.printStackTrace();
-            return false;
+            return null;
         }
-        return true;
+        return students;
     }
 
     private static boolean evalHeading(String line, char delim) {

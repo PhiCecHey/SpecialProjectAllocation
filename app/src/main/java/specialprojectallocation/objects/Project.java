@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Objects;
 
 import specialprojectallocation.Config;
+import specialprojectallocation.Exceptions;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
 import specialprojectallocation.Exceptions.StudentNotFoundException;
 
 public class Project {
-    private static final List<String> allAbbrevs = new ArrayList<>();
+
+    private static ArrayList<Project> projects = new ArrayList<>();
+    private static final ArrayList<String> allAbbrevs = new ArrayList<>();
 
     private final String abbrev;
     private final int maxNumStuds;
@@ -24,7 +27,7 @@ public class Project {
             if (str.equals(ab)) {
                 throw new AbbrevTakenException(
                         "Abbrev " + ab + " already taken by project "
-                                + Objects.requireNonNull(World.findProject(ab)).abbrev());
+                                + Objects.requireNonNull(Project.findProject(ab)).abbrev());
             }
         }
 
@@ -39,6 +42,7 @@ public class Project {
         this.maxNumStuds = max;
         this.groups = gr;
         this.stringFixedStuds = fixed;
+        Project.projects.add(this);
     }
 
     public String abbrev() {
@@ -99,20 +103,39 @@ public class Project {
             if (split.length > 1) {
                 imma = split[1].trim();
             }
-            Student student = World.findStudentByImma(imma);
+            Student student = Student.findStudentByImma(imma);
             if (student == null)
-                student = World.findStudentByImma(name);
+                student = Student.findStudentByImma(name);
             if (student == null)
-                student = World.findStudentByName(name, false);
+                student = Student.findStudentByName(name, false);
             if (student == null)
-                student = World.findStudentByName(imma, false);
+                student = Student.findStudentByName(imma, false);
             if (student == null)
-                student = World.findStudentByName(name, true);
+                student = Student.findStudentByName(name, true);
             if (student == null)
-                student = World.findStudentByName(imma, true);
+                student = Student.findStudentByName(imma, true);
 
             this.fixedStuds[i] = student;
             i++;
+        }
+    }
+
+    public static Project findProject(String abbrev) {
+        for (Project project : Project.projects) {
+            if (project.abbrev().equals(abbrev)) {
+                return project;
+            }
+        }
+        return null;
+    }
+
+    public static ArrayList<Project> projects(){
+        return Project.projects;
+    }
+
+    public static void setAllFixed() throws Exceptions.StudentNotFoundException {
+        for (Project project : Project.projects) {
+            project.setFixed();
         }
     }
 }

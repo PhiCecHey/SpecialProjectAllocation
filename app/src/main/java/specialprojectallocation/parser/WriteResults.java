@@ -8,7 +8,6 @@ import specialprojectallocation.Config;
 import specialprojectallocation.algorithm.Allocations;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
-import specialprojectallocation.objects.World;
 
 public class WriteResults {
     public static void printForSupers(double[][] results, Allocations allocs, String path) {
@@ -41,9 +40,9 @@ public class WriteResults {
                 }
             }
 
-            if (!World.studsWithoutProj.isEmpty()) {
+            if (!Student.studsWithoutProj().isEmpty()) {
                 bw.write("\n + Students without a project:" + Config.Output.csvDelim);
-                for (Student student : World.studsWithoutProj) {
+                for (Student student : Student.studsWithoutProj()) {
                     bw.write(student.name() + " (" + student.immatNum() + ")" + Config.Output.csvDelim);
                 }
                 bw.write("\n");

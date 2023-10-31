@@ -13,11 +13,9 @@ import gurobi.GRBModel;
 import gurobi.GRBVar;
 import specialprojectallocation.Config;
 import specialprojectallocation.Log;
-import specialprojectallocation.Config.Output;
 import specialprojectallocation.objects.Group;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
-import specialprojectallocation.objects.World;
 import specialprojectallocation.parser.WriteResults;
 
 public class Gurobi {
@@ -62,7 +60,7 @@ public class Gurobi {
             boolean worked = this.extractResults();
             String printConsole = this.print(true, worked);
             System.out.println(printConsole);
-            World.studsWithoutProj = this.studsWithoutProj();
+            Student.studsWithoutProj(this.studsWithoutProj());
             WriteResults.printForSupers(this.results, this.allocs, outFile);
 
             model.dispose();

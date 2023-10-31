@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import specialprojectallocation.Config;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
@@ -13,7 +14,6 @@ import specialprojectallocation.objects.Group;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
 import specialprojectallocation.objects.StudyProgram;
-import specialprojectallocation.objects.World;
 
 public class RegisterProject extends MyParser {
 
@@ -21,18 +21,19 @@ public class RegisterProject extends MyParser {
 
     // TODO: test
     // TOOD: how to handle exceptions?
-    public static boolean read(File csv, char delim)
+    public static ArrayList<Project> read(File csv, char delim)
             throws ProjectDuplicateException, NumberFormatException, AbbrevTakenException, StudentNotFoundException {
+        ArrayList<Project> projects = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
             System.out.println("READING FILE: " + csv.getAbsolutePath());
             String line = bufferedReader.readLine();
             if (!RegisterProject.evalHeading(line)) {
-                return false;
+                return null;
             }
 
             while ((line = bufferedReader.readLine()) != null) {
                 String[] cells = RegisterProject.readLineInCsvWithQuotesAndDelim(line, delim);
-                Project found = World.findProject(cells[RegisterProject.abbrev]);
+                Project found = Project.findProject(cells[RegisterProject.abbrev]);
                 if (found == null) {
                     boolean oneStudent = cells[RegisterProject.var].toLowerCase()
                             .contains(Config.ProjectAdministration.varOneStudent);
@@ -52,7 +53,7 @@ public class RegisterProject extends MyParser {
                         maxNum = Integer.parseInt(cells[RegisterProject.maxNum]);
                     }
                     Project project = new Project(cells[RegisterProject.abbrev], maxNum, groups, cells[RegisterProject.fixed]);
-                    World.projects.add(project);
+                    projects.add(project);
                 } else {
                     int debug = 4;
                     // TODO: just take last entry?
@@ -63,9 +64,8 @@ public class RegisterProject extends MyParser {
         } catch (IOException e) {
             System.out.println("Something went wrong while trying to read the project file: " + csv.getAbsolutePath());
             e.printStackTrace();
-            return false;
         }
-        return true;
+        return projects;
     }
 
     private static boolean evalHeading(String line) { // TODO
