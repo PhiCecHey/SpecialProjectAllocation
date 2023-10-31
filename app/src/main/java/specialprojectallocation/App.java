@@ -21,9 +21,10 @@ import specialprojectallocation.parser.RegisterProject;
 
 public class App {
 
-    public static void run(boolean cmd){
-        
+    public static void run(boolean cmd) {
+
     }
+
     public static void main(String[] args) {
         System.out.println(System.getProperty("user.dir"));
         try {
@@ -53,7 +54,8 @@ public class App {
             prefs.add(Gurobi.PREFERENCES.selectedProjs);
             int debug = 4;
 
-            Gurobi g = new Gurobi(constraints, prefs, projects, students);
+            String outpath = one.getPath().replace(one.getName(), "");
+            Gurobi g = new Gurobi(constraints, prefs, projects, students, outpath + "projects-students.csv");
 
             debug = 3;
         } catch (StudentDuplicateException | NumberFormatException | ProjectDuplicateException | AbbrevTakenException

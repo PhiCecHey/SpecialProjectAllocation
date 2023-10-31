@@ -8,7 +8,8 @@ public class World {
     // DTO
     public static ArrayList<Student> students = new ArrayList<>();
     public static ArrayList<Project> projects = new ArrayList<>();
-    public static ArrayList<StudWish> studWish = new ArrayList<>();
+    public static ArrayList<Student> studsWithoutProj = new ArrayList<>();
+    // public static ArrayList<StudWish> studWish = new ArrayList<>();
 
     public static Student findStudentByImma(String immatNum) {
         immatNum = immatNum.trim();
@@ -23,7 +24,6 @@ public class World {
         return null;
     }
 
-    // TODO: test
     public static Student findStudentByName(String name, boolean experimental) {
         for (Student s : World.students) {
             if (s.name().equals(name)) {

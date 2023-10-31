@@ -9,7 +9,7 @@ import gurobi.GRBVar;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
 
-class Allocations {
+public class Allocations {
     private final Allocation[][] allocs;
     private final int numStuds;
     private final int numProjs;
@@ -39,15 +39,15 @@ class Allocations {
         }
     }
 
-    Allocation get(final int p, final int s) {
+    public Allocation get(final int p, final int s) {
         return this.allocs[p][s];
     }
 
-    Project getProj(final int p) {
+    public Project getProj(final int p) {
         return this.allocs[p][0].project();
     }
 
-    Student getStud(final int s) {
+    public Student getStud(final int s) {
         return this.allocs[0][s].student();
     }
 
@@ -55,11 +55,11 @@ class Allocations {
         this.allocs[p][s] = allocation;
     }
 
-    int numStuds() {
+    public int numStuds() {
         return this.numStuds;
     }
 
-    int numProjs() {
+    public int numProjs() {
         return this.numProjs;
     }
 }

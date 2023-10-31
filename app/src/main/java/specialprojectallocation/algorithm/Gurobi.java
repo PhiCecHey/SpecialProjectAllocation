@@ -13,9 +13,12 @@ import gurobi.GRBModel;
 import gurobi.GRBVar;
 import specialprojectallocation.Config;
 import specialprojectallocation.Log;
+import specialprojectallocation.Config.Output;
 import specialprojectallocation.objects.Group;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
+import specialprojectallocation.objects.World;
+import specialprojectallocation.parser.WriteResults;
 
 public class Gurobi {
     public enum CONSTRAINTS {
@@ -39,7 +42,7 @@ public class Gurobi {
     private final ArrayList<PREFERENCES> preferences;
 
     public Gurobi(final ArrayList<CONSTRAINTS> c, final ArrayList<PREFERENCES> p, final ArrayList<Project> projects,
-            final ArrayList<Student> students) throws GRBException {
+            final ArrayList<Student> students, String outFile) throws GRBException {
         Log.clear();
         this.constraints = c;
         this.preferences = p;
@@ -59,6 +62,8 @@ public class Gurobi {
             boolean worked = this.extractResults();
             String printConsole = this.print(true, worked);
             System.out.println(printConsole);
+            World.studsWithoutProj = this.studsWithoutProj();
+            WriteResults.printForSupers(this.results, this.allocs, outFile);
 
             model.dispose();
             env.dispose();
@@ -462,5 +467,20 @@ public class Gurobi {
                 }
             }
         }
+    }
+
+    private ArrayList<Student> studsWithoutProj() {
+        ArrayList<Student> studsWithoutProj = new ArrayList<>();
+        for (int s = 0; s < this.allocs.numStuds(); s++) {
+            Student student = this.allocs.getStud(s);
+            boolean hasProject = false;
+            for (int p = 0; p < this.allocs.numProjs(); p++) {
+                hasProject = this.results[p][s] == 1 ? true : hasProject;
+            }
+            if (!hasProject) {
+                studsWithoutProj.add(student);
+            }
+        }
+        return studsWithoutProj;
     }
 }

@@ -91,4 +91,20 @@ public class Student {
         return this.selectedProjs.proj4().abbrev();
     }
 
+    public int choiceOfProj(Project project) {
+        if (project.abbrev().equals(this.abbrevProj1())) {
+            return 1;
+        }
+        if (project.abbrev().equals(this.abbrevProj2())) {
+            return 2;
+        }
+        if (project.abbrev().equals(this.abbrevProj3())) {
+            return 3;
+        }
+        if (project.abbrev().equals(this.abbrevProj4())) {
+            return 4;
+        } else {
+            return 0;
+        }
+    }
 }

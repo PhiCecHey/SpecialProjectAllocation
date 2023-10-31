@@ -49,4 +49,8 @@ public class Config {
         public static final double proj3 = 50.0;
         public static final double proj4 = 30.0;
     }
+
+    public static class Output {
+        public static final char csvDelim = ',';
+    }
 }
