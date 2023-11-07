@@ -48,6 +48,7 @@ public class Gurobi {
         try {
             this.env = new GRBEnv();
             this.model = new GRBModel(env);
+            this.model.set("LogToConsole", "0");
             this.model.set(GRB.StringAttr.ModelName, "SpecialProjectAlloc");
             this.allocs = new Allocations(projects, students, this.model);
 
@@ -140,7 +141,7 @@ public class Gurobi {
     }
 
     private String print(boolean all, boolean worked) {
-        StringBuilder print = new StringBuilder(Log.log() + "\n\n\n");
+        StringBuilder print = new StringBuilder(Log.log() + "\n");
         if (!worked) {
             return print.toString();
         }
