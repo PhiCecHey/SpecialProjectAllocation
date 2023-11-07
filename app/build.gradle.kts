@@ -88,6 +88,8 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
 }
 
+tasks.register("prepareKotlinBuildScriptModel") {}
+
 /*task("sign") { // https://ebourg.github.io/jsign/
     doLast {
         val jsign = project.extensions.getByName("jsign") as groovy.lang.Closure<*>

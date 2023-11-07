@@ -40,7 +40,7 @@ public class Gurobi {
     private final ArrayList<PREFERENCES> preferences;
 
     public Gurobi(final ArrayList<CONSTRAINTS> c, final ArrayList<PREFERENCES> p, final ArrayList<Project> projects,
-            final ArrayList<Student> students, String outFile) throws GRBException {
+                  final ArrayList<Student> students, String outFile) throws GRBException {
         Log.clear();
         this.constraints = c;
         this.preferences = p;
@@ -181,7 +181,7 @@ public class Gurobi {
 
         StringBuilder immas = new StringBuilder();
         for (int s = 0; s < this.allocs.numStuds(); s++) {
-            immas.append(this.allocs.get(0, s).student().immatNum()).append("\t\t");
+            immas.append(this.allocs.get(0, s).student().immatNum()).append("\t");
         }
 
         // score matrix:
@@ -189,9 +189,15 @@ public class Gurobi {
             print.append("......................................................");
             print.append("\n" + "Abbrevs/Immas" + "\t").append(immas);
             for (int p = 0; p < this.allocs.numProjs(); ++p) {
-                StringBuilder str = new StringBuilder("\t\t");
+                StringBuilder str = new StringBuilder("\t\t\t");
                 for (int s = 0; s < this.allocs.numStuds(); ++s) {
-                    str.append(DoubleRounder.round(this.allocs.get(p, s).score(), 1)).append("\t\t");
+                    if (this.allocs.get(p, s).score() >= 100) {
+                        str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1))).append("\t");
+                    } else if (this.allocs.get(p, s).score() >= 10) {
+                        str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2))).append("\t");
+                    } else {
+                        str.append(String.format("%.03f", DoubleRounder.round(this.allocs.get(p, s).score(), 3))).append("\t");
+                    }
                 }
                 print.append("\n").append(this.allocs.get(p, 0).project().abbrev()).append(str);
             }
@@ -202,7 +208,7 @@ public class Gurobi {
         print.append("\n" + "Abbrevs/Immas" + "\t").append(immas);
 
         for (int p = 0; p < this.allocs.numProjs(); p++) {
-            StringBuilder allocated = new StringBuilder("\t");
+            StringBuilder allocated = new StringBuilder("\t\t");
             for (int s = 0; s < this.allocs.numStuds(); s++) {
                 if (this.results[p][s] == 0) {
                     allocated.append("\t-\t");
