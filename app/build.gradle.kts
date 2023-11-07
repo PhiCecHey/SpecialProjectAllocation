@@ -45,7 +45,7 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
     
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.0.1")
+    //implementation("com.fasterxml.jackson.core:jackson-databind:2.0.1")
 
     //https://github.com/tools4j/decimal4j
     implementation("org.decimal4j:decimal4j:1.0.3")
@@ -55,7 +55,7 @@ dependencies {
     implementation("com.formdev:flatlaf-intellij-themes:3.0")
 
     // escape utils
-    implementation("org.apache.commons:commons-text:1.9")
+    //implementation("org.apache.commons:commons-text:1.9")
 
 
     //implementation("com.github.johnrengelman:shadow:7.0.0")

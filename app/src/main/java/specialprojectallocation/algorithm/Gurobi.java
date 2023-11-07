@@ -32,8 +32,6 @@ public class Gurobi {
     private final Allocations allocs;
     private final GRBModel model;
     private final GRBEnv env;
-    private final GRBLinExpr objective;
-    private GRBVar[][] grbVars;
     private double[][] results;
 
     private final ArrayList<CONSTRAINTS> constraints;
@@ -54,8 +52,8 @@ public class Gurobi {
 
             this.addConstraints();
             this.addPreferences();
-            this.objective = this.calculateObjectiveLinExpr(0);
-            this.model.setObjective(this.objective, GRB.MAXIMIZE);
+            GRBLinExpr objective = this.calculateObjectiveLinExpr(0);
+            this.model.setObjective(objective, GRB.MAXIMIZE);
             this.model.optimize();
 
             boolean worked = this.extractResults();
@@ -104,7 +102,7 @@ public class Gurobi {
     }
 
     private boolean extractResults() {
-        this.grbVars = this.getGRBVars();
+        GRBVar[][] grbVars = this.getGRBVars();
         try {
             int optimstatus = model.get(GRB.IntAttr.Status);
             if (optimstatus != GRB.OPTIMAL) {
@@ -119,23 +117,6 @@ public class Gurobi {
             System.err.println("Problem in function extractResults()");
             e.printStackTrace();
             return false;
-        }
-
-        for (int p = 0; p < this.allocs.numProjs(); p++) {
-            for (int s = 0; s < this.allocs.numStuds(); s++) {
-                if (this.results[p][s] != 0) {
-                    Allocation alloc = this.allocs.get(p, s);
-                    Project project = alloc.project();
-                    Student student = alloc.student();
-                    try {
-                        // add student to project and project to student
-                        // print result in file or save it somehow
-                        // no point in adding students and projects to data structures
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
         }
         return true;
     }
@@ -488,7 +469,6 @@ public class Gurobi {
                 }
                 if (project.abbrev().equals(student.abbrevProj4())) {
                     alloc.addToScore(Config.Preferences.proj4);
-                    continue;
                 }
             }
         }
@@ -500,7 +480,7 @@ public class Gurobi {
             Student student = this.allocs.getStud(s);
             boolean hasProject = false;
             for (int p = 0; p < this.allocs.numProjs(); p++) {
-                hasProject = this.results[p][s] == 1 ? true : hasProject;
+                hasProject = this.results[p][s] == 1 || hasProject;
             }
             if (!hasProject) {
                 studsWithoutProj.add(student);

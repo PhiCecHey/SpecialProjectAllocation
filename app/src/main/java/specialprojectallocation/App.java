@@ -26,7 +26,7 @@ public class App {
     public static void main(String[] args) {
         System.out.println(System.getProperty("user.dir"));
         try {
-            boolean cmd = false;
+            boolean cmd = true;
             File one;
             File two;
             if (!cmd) {
@@ -53,8 +53,6 @@ public class App {
 
             String outpath = one.getPath().replace(one.getName(), "");
             Gurobi g = new Gurobi(constraints, prefs, projects, students, outpath + "projects-students.csv");
-
-            debug = 3;
         } catch (StudentDuplicateException | NumberFormatException | ProjectDuplicateException | AbbrevTakenException
                 | StudentNotFoundException | GRBException e) {
             // TODO Auto-generated catch block

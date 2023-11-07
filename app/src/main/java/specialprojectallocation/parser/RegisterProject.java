@@ -90,9 +90,8 @@ public class RegisterProject extends MyParser {
                 RegisterProject.fixed = i;
             }
         }
-        boolean ret = (RegisterProject.abbrev != -1 && RegisterProject.maxNum != -1 && RegisterProject.mainGroup != -1
+        return (RegisterProject.abbrev != -1 && RegisterProject.maxNum != -1 && RegisterProject.mainGroup != -1
                 && RegisterProject.mainMaxNum != -1 && RegisterProject.var != -1 && RegisterProject.fixed != -1);
-        return ret;
     }
 
     private static Group[] getGroups(String stMainStudProg, String mainMax, boolean oneStudent) {

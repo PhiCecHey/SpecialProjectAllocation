@@ -1,17 +1,16 @@
 package specialprojectallocation.objects;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import specialprojectallocation.Config;
 import specialprojectallocation.Exceptions;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
 import specialprojectallocation.Exceptions.StudentNotFoundException;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class Project {
 
-    private static ArrayList<Project> projects = new ArrayList<>();
+    private static final ArrayList<Project> projects = new ArrayList<>();
     private static final ArrayList<String> allAbbrevs = new ArrayList<>();
 
     private final String abbrev;

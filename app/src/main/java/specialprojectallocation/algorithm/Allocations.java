@@ -39,7 +39,7 @@ public class Allocations {
         }
     }
 
-    public Allocation get(final int p, final int s) {
+    Allocation get(final int p, final int s) {
         return this.allocs[p][s];
     }
 

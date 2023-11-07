@@ -1,11 +1,9 @@
 package specialprojectallocation.parser;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import specialprojectallocation.Config;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import specialprojectallocation.Config;
 
 public class MyParser {
     protected static String[] readLineInCsvWithQuotesAndDelim(String lineInCsv, char delim) {

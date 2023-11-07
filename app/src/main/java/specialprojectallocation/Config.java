@@ -2,7 +2,7 @@ package specialprojectallocation;
 
 public class Config {
     // read student wishes
-    public class ProjectSelection {
+    public static class ProjectSelection {
         public static final char csvDelim = ',';
         public static final String fullName = "ndiger Name";
         public static final String first = "Q01_1";
@@ -14,7 +14,7 @@ public class Config {
         public static final String email = "Q08_8";
     }
 
-    public class ProjectAdministration {
+    public static class ProjectAdministration {
         // read instructors wishes
         public static final char csvDelim = ';';
         public static final int numCharsAbbrev = 6;
@@ -31,7 +31,7 @@ public class Config {
         public static final char quotes = '\"';
     }
 
-    public class Constraints {
+    public static class Constraints {
         // Gurobi constraint values
         public static final int maxNumProjectsPerStudent = 1;
         public static final int minNumProjectsPerStudent = 1;

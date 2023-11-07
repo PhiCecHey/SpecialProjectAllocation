@@ -34,7 +34,7 @@ public class SelectProject extends MyParser {
                             cells[SelectProject.third], cells[SelectProject.fourth]);
                     students.add(student);
                 } else {
-                    // TODO: what to do with douplicate? only take newest?
+                    // TODO: what to do with duplicate? only take newest?
                     throw new StudentDuplicateException(
                             "Student " + found.name() + " applied for a project more than once!");
                 }

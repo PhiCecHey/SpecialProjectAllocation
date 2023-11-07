@@ -23,14 +23,14 @@ public class WriteResults {
                     if (results[p][s] == 1) {
                         Student student = allocs.getStud(s);
                         if (line.isEmpty()) {
-                            line.append(project.abbrev() + Config.Output.csvDelim);
+                            line.append(project.abbrev()).append(Config.Output.csvDelim);
                         }
-                        line.append(student.name() + " (" + student.immatNum() + ") ");
+                        line.append(student.name()).append(" (").append(student.immatNum()).append(") ");
                         int choice = student.choiceOfProj(project);
                         if (choice == 0) {
                             line.append("[-]" + Config.Output.csvDelim);
                         } else {
-                            line.append("[" + choice + ".]" + Config.Output.csvDelim);
+                            line.append("[").append(choice).append(".]").append(Config.Output.csvDelim);
                         }
                     }
                 }

@@ -1,13 +1,10 @@
 package specialprojectallocation.objects;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import specialprojectallocation.Exceptions.ProjectNotFoundException;
-
 public class Student {
-    private static List<Student> students = new ArrayList<>();
+    private static final List<Student> students = new ArrayList<>();
     private static ArrayList<Student> studsWithoutProj = new ArrayList<>();
     private final String immatNum;
     private final String name;

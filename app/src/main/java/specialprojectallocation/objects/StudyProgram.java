@@ -66,7 +66,7 @@ public class StudyProgram {
 
     public boolean equals(StudyProgram p) {
         if (this.program == AvailProgram.Other && p.program == AvailProgram.Other) {
-            return this.other.toLowerCase().equals(p.other.toLowerCase());
+            return this.other.equalsIgnoreCase(p.other);
         }
         return p.program == this.program;
     }
@@ -81,9 +81,8 @@ public class StudyProgram {
 
     public boolean equals(String p) {
         StudyProgram pr = StudyProgram.StrToStudy(p);
-        AvailProgram pAvail = pr.program;
-        if (pAvail == AvailProgram.Other && this.program.equals(AvailProgram.Other)) {
-            return pr.other.toLowerCase().equals(this.other.toLowerCase());
+        if (pr.program == AvailProgram.Other && this.program.equals(AvailProgram.Other)) {
+            return pr.other.equalsIgnoreCase(this.other);
         }
         return this.program.equals(pr.program);
     }
