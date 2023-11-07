@@ -214,14 +214,28 @@ public class Gurobi {
                 if (this.results[p][s] == 0) {
                     allocated.append("\t-\t");
                 } else {
-                    allocated.append("\t#\t");
+                    Allocation alloc = this.allocs.get(p, s);
+                    if (alloc.fixedStudent()) {
+                        allocated.append("\tF\t");
+                    } else {
+                        allocated.append("\t#\t");
+                    }
                 }
             }
-            if (allocated.toString().contains("#")) {
-                print.append("\n").append(this.allocs.get(p, 0).project().abbrev()).append(allocated).append(" ");
+            if (allocated.toString().contains("#") || allocated.toString().contains("F")) {
+                String formattedAbbrev = Gurobi.exactNumOfChars(this.allocs.get(p, 0).project().abbrev());
+                //String formattedAbbrev = this.allocs.get(p, 0).project().abbrev();
+                print.append("\n").append(formattedAbbrev).append(allocated).append(" ");
             }
         }
         return print.toString();
+    }
+
+    private static String exactNumOfChars(String abbrev) {
+        if (abbrev.length() >= Config.ProjectAdministration.numCharsAbbrev) {
+            return abbrev.substring(0, Config.ProjectAdministration.numCharsAbbrev);
+        }
+        return abbrev + " ".repeat(Config.ProjectAdministration.numCharsAbbrev - abbrev.length());
     }
 
     /*
@@ -399,11 +413,17 @@ public class Gurobi {
                 Project project = this.allocs.getProj(p);
                 for (int s = 0; s < this.allocs.numStuds(); ++s) {
                     expr = new GRBLinExpr();
+                    Allocation alloc = this.allocs.get(p, s);
                     Student student = this.allocs.getStud(s);
                     if (project.isFixedAndStudentsWish(student)) {
+                        //if (project.isFixed(student)) {
+                        alloc.fixedStudent(true);
                         String st = "fixedStuds" + p + s;
-                        expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
+                        expr.addTerm(1.0, alloc.grbVar());
                         this.model.addConstr(expr, GRB.EQUAL, 1, st);
+                    } else if (project.isFixed(student)) {
+                        int debug = 4;
+                        alloc.fixedStudent(true);
                     }
                 }
             }

@@ -45,6 +45,7 @@ public class Student {
 
     public boolean selectProjStr(String firstStr, String secondStr, String thirdStr, String fourthStr) {
         Project firstPr = null, secondPr = null, thirdPr = null, fourthPr = null;
+        List<Project> dings = Project.projects();
         for (Project project : Project.projects()) {
             if (firstStr.contains(project.abbrev())) {
                 firstPr = project;

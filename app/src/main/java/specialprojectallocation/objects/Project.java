@@ -23,6 +23,7 @@ public class Project {
 
     public Project(String ab, int max, Group[] gr, String fixed)
             throws AbbrevTakenException {
+        ab = ab.strip();
         for (String str : allAbbrevs) {
             if (str.equals(ab)) {
                 throw new AbbrevTakenException(
@@ -32,13 +33,7 @@ public class Project {
         }
 
         // TODO: minNumStuds
-
-        StringBuilder sb = new StringBuilder(ab);
-        while (sb.length() < Config.ProjectAdministration.numCharsAbbrev) {
-            sb.append(" ");
-        }
-        this.abbrev = sb.substring(0, Config.ProjectAdministration.numCharsAbbrev);
-
+        this.abbrev = ab;
         this.maxNumStuds = max;
         this.groups = gr;
         this.stringFixedStuds = fixed;

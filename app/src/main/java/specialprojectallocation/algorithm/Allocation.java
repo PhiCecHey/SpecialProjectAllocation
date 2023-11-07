@@ -9,6 +9,7 @@ class Allocation {
     private double score = 1; // TODO: 1 oder 0?
     private final Student student;
     private final Project project;
+    private boolean fixedStudent;
 
     Allocation(final Student s, final Project p, final GRBVar g) {
         this.student = s;
@@ -34,5 +35,13 @@ class Allocation {
 
     Student student() {
         return this.student;
+    }
+
+    boolean fixedStudent() {
+        return this.fixedStudent;
+    }
+
+    void fixedStudent(boolean fixed) {
+        this.fixedStudent = fixed;
     }
 }
