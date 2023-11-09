@@ -23,7 +23,7 @@ import specialprojectallocation.parser.WriteResults;
 public class Gurobi {
     public enum CONSTRAINTS {
         projectPerStudent, studentsPerProject, studentAcceptedInProject, studentsPerStudy, minStudentsPerGroupProject,
-        fixedStuds,
+        fixedStuds, studWantsProj,
     }
 
     public enum PREFERENCES {
@@ -218,15 +218,17 @@ public class Gurobi {
                 } else {
                     Allocation alloc = this.allocs.get(p, s);
                     if (alloc.getStudentFixed()) {
-                        allocated.append("\tF\t");
+                        allocated.append("\t[F]\t");
+                    } else if (alloc.student().choiceOfProj(alloc.project()) == -1) {
+                        allocated.append("\t[!]\t");
                     } else {
-                        allocated.append("\t#\t");
+                        allocated.append("\t[").append(alloc.student().choiceOfProj(alloc.project())).append("]\t");
                     }
                 }
             }
-            if (allocated.toString().contains("#") || allocated.toString().contains("F")) {
+            if (allocated.toString().contains("#") || allocated.toString().contains("[") || allocated.toString()
+                                                                                                     .contains("F")) {
                 String formattedAbbrev = Gurobi.exactNumOfChars(this.allocs.get(p, 0).project().abbrev());
-                // String formattedAbbrev = this.allocs.get(p, 0).project().abbrev();
                 print.append("\n").append(formattedAbbrev).append(allocated).append(" ");
             }
         }
@@ -265,6 +267,9 @@ public class Gurobi {
         }
         if (this.constraints.contains(CONSTRAINTS.fixedStuds)) {
             this.constrFixedStudents();
+        }
+        if (this.constraints.contains(CONSTRAINTS.studWantsProj)) {
+            this.constrStudHasToGetASelProj();
         }
     }
 
@@ -328,6 +333,27 @@ public class Gurobi {
                 }
                 String st = "studPerProj" + p;
                 this.model.addRange(expr, this.allocs.getProj(p).min(), this.allocs.getProj(p).max(), st);
+            }
+        } catch (GRBException e) {
+            System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
+        }
+    }
+
+    private void constrStudHasToGetASelProj() {
+        try {
+            GRBLinExpr expr;
+            for (int s = 0; s < this.allocs.numStuds(); ++s) {
+                expr = new GRBLinExpr();
+                Student student = this.allocs.getStud(s);
+                for (int p = 0; p < this.allocs.numProjs(); ++p) {
+                    Allocation alloc = this.allocs.get(p, s);
+                    Project project = alloc.project();
+                    if (student.wantsProject(project)) {
+                        expr.addTerm(1.0, alloc.grbVar());
+                    }
+                }
+                String st = "studWantsProj" + s;
+                this.model.addConstr(expr, GRB.GREATER_EQUAL, 1, st);
             }
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
@@ -504,6 +530,7 @@ public class Gurobi {
             }
         }
     }
+
 
     /*
      * student made mistakes when filling out the form

@@ -29,6 +29,8 @@ public class WriteResults {
                         line.append(student.name()).append(" (").append(student.immatNum()).append(") ");
                         int choice = student.choiceOfProj(project);
                         if (choice == 0) {
+                            line.append("[F]" + Config.Output.csvDelim);
+                        } else if (choice == -1) {
                             line.append("[-]" + Config.Output.csvDelim);
                         } else {
                             line.append("[").append(choice).append(".]").append(Config.Output.csvDelim);
@@ -52,7 +54,7 @@ public class WriteResults {
             bw.close();
         } catch (
 
-        IOException e) {
+                IOException e) {
             e.printStackTrace();
         }
     }

@@ -46,10 +46,11 @@ public class App {
             constraints.add(Gurobi.CONSTRAINTS.studentsPerProject);
             constraints.add(Gurobi.CONSTRAINTS.studentAcceptedInProject);
             constraints.add(Gurobi.CONSTRAINTS.minStudentsPerGroupProject);
-            //constraints.add(Gurobi.CONSTRAINTS.fixedStuds);
+            constraints.add(Gurobi.CONSTRAINTS.fixedStuds);
+            constraints.add(Gurobi.CONSTRAINTS.studWantsProj);
             ArrayList<Gurobi.PREFERENCES> prefs = new ArrayList<>();
             prefs.add(Gurobi.PREFERENCES.selectedProjs);
-            prefs.add(Gurobi.PREFERENCES.fixedStuds);
+            //prefs.add(Gurobi.PREFERENCES.fixedStuds);
             int debug = 4;
 
             String outpath = one.getPath().replace(one.getName(), "");

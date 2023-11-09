@@ -95,6 +95,9 @@ public class Student {
     }
 
     public int choiceOfProj(Project project) {
+        if (project.isFixed(this)) {
+            return 0;
+        }
         if (project.abbrev().equals(this.abbrevProj1())) {
             return 1;
         }
@@ -107,7 +110,7 @@ public class Student {
         if (project.abbrev().equals(this.abbrevProj4())) {
             return 4;
         } else {
-            return 0;
+            return -1;
         }
     }
 
@@ -147,6 +150,11 @@ public class Student {
             }
         }
         return null;
+    }
+
+    public boolean wantsProject(Project project) {
+        return (project.abbrev().equals(this.abbrevProj1()) || project.abbrev().equals(this.abbrevProj2())
+                || project.abbrev().equals(this.abbrevProj3()) || project.abbrev().equals(this.abbrevProj4()));
     }
 
     public static ArrayList<Student> studsWithoutProj() {
