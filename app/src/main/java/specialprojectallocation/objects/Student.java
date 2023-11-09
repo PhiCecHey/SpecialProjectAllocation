@@ -11,12 +11,14 @@ public class Student {
     private final String email;
     private final StudyProgram study;
     private StudWish selectedProjs;
+    private double totalScore;
 
     public Student(String imma, String na, String em, StudyProgram stu) {
         this.immatNum = imma;
         this.name = na;
         this.email = em;
         this.study = stu;
+        this.totalScore = 0;
         Student.students.add(this);
     }
 
@@ -42,7 +44,6 @@ public class Student {
 
     public void selectProjStr(String firstStr, String secondStr, String thirdStr, String fourthStr) {
         Project firstPr = null, secondPr = null, thirdPr = null, fourthPr = null;
-        List<Project> dings = Project.projects();
         for (Project project : Project.projects()) {
             if (firstStr.contains(project.abbrev())) {
                 firstPr = project;
@@ -164,5 +165,13 @@ public class Student {
             }
         }
         return numFixedProjs;
+    }
+
+    public void addToTotalScore(double score) {
+        this.totalScore += score;
+    }
+
+    public double totalScore() {
+        return this.totalScore;
     }
 }

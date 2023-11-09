@@ -183,7 +183,7 @@ public class Gurobi {
                         str.append(String.format("%.03f", DoubleRounder.round(this.allocs.get(p, s).score(), 3))).append("\t");
                     }
                 }
-                print.append("\n").append(this.allocs.get(p, 0).project().abbrev()).append(str);
+                print.append("\n").append(Gurobi.exactNumOfChars(this.allocs.get(p, 0).project().abbrev())).append(str);
             }
 
             print.append("\n\n--------------------- ALLOCATION ---------------------");
@@ -446,27 +446,25 @@ public class Gurobi {
      */
 
     private void prefSelectedProj() {
-        for (int p = 0; p < this.allocs.numProjs(); p++) {
-            for (int s = 0; s < this.allocs.numStuds(); s++) {
+        for (int s = 0; s < this.allocs.numStuds(); s++) {
+            Student student = this.allocs.getStud(s);
+            for (int p = 0; p < this.allocs.numProjs(); p++) {
                 Allocation alloc = this.allocs.get(p, s);
-                Student student = alloc.student();
                 Project project = alloc.project();
-
                 if (project.abbrev().equals(student.abbrevProj1())) {
                     alloc.addToScore(Config.Preferences.proj1);
-                    continue;
-                }
-                if (project.abbrev().equals(student.abbrevProj2())) {
+                } else if (project.abbrev().equals(student.abbrevProj2())) {
                     alloc.addToScore(Config.Preferences.proj2);
-                    continue;
-                }
-                if (project.abbrev().equals(student.abbrevProj2())) {
+                } else if (project.abbrev().equals(student.abbrevProj3())) {
                     alloc.addToScore(Config.Preferences.proj3);
-                    continue;
-                }
-                if (project.abbrev().equals(student.abbrevProj4())) {
+                } else if (project.abbrev().equals(student.abbrevProj4())) {
                     alloc.addToScore(Config.Preferences.proj4);
                 }
+            }
+            if (student.totalScore() < Config.Preferences.proj1 + Config.Preferences.proj2 + Config.Preferences.proj3
+                    + Config.Preferences.proj4) {
+                // TODO: student invalid wish, see TODO in Student.java l.60
+                int debug = 4;
             }
         }
     }

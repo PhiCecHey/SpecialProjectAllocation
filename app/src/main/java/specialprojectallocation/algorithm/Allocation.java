@@ -23,6 +23,7 @@ class Allocation {
 
     void addToScore(double s) {
         this.score += s;
+        student.addToTotalScore(s);
     }
 
     GRBVar grbVar() {
