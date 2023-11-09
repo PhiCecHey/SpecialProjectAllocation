@@ -45,6 +45,11 @@ public class Config {
         public static final double proj2 = 80.0;
         public static final double proj3 = 50.0;
         public static final double proj4 = 30.0;
+        public static final double penStudsPerProj = -100;
+        public static final double penStudsAcceptedInProj = -100;
+        public static final double penStudsPerStudy = -100;
+        public static final double penMinStudsPerGroupProj = -100;
+        public static final double penFixedStuds = -100;
     }
 
     public static class Output {

@@ -174,4 +174,13 @@ public class Student {
     public double totalScore() {
         return this.totalScore;
     }
+
+    public boolean isFixed() {
+        for (Project project : Project.projects()) {
+            if (project.isFixed(this)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

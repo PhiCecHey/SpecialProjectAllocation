@@ -26,7 +26,7 @@ public class App {
     public static void main(String[] args) {
         System.out.println(System.getProperty("user.dir"));
         try {
-            boolean cmd = false;
+            boolean cmd = true;
             File one;
             File two;
             if (!cmd) {
@@ -46,9 +46,10 @@ public class App {
             constraints.add(Gurobi.CONSTRAINTS.studentsPerProject);
             constraints.add(Gurobi.CONSTRAINTS.studentAcceptedInProject);
             constraints.add(Gurobi.CONSTRAINTS.minStudentsPerGroupProject);
-            constraints.add(Gurobi.CONSTRAINTS.fixedStuds);
+            //constraints.add(Gurobi.CONSTRAINTS.fixedStuds);
             ArrayList<Gurobi.PREFERENCES> prefs = new ArrayList<>();
             prefs.add(Gurobi.PREFERENCES.selectedProjs);
+            prefs.add(Gurobi.PREFERENCES.fixedStuds);
             int debug = 4;
 
             String outpath = one.getPath().replace(one.getName(), "");

@@ -38,11 +38,11 @@ class Allocation {
         return this.student;
     }
 
-    boolean fixedStudent() {
+    boolean getStudentFixed() {
         return this.fixedStudent;
     }
 
-    void fixedStudent(boolean fixed) {
-        this.fixedStudent = fixed;
+    void setStudentFixed() {
+        this.fixedStudent = true;
     }
 }

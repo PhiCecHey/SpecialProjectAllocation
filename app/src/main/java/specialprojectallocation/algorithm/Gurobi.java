@@ -22,11 +22,13 @@ import specialprojectallocation.parser.WriteResults;
 
 public class Gurobi {
     public enum CONSTRAINTS {
-        projectPerStudent, studentsPerProject, studentAcceptedInProject, studentsPerStudy, minStudentsPerGroupProject, fixedStuds,
+        projectPerStudent, studentsPerProject, studentAcceptedInProject, studentsPerStudy, minStudentsPerGroupProject,
+        fixedStuds,
     }
 
     public enum PREFERENCES {
-        projectPerStudent, studentsPerProject, studentAcceptedInProject, studentsPerStudy, minStudentsPerGroupProject, selectedProjs,
+        projectPerStudent, studentsPerProject, studentAcceptedInProject, studentsPerStudy, minStudentsPerGroupProject,
+        selectedProjs, fixedStuds,
     }
 
     private final Allocations allocs;
@@ -37,7 +39,8 @@ public class Gurobi {
     private final ArrayList<CONSTRAINTS> constraints;
     private final ArrayList<PREFERENCES> preferences;
 
-    public Gurobi(final ArrayList<CONSTRAINTS> c, final ArrayList<PREFERENCES> p, final ArrayList<Project> projects, final ArrayList<Student> students, String outFile) throws GRBException {
+    public Gurobi(final ArrayList<CONSTRAINTS> c, final ArrayList<PREFERENCES> p, final ArrayList<Project> projects,
+                  final ArrayList<Student> students, String outFile) throws GRBException {
         Log.clear();
         this.constraints = c;
         this.preferences = p;
@@ -175,12 +178,28 @@ public class Gurobi {
             for (int p = 0; p < this.allocs.numProjs(); ++p) {
                 StringBuilder str = new StringBuilder("\t\t\t");
                 for (int s = 0; s < this.allocs.numStuds(); ++s) {
-                    if (this.allocs.get(p, s).score() >= 100) {
-                        str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1))).append("\t");
-                    } else if (this.allocs.get(p, s).score() >= 10) {
-                        str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2))).append("\t");
+                    if (this.allocs.get(p, s).score() >= 0) {
+                        if (this.allocs.get(p, s).score() >= 100) {
+                            str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1)))
+                               .append("\t");
+                        } else if (this.allocs.get(p, s).score() >= 10) {
+                            str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2)))
+                               .append("\t");
+                        } else {
+                            str.append(String.format("%.03f", DoubleRounder.round(this.allocs.get(p, s).score(), 3)))
+                               .append("\t");
+                        }
                     } else {
-                        str.append(String.format("%.03f", DoubleRounder.round(this.allocs.get(p, s).score(), 3))).append("\t");
+                        if (this.allocs.get(p, s).score() >= 100) {
+                            str.append(String.format("%.00f", DoubleRounder.round(this.allocs.get(p, s).score(), 0)))
+                               .append("\t");
+                        } else if (this.allocs.get(p, s).score() >= 10) {
+                            str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1)))
+                               .append("\t");
+                        } else {
+                            str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2)))
+                               .append("\t");
+                        }
                     }
                 }
                 print.append("\n").append(Gurobi.exactNumOfChars(this.allocs.get(p, 0).project().abbrev())).append(str);
@@ -198,7 +217,7 @@ public class Gurobi {
                     allocated.append("\t-\t");
                 } else {
                     Allocation alloc = this.allocs.get(p, s);
-                    if (alloc.fixedStudent()) {
+                    if (alloc.getStudentFixed()) {
                         allocated.append("\tF\t");
                     } else {
                         allocated.append("\t#\t");
@@ -268,6 +287,9 @@ public class Gurobi {
         if (this.preferences.contains(PREFERENCES.selectedProjs)) {
             this.prefSelectedProj();
         }
+        if (this.preferences.contains(PREFERENCES.fixedStuds)) {
+            this.prefFixedStuds();
+        }
     }
 
     /*
@@ -284,8 +306,9 @@ public class Gurobi {
                 }
                 String st = "projPerStud" + s;
                 this.model.addConstr(expr, GRB.GREATER_EQUAL, Config.Constraints.minNumProjectsPerStudent, st);
-                this.model.addConstr(expr, GRB.LESS_EQUAL, Math.max(student.numFixedProject(),
-                        Config.Constraints.maxNumProjectsPerStudent), st);
+                this.model.addConstr(expr, GRB.LESS_EQUAL,
+                                     Math.max(student.numFixedProject(), Config.Constraints.maxNumProjectsPerStudent),
+                                     st);
             }
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
@@ -379,7 +402,8 @@ public class Gurobi {
                     zExpr.addTerm(1, z1);
                     zExpr.addTerm(1, z2);
                     this.model.addConstr(zExpr, GRB.EQUAL, 1, st);
-                    this.model.addGenConstrIndicator(z1, 1, expr, GRB.GREATER_EQUAL, Config.Constraints.minNumStudsPerGroupProj, st);
+                    this.model.addGenConstrIndicator(z1, 1, expr, GRB.GREATER_EQUAL,
+                                                     Config.Constraints.minNumStudsPerGroupProj, st);
                     this.model.addGenConstrIndicator(z2, 1, expr, GRB.LESS_EQUAL, 0, st);
                 }
             }
@@ -397,8 +421,9 @@ public class Gurobi {
                     expr = new GRBLinExpr();
                     Allocation alloc = this.allocs.get(p, s);
                     Student student = this.allocs.getStud(s);
-                    if (project.isFixed(student) && (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj || project.isFixedAndStudentsWish(student))) {
-                        alloc.fixedStudent(true);
+                    if (project.isFixed(student) && (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj
+                                                     || project.isFixedAndStudentsWish(student))) {
+                        alloc.setStudentFixed();
                         String st = "fixedStuds" + p + s;
                         expr.addTerm(1.0, alloc.grbVar());
                         this.model.addConstr(expr, GRB.EQUAL, 1, st);
@@ -436,6 +461,24 @@ public class Gurobi {
 
     }
 
+    private void prefFixedStuds() {
+        for (int p = 0; p < this.allocs.numProjs(); ++p) {
+            Project project = this.allocs.getProj(p);
+            for (int s = 0; s < this.allocs.numStuds(); ++s) {
+                Allocation alloc = this.allocs.get(p, s);
+                Student student = this.allocs.getStud(s);
+                boolean studFixedForProj = project.isFixed(student) && (
+                        Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj
+                        || project.isFixedAndStudentsWish(student));
+                if (studFixedForProj) {
+                    alloc.setStudentFixed();
+                } else if (student.isFixed()) {
+                    alloc.addToScore(Config.Preferences.penFixedStuds);
+                }
+            }
+        }
+    }
+
     /*
      * student made mistakes when filling out the form
      * TODO
@@ -462,7 +505,7 @@ public class Gurobi {
                 }
             }
             if (student.totalScore() < Config.Preferences.proj1 + Config.Preferences.proj2 + Config.Preferences.proj3
-                    + Config.Preferences.proj4) {
+                                       + Config.Preferences.proj4) {
                 // TODO: student invalid wish, see TODO in Student.java l.60
                 int debug = 4;
             }
