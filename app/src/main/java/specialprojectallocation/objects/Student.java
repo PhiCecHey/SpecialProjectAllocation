@@ -155,4 +155,14 @@ public class Student {
     public static void studsWithoutProj(ArrayList<Student> list) {
         Student.studsWithoutProj = list;
     }
+
+    public int numFixedProject() {
+        int numFixedProjs = 0;
+        for (Project project : Project.projects()) {
+            if (project.isFixed(this)) {
+                numFixedProjs++;
+            }
+        }
+        return numFixedProjs;
+    }
 }

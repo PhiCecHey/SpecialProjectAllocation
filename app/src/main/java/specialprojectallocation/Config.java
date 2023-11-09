@@ -36,6 +36,7 @@ public class Config {
         public static final int maxNumProjectsPerStudent = 1;
         public static final int minNumProjectsPerStudent = 1;
         public static final int minNumStudsPerGroupProj = 2;
+        public static final boolean addFixedStudsToProjEvenIfStudDidntSelectProj = true;
     }
 
     public static class Preferences {

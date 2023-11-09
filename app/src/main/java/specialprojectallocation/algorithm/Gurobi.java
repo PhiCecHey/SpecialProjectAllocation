@@ -22,13 +22,11 @@ import specialprojectallocation.parser.WriteResults;
 
 public class Gurobi {
     public enum CONSTRAINTS {
-        projectPerStudent, studentsPerProject, studentAcceptedInProject, studentsPerStudy, minStudentsPerGroupProject,
-        fixedStuds,
+        projectPerStudent, studentsPerProject, studentAcceptedInProject, studentsPerStudy, minStudentsPerGroupProject, fixedStuds,
     }
 
     public enum PREFERENCES {
-        projectPerStudent, studentsPerProject, studentAcceptedInProject, studentsPerStudy, minStudentsPerGroupProject,
-        selectedProjs,
+        projectPerStudent, studentsPerProject, studentAcceptedInProject, studentsPerStudy, minStudentsPerGroupProject, selectedProjs,
     }
 
     private final Allocations allocs;
@@ -39,8 +37,7 @@ public class Gurobi {
     private final ArrayList<CONSTRAINTS> constraints;
     private final ArrayList<PREFERENCES> preferences;
 
-    public Gurobi(final ArrayList<CONSTRAINTS> c, final ArrayList<PREFERENCES> p, final ArrayList<Project> projects,
-                  final ArrayList<Student> students, String outFile) throws GRBException {
+    public Gurobi(final ArrayList<CONSTRAINTS> c, final ArrayList<PREFERENCES> p, final ArrayList<Project> projects, final ArrayList<Student> students, String outFile) throws GRBException {
         Log.clear();
         this.constraints = c;
         this.preferences = p;
@@ -210,7 +207,7 @@ public class Gurobi {
             }
             if (allocated.toString().contains("#") || allocated.toString().contains("F")) {
                 String formattedAbbrev = Gurobi.exactNumOfChars(this.allocs.get(p, 0).project().abbrev());
-                //String formattedAbbrev = this.allocs.get(p, 0).project().abbrev();
+                // String formattedAbbrev = this.allocs.get(p, 0).project().abbrev();
                 print.append("\n").append(formattedAbbrev).append(allocated).append(" ");
             }
         }
@@ -281,15 +278,14 @@ public class Gurobi {
             GRBLinExpr expr;
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
                 expr = new GRBLinExpr();
+                Student student = this.allocs.getStud(s);
                 for (int p = 0; p < this.allocs.numProjs(); ++p) {
                     expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
                 }
                 String st = "projPerStud" + s;
-                this.model.addConstr(expr, GRB.EQUAL, 1, st);
-                // this.model.addConstr(expr, GRB.LESS_EQUAL,
-                // Config.Constraints.maxNumProjectsPerStudent, st);
-                // this.model.addConstr(expr, GRB.GREATER_EQUAL,
-                // Config.Constraints.minNumProjectsPerStudent, st);
+                this.model.addConstr(expr, GRB.GREATER_EQUAL, Config.Constraints.minNumProjectsPerStudent, st);
+                this.model.addConstr(expr, GRB.LESS_EQUAL, Math.max(student.numFixedProject(),
+                        Config.Constraints.maxNumProjectsPerStudent), st);
             }
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
@@ -383,8 +379,7 @@ public class Gurobi {
                     zExpr.addTerm(1, z1);
                     zExpr.addTerm(1, z2);
                     this.model.addConstr(zExpr, GRB.EQUAL, 1, st);
-                    this.model.addGenConstrIndicator(z1, 1, expr, GRB.GREATER_EQUAL,
-                            Config.Constraints.minNumStudsPerGroupProj, st);
+                    this.model.addGenConstrIndicator(z1, 1, expr, GRB.GREATER_EQUAL, Config.Constraints.minNumStudsPerGroupProj, st);
                     this.model.addGenConstrIndicator(z2, 1, expr, GRB.LESS_EQUAL, 0, st);
                 }
             }
@@ -393,7 +388,7 @@ public class Gurobi {
         }
     }
 
-    private void constrFixedStudents() { // TODO
+    private void constrFixedStudents() {
         try {
             GRBLinExpr expr;
             for (int p = 0; p < this.allocs.numProjs(); ++p) {
@@ -402,15 +397,11 @@ public class Gurobi {
                     expr = new GRBLinExpr();
                     Allocation alloc = this.allocs.get(p, s);
                     Student student = this.allocs.getStud(s);
-                    if (project.isFixedAndStudentsWish(student)) {
-                        //if (project.isFixed(student)) {
+                    if (project.isFixed(student) && (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj || project.isFixedAndStudentsWish(student))) {
                         alloc.fixedStudent(true);
                         String st = "fixedStuds" + p + s;
                         expr.addTerm(1.0, alloc.grbVar());
                         this.model.addConstr(expr, GRB.EQUAL, 1, st);
-                    } else if (project.isFixed(student)) {
-                        int debug = 4;
-                        alloc.fixedStudent(true);
                     }
                 }
             }

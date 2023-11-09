@@ -77,6 +77,14 @@ public class Project {
     }
 
     public boolean isFixedAndStudentsWish(Student student) {
+        boolean ret1 = student.abbrevProj1().equals(this.abbrev);
+        boolean ret2 = student.abbrevProj2().equals(this.abbrev);
+        boolean ret3 = student.abbrevProj3().equals(this.abbrev);
+        boolean ret4 = student.abbrevProj4().equals(this.abbrev);
+        return (ret1 || ret2 || ret3 || ret4) && this.isFixed(student);
+    }
+
+    public boolean isFixedAndFirstStudentsWish(Student student) {
         boolean ret = student.abbrevProj1().equals(this.abbrev);
         return ret && this.isFixed(student);
     }
@@ -123,7 +131,7 @@ public class Project {
         return null;
     }
 
-    public static ArrayList<Project> projects(){
+    public static ArrayList<Project> projects() {
         return Project.projects;
     }
 
