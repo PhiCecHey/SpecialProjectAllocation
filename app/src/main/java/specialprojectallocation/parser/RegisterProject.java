@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Config;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
 import specialprojectallocation.Exceptions.ProjectDuplicateException;
@@ -21,7 +23,8 @@ public class RegisterProject extends MyParser {
 
     // TODO: test
     // TOOD: how to handle exceptions?
-    public static ArrayList<Project> read(File csv, char delim)
+    @Nullable
+    public static ArrayList<Project> read(@NotNull File csv, char delim)
             throws ProjectDuplicateException, NumberFormatException, AbbrevTakenException, StudentNotFoundException {
         ArrayList<Project> projects = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
@@ -94,6 +97,7 @@ public class RegisterProject extends MyParser {
                 && RegisterProject.mainMaxNum != -1 && RegisterProject.var != -1 && RegisterProject.fixed != -1);
     }
 
+    @NotNull
     private static Group[] getGroups(String stMainStudProg, String mainMax, boolean oneStudent) {
         // TODO: get other/several groups
         StudyProgram mainP = StudyProgram.StrToStudy(stMainStudProg);

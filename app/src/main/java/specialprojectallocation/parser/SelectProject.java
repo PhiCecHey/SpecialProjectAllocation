@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.*;
 import specialprojectallocation.Exceptions.StudentDuplicateException;
 import specialprojectallocation.objects.*;
@@ -15,6 +16,7 @@ public class SelectProject extends MyParser {
     private static int name = -1, immaNum = -1, email = -1, studProg = -1, first = -1, second = -1, third = -1,
             fourth = -1;
 
+    @Nullable
     public static ArrayList<Student> read(File csv, char delim) throws StudentDuplicateException {
         ArrayList<Student> students = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {

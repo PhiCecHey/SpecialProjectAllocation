@@ -40,7 +40,7 @@ public class Student {
         this.selectedProjs = new StudWish(first, second, third, fourth);
     }
 
-    public boolean selectProjStr(String firstStr, String secondStr, String thirdStr, String fourthStr) {
+    public void selectProjStr(String firstStr, String secondStr, String thirdStr, String fourthStr) {
         Project firstPr = null, secondPr = null, thirdPr = null, fourthPr = null;
         List<Project> dings = Project.projects();
         for (Project project : Project.projects()) {
@@ -55,10 +55,10 @@ public class Student {
             }
         }
         if (firstPr == null || secondPr == null || thirdPr == null || fourthPr == null) {
-            return false;
+            // TODO: add to list of invalid votes with reason
+            int debug = 4;
         }
         this.selectProj(firstPr, secondPr, thirdPr, fourthPr);
-        return true;
     }
 
     public String abbrevProj1() /* Project could not be found */ {

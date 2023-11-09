@@ -4,13 +4,14 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.jetbrains.annotations.NotNull;
 import specialprojectallocation.Config;
 import specialprojectallocation.algorithm.Allocations;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
 
 public class WriteResults {
-    public static void printForSupers(double[][] results, Allocations allocs, String path) {
+    public static void printForSupers(double[][] results, @NotNull Allocations allocs, String path) {
         try {
             FileWriter fw = new FileWriter(path);
             BufferedWriter bw = new BufferedWriter(new FileWriter(path));

@@ -1,5 +1,8 @@
 package specialprojectallocation.objects;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 public class StudyProgram {
     public enum AvailProgram {
         NaturalHazardsAndRiskInStructuralEngineering,
@@ -30,6 +33,8 @@ public class StudyProgram {
         }
     }
 
+    @NotNull
+    @Contract("_ -> new")
     public static StudyProgram StrToStudy(String str) {
         str = str.toLowerCase();
         if (str.isEmpty()) {

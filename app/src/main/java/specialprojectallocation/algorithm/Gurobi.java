@@ -11,6 +11,8 @@ import gurobi.GRBException;
 import gurobi.GRBLinExpr;
 import gurobi.GRBModel;
 import gurobi.GRBVar;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Config;
 import specialprojectallocation.Log;
 import specialprojectallocation.objects.Group;
@@ -71,6 +73,7 @@ public class Gurobi {
         }
     }
 
+    @NotNull
     private GRBVar[][] getGRBVars() {
         int nProjs = this.allocs.numProjs();
         int nStuds = this.allocs.numStuds();
@@ -83,6 +86,7 @@ public class Gurobi {
         return grbvars;
     }
 
+    @NotNull
     private GRBLinExpr calculateObjectiveLinExpr(double extraRandomness) {
         GRBLinExpr objective = new GRBLinExpr();
         for (int p = 0; p < this.allocs.numProjs(); p++) {
@@ -121,6 +125,7 @@ public class Gurobi {
         return true;
     }
 
+    @Nullable
     private String print(boolean all, boolean worked) {
         StringBuilder print = new StringBuilder(Log.log() + "\n");
         if (!worked) {
@@ -212,7 +217,8 @@ public class Gurobi {
         return print.toString();
     }
 
-    private static String exactNumOfChars(String abbrev) {
+    @NotNull
+    private static String exactNumOfChars(@NotNull String abbrev) {
         if (abbrev.length() >= Config.ProjectAdministration.numCharsAbbrev) {
             return abbrev.substring(0, Config.ProjectAdministration.numCharsAbbrev);
         }
@@ -474,6 +480,7 @@ public class Gurobi {
         }
     }
 
+    @NotNull
     private ArrayList<Student> studsWithoutProj() {
         ArrayList<Student> studsWithoutProj = new ArrayList<>();
         for (int s = 0; s < this.allocs.numStuds(); s++) {
