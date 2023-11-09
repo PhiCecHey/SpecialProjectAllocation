@@ -441,26 +441,52 @@ public class Gurobi {
      * ++=============++
      */
 
+    /**
+     * alternative to constrStudsPerProj
+     */
     private void prefStudentsPerProj() {
 
     }
 
+    /**
+     * alternative to constrProjPerStud
+     */
     private void prefProjPerStud() {
 
     }
 
-    private void prefStudsAcceptedInProj() {
-
+    /**
+     * alternative to constrStudsAcceptedInProj
+     */
+    private void prefStudsAcceptedInProj() { // TODO: test
+        for (int s = 0; s < this.allocs.numStuds(); ++s) {
+            for (int p = 0; p < this.allocs.numProjs(); ++p) {
+                Allocation alloc = this.allocs.get(p, s);
+                boolean accepted = alloc.project().checkStudyProgram(alloc.student());
+                if (!accepted) {
+                    alloc.addToScore(Config.Preferences.penStudsAcceptedInProj);
+                }
+            }
+        }
     }
 
+    /**
+     * alternative to constrStudsPerStudy
+     */
     private void prefStudsPerStudy() {
 
     }
 
+    /**
+     * alternative to constrMinStudsPerGroupProj
+     */
     private void prefMinStudsPerGroupProj() {
 
     }
 
+    /**
+     * alternative to constrFixedStuds
+     */
     private void prefFixedStuds() {
         for (int p = 0; p < this.allocs.numProjs(); ++p) {
             Project project = this.allocs.getProj(p);
