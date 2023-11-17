@@ -41,11 +41,20 @@ dependencies {
     // This dependency is used by the application.
     implementation("com.google.guava:guava:31.1-jre")
 
+    // https://mvnrepository.com/artifact/com.gurobi/gurobi
+    //implementation("com.gurobi:gurobi:10.0.3")
+
     // import gurobi library:
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
-    
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    //implementation("com.fasterxml.jackson.core:jackson-databind:2.0.1")
+
+    // https://mvnrepository.com/artifact/com.miglayout/miglayout-swing
+    //implementation("com.miglayout:miglayout-swing:11.2")
+
+    // https://mvnrepository.com/artifact/com.miglayout/miglayout-core
+    //implementation("com.miglayout:miglayout-core:11.2")
+
+    // https://mvnrepository.com/artifact/com.miglayout/miglayout-javafx
+    //implementation("com.miglayout:miglayout-javafx:11.2")
 
     //https://github.com/tools4j/decimal4j
     implementation("org.decimal4j:decimal4j:1.0.3")
@@ -53,10 +62,6 @@ dependencies {
     // https://github.com/JFormDesigner/FlatLaf
     implementation("com.formdev:flatlaf:3.0")
     implementation("com.formdev:flatlaf-intellij-themes:3.0")
-
-    // escape utils
-    //implementation("org.apache.commons:commons-text:1.9")
-
 
     //implementation("com.github.johnrengelman:shadow:7.0.0")
     
