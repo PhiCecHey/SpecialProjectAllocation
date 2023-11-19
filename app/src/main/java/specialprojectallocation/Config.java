@@ -1,5 +1,7 @@
 package specialprojectallocation;
 
+import java.awt.*;
+
 public class Config {
     // read student wishes
     public static class ProjectSelection {
