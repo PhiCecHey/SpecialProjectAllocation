@@ -2,38 +2,29 @@ package specialprojectallocation.gui;
 
 import net.miginfocom.swing.MigLayout;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.*;
+import java.awt.*;
 
 public class HelpPanel extends JPanel {
-    private JTextArea helpText;
-    private JScrollPane helpScroll;
+    private JTextArea area;
+    private JScrollPane pane;
 
     HelpPanel() {
-        this.setLayout(new MigLayout("debug"));
-        this.init();
-        this.addActionListeners();
-    }
+        this.setLayout(new MigLayout());
 
-    private void init() {
-        this.helpText = new JTextArea();
-        this.helpText.setEditable(false);
-        this.helpText.setPreferredSize(new Dimension(Gui.frameSize.width, 500));
+        this.area = new JTextArea();
+        this.area.setEditable(false);
+        this.pane = new JScrollPane(area);
+        this.add(this.pane);
 
-        this.helpScroll = new JScrollPane(helpText);
-        this.add(this.helpScroll, "span, wrap");
-    }
-
-    private void addActionListeners() {
         // TODO
-        this.helpText.setLineWrap(true);
-        this.helpText.setWrapStyleWord(true);
-        this.helpText.append("Informationen und Hilfestellungen\n\n");
+        //this.area.setLineWrap(true);
+        //this.area.setWrapStyleWord(true);
+        this.area.append("Informationen und Hilfestellungen\n\n");
 
-        this.helpText.append("");
+        this.area.append("");
     }
+
+
 }
 

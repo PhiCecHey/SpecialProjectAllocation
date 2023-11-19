@@ -8,14 +8,25 @@ import javax.swing.*;
 
 import kotlin.jvm.JvmSynthetic;
 
+import java.awt.*;
 import java.security.spec.MGF1ParameterSpec;
 
 public class ConfigPanel extends JPanel {
     ConfigPanel() {
-        this.setLayout(new MigLayout());
-        this.add(new ProjectSelectionPanel(), "top");
-        this.add(new ProjectAdminPanel(), "top");
-        this.add(new ConstraintsPanel(), "top");
+        this.setLayout(new MigLayout("gapx 30pt"));
+
+        this.add(new JLabel("Project Selection"), "cell 0 0");
+        this.add(new ProjectSelectionPanel(), "top, cell 0 2");
+
+        this.add(new JSeparator(SwingConstants.VERTICAL), "cell 1 0, growy, spany, wrap");
+
+        this.add(new JLabel("Project Administration"), "cell 2 0");
+        this.add(new ProjectAdminPanel(), "top, cell 2 2");
+
+        this.add(new JSeparator(SwingConstants.VERTICAL), "cell 3 0, growy, spany, wrap");
+
+        this.add(new JLabel("Gurobi Constraints"), "cell 4 0");
+        this.add(new ConstraintsPanel(), "top, cell 4 2");
     }
 
     class ProjectSelectionPanel extends JPanel {

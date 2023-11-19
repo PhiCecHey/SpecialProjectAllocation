@@ -18,7 +18,6 @@ public class Gui {
     static JPanel config;
     static JPanel results;
     static JTabbedPane pane;
-    static Dimension frameSize = new Dimension(1500, 1500);
     static boolean lightTheme = true;
     static JButton theme, plus, minus, zero;
 
@@ -26,7 +25,7 @@ public class Gui {
         FlatLightLaf.setup();
 
         Gui.frame = new JFrame();
-        Gui.frame.setLayout(new MigLayout("flowx"));
+        Gui.frame.setLayout(new MigLayout("flowy, gapx 30pt"));
         Gui.frame.setVisible(true);
         Gui.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         Gui.frame.setTitle("Special Project Allocation");
@@ -34,7 +33,7 @@ public class Gui {
         Gui.pane = new JTabbedPane();
         //Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         //Gui.pane.setBorder(padding);
-        Gui.frame.add(pane);
+        Gui.frame.add(pane, "cell 0 0, span 1 5");
 
         Gui.help = new HelpPanel();
         Gui.config = new ConfigPanel();
@@ -47,14 +46,14 @@ public class Gui {
 
         String path = "./app/src/main/java/specialprojectallocation/gui/icons/";
         Gui.theme = new JButton(new ImageIcon(path + "moon.png"));
-        Gui.frame.add(Gui.theme, "top");
+        Gui.frame.add(Gui.theme, "cell 1 1");
         Gui.addThemeSwitcher();
         Gui.plus = new JButton(new ImageIcon(path + "plus-dark.png"));
         Gui.zero = new JButton(new ImageIcon(path + "circle-dark.png"));
         Gui.minus = new JButton(new ImageIcon(path + "minus-dark.png"));
-        Gui.frame.add(Gui.plus, "top");
-        Gui.frame.add(Gui.zero, "top");
-        Gui.frame.add(Gui.minus, "top");
+        Gui.frame.add(Gui.plus, "cell 1 2");
+        Gui.frame.add(Gui.zero, "cell 1 3");
+        Gui.frame.add(Gui.minus, "cell 1 4, top");
         Gui.addFontSizeSwitcher();
 
         frame.pack();
