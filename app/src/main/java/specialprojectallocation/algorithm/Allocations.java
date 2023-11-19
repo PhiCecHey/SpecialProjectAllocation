@@ -6,6 +6,7 @@ import gurobi.GRB;
 import gurobi.GRBException;
 import gurobi.GRBModel;
 import gurobi.GRBVar;
+import org.jetbrains.annotations.NotNull;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
 
@@ -20,7 +21,7 @@ public class Allocations {
         this.numStuds = s;
     }
 
-    Allocations(final ArrayList<Project> projects, final ArrayList<Student> students, GRBModel model)
+    Allocations(@NotNull final ArrayList<Project> projects, @NotNull final ArrayList<Student> students, GRBModel model)
             throws GRBException {
         this.numProjs = projects.size();
         this.numStuds = students.size();

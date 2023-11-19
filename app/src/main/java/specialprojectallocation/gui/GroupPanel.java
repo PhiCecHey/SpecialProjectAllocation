@@ -8,17 +8,17 @@ import javax.swing.JPanel;
 
 class GroupPanel extends JPanel {
     GroupPanel(String rowOrColumn) {
-        if (rowOrColumn.toLowerCase().equals("row")) {
+        if (rowOrColumn.equalsIgnoreCase("row")) {
             this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-        } else if (rowOrColumn.toLowerCase().equals("column")) {
+        } else if (rowOrColumn.equalsIgnoreCase("column")) {
             this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         }
     }
 
     GroupPanel(Component[] components, String rowOrColumn) {
-        if (rowOrColumn.toLowerCase().equals("row")) {
+        if (rowOrColumn.equalsIgnoreCase("row")) {
             this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-        } else if (rowOrColumn.toLowerCase().equals("column")) {
+        } else if (rowOrColumn.equalsIgnoreCase("column")) {
             this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         }
 
@@ -28,9 +28,9 @@ class GroupPanel extends JPanel {
     }
 
     GroupPanel(Component[] components, String rowOrColumn, Dimension dim) {
-        if (rowOrColumn.toLowerCase().equals("row")) {
+        if (rowOrColumn.equalsIgnoreCase("row")) {
             this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-        } else if (rowOrColumn.toLowerCase().equals("column")) {
+        } else if (rowOrColumn.equalsIgnoreCase("column")) {
             this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         }
 
@@ -42,9 +42,9 @@ class GroupPanel extends JPanel {
     }
 
     GroupPanel(Component[] components, String rowOrColumn, Dimension dim, float al) {
-        if (rowOrColumn.toLowerCase().equals("row")) {
+        if (rowOrColumn.equalsIgnoreCase("row")) {
             this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-        } else if (rowOrColumn.toLowerCase().equals("column")) {
+        } else if (rowOrColumn.equalsIgnoreCase("column")) {
             this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         }
 

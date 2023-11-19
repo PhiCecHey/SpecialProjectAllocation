@@ -37,6 +37,7 @@ public class Project {
         this.groups = gr;
         this.stringFixedStuds = fixed;
         Project.projects.add(this);
+        Project.allAbbrevs.add(this.abbrev);
     }
 
     public String abbrev() {

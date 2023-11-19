@@ -2,14 +2,8 @@ package specialprojectallocation.gui;
 
 import net.miginfocom.swing.MigLayout;
 import specialprojectallocation.Config;
-import specialprojectallocation.Exceptions;
 
 import javax.swing.*;
-
-import kotlin.jvm.JvmSynthetic;
-
-import java.awt.*;
-import java.security.spec.MGF1ParameterSpec;
 
 public class ConfigPanel extends JPanel {
     ConfigPanel() {
@@ -29,9 +23,25 @@ public class ConfigPanel extends JPanel {
         this.add(new ConstraintsPanel(), "top, cell 4 2");
     }
 
-    class ProjectSelectionPanel extends JPanel {
-        JLabel lCsvDelim, lName, lFirst, lSecond, lThird, lFourth, lStudProg, lImmatNum, lEmail;
-        JTextField fCsvDelim, fName, fFirst, fSecond, fThird, fFourth, fStudProg, fIimmatNum, fEmail;
+    static class ProjectSelectionPanel extends JPanel {
+        final JLabel lCsvDelim;
+        final JLabel lName;
+        final JLabel lFirst;
+        final JLabel lSecond;
+        final JLabel lThird;
+        final JLabel lFourth;
+        final JLabel lStudProg;
+        final JLabel lImmatNum;
+        final JLabel lEmail;
+        final JTextField fCsvDelim;
+        final JTextField fName;
+        final JTextField fFirst;
+        final JTextField fSecond;
+        final JTextField fThird;
+        final JTextField fFourth;
+        final JTextField fStudProg;
+        final JTextField fIimmatNum;
+        final JTextField fEmail;
 
         ProjectSelectionPanel() {
             this.setLayout(new MigLayout());
@@ -75,11 +85,31 @@ public class ConfigPanel extends JPanel {
         }
     }
 
-    class ProjectAdminPanel extends JPanel {
-        JLabel lCsvDelim, lNumCharsAbbrev, lAbbrev, lVar, lVarOneStudent, lMaxNum, lMainGroup, lMainMaxNum, lFixed,
-                lDelimFixedStuds, lDelimFixedStudsNameImma, lQuotes;
-        JTextField fCsvDelim, fNumCharsAbbrev, fAbbrev, fVar, fVarOneStudent, fMaxNum, fMainGroup, fMainMaxNum, fFixed,
-                fDelimFixedStuds, fDelimFixedStudsNameImma, fQuotes;
+    static class ProjectAdminPanel extends JPanel {
+        final JLabel lCsvDelim;
+        final JLabel lNumCharsAbbrev;
+        final JLabel lAbbrev;
+        final JLabel lVar;
+        final JLabel lVarOneStudent;
+        final JLabel lMaxNum;
+        final JLabel lMainGroup;
+        final JLabel lMainMaxNum;
+        final JLabel lFixed;
+        final JLabel lDelimFixedStuds;
+        final JLabel lDelimFixedStudsNameImma;
+        final JLabel lQuotes;
+        final JTextField fCsvDelim;
+        final JTextField fNumCharsAbbrev;
+        final JTextField fAbbrev;
+        final JTextField fVar;
+        final JTextField fVarOneStudent;
+        final JTextField fMaxNum;
+        final JTextField fMainGroup;
+        final JTextField fMainMaxNum;
+        final JTextField fFixed;
+        final JTextField fDelimFixedStuds;
+        final JTextField fDelimFixedStudsNameImma;
+        final JTextField fQuotes;
 
         ProjectAdminPanel() {
             this.setLayout(new MigLayout());
@@ -135,10 +165,15 @@ public class ConfigPanel extends JPanel {
         }
     }
 
-    class ConstraintsPanel extends JPanel {
-        JLabel lMaxNumProjPerStud, lMinNumProjPerStud, lMinNumStudsPerGroupProj, lAddFixedStudsToProjIfStudDidntSelProj;
-        JTextField fMaxNumProjPerStud, fMinNumProjPerStud, fMinNumStudsPerGroupProj,
-                fAddFixedStudsToProjIfStudDidntSelProj;
+    static class ConstraintsPanel extends JPanel {
+        final JLabel lMaxNumProjPerStud;
+        final JLabel lMinNumProjPerStud;
+        final JLabel lMinNumStudsPerGroupProj;
+        JLabel lAddFixedStudsToProjIfStudDidntSelProj;
+        final JTextField fMaxNumProjPerStud;
+        final JTextField fMinNumProjPerStud;
+        final JTextField fMinNumStudsPerGroupProj;
+        JTextField fAddFixedStudsToProjIfStudDidntSelProj;
 
         ConstraintsPanel() {
             this.setLayout(new MigLayout());

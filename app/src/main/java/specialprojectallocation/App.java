@@ -20,10 +20,6 @@ import specialprojectallocation.parser.RegisterProject;
 
 public class App {
 
-    public static void run(boolean cmd) {
-
-    }
-
     public static void main(String[] args) {
         gui();
         //tui();
