@@ -1,15 +1,14 @@
 package specialprojectallocation.gui;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.*;
 
 public class HelpPanel extends JPanel {
     private JTextArea helpText;
@@ -36,8 +35,7 @@ public class HelpPanel extends JPanel {
 
         this.add(this.minus);
         this.add(this.zero);
-        this.add(this.plus);
-        //this.add(new GroupPanel(new Component[]{this.minus, this.zero, this.plus}, "row"));
+        this.add(this.plus, "push");
     }
 
     private void addActionListeners() {
