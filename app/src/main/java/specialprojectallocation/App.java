@@ -12,6 +12,7 @@ import specialprojectallocation.Exceptions.ProjectDuplicateException;
 import specialprojectallocation.Exceptions.StudentDuplicateException;
 import specialprojectallocation.Exceptions.StudentNotFoundException;
 import specialprojectallocation.algorithm.Gurobi;
+import specialprojectallocation.gui.Gui;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
 import specialprojectallocation.parser.SelectProject;
@@ -24,9 +25,14 @@ public class App {
     }
 
     public static void main(String[] args) {
+        gui();
+        //tui();
+    }
+
+    public static void tui(){
         System.out.println(System.getProperty("user.dir"));
         try {
-            boolean cmd = true;
+            boolean cmd = false;
             File one;
             File two;
             if (!cmd) {
@@ -56,9 +62,13 @@ public class App {
             String outpath = one.getPath().replace(one.getName(), "");
             Gurobi g = new Gurobi(constraints, prefs, projects, students, outpath + "projects-students.csv");
         } catch (StudentDuplicateException | NumberFormatException | ProjectDuplicateException | AbbrevTakenException
-                | StudentNotFoundException | GRBException e) {
+                 | StudentNotFoundException | GRBException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    public static void gui(){
+        Gui.init();
     }
 }
