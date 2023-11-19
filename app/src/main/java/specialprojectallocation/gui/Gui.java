@@ -14,7 +14,7 @@ public class Gui {
 
     static JFrame frame;
     static JPanel help;
-    static JPanel files;
+    static JPanel imports;
     static JPanel config;
     static JPanel results;
     static JTabbedPane pane;
@@ -37,10 +37,10 @@ public class Gui {
 
         Gui.help = new HelpPanel();
         Gui.config = new ConfigPanel();
-        Gui.files = new JPanel();
+        Gui.imports = new ImportsPanel();
         Gui.results = new JPanel();
         Gui.pane.addTab("Help", Gui.help);
-        Gui.pane.addTab("Files", Gui.files);
+        Gui.pane.addTab("Imports", Gui.imports);
         Gui.pane.addTab("Config", Gui.config);
         Gui.pane.addTab("Results", Gui.results);
 
