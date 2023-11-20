@@ -10,9 +10,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ImportsPanel extends JPanel {
-    JLabel lRegistration, lSelection;
-    JTextField fRegistration, fSelection;
-    JButton read, bRegistration, bSelection;
+    final JLabel lRegistration;
+    final JLabel lSelection;
+    final JTextField fRegistration;
+    final JTextField fSelection;
+    final JButton read;
+    final JButton bRegistration;
+    final JButton bSelection;
 
     ImportsPanel(){
         this.setLayout(new MigLayout());

@@ -48,6 +48,7 @@ public class Gui {
         sep.setMinimumSize(new Dimension(2, 1));
         Gui.frame.add(sep, "cell 1 0, growy, spany, wrap");
 
+        // TODO: path
         String path = "./app/src/main/java/specialprojectallocation/gui/icons/";
         Gui.theme = new JButton(new ImageIcon(path + "moon.png"));
         Gui.frame.add(Gui.theme, "cell 2 0");

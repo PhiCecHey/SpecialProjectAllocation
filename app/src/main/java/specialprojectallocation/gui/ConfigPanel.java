@@ -4,20 +4,31 @@ import net.miginfocom.swing.MigLayout;
 import specialprojectallocation.Config;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class ConfigPanel extends JPanel {
+    JButton save;
     ConfigPanel() {
-        this.setLayout(new MigLayout("gapx 30pt"));
+        this.setLayout(new MigLayout("gapx 30pt, gapy 20", "[]push[]push[]"));
+        JSeparator sepV = new JSeparator(SwingConstants.VERTICAL);
+        sepV.setMinimumSize(new Dimension(2, 2));
 
         this.add(new ProjectSelectionPanel(), "top, cell 0 0");
-
-        this.add(new JSeparator(SwingConstants.VERTICAL), "cell 1 0, growy, spany, wrap");
+        this.add(sepV, "cell 1 0, growy, span 1, wrap");
 
         this.add(new ProjectAdminPanel(), "top, cell 2 0");
 
-        this.add(new JSeparator(SwingConstants.VERTICAL), "cell 3 0, growy, spany, wrap");
+        sepV = new JSeparator(SwingConstants.VERTICAL);
+        sepV.setMinimumSize(new Dimension(2, 2));
 
+        this.add(sepV, "cell 3 0, growy, spany 1, wrap");
         this.add(new ConstraintsPanel(), "top, cell 4 0");
+
+        JSeparator sepH = new JSeparator();
+        sepH.setMinimumSize(new Dimension(2, 2));
+        this.add(sepH, "cell 0 1, growx, spanx, width 100%, wrap");
+        this.save = new JButton("Speichern");
+        this.add(save, "cell 0 2, spanx, center");
     }
 
     static class ProjectSelectionPanel extends JPanel {

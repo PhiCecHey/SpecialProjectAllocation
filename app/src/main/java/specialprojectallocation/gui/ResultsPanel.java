@@ -10,10 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ResultsPanel extends JPanel {
-    JTextArea area;
-    JTextField fExport;
-    JButton bExport, bFileChooser;
-    JLabel lExport;
+    final JTextArea area;
+    final JTextField fExport;
+    final JButton bExport;
+    final JButton bFileChooser;
+    final JLabel lExport;
 
     ResultsPanel() {
         this.setLayout(new MigLayout());
