@@ -12,11 +12,10 @@ public class HelpPanel extends JPanel {
         JTextArea area = new JTextArea();
         area.setEditable(false);
         JScrollPane pane = new JScrollPane(area);
-        this.add(pane);
-
+        this.add(pane, "grow, width 100%, height 100%");
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
         // TODO
-        //this.area.setLineWrap(true);
-        //this.area.setWrapStyleWord(true);
         area.append("Informationen und Hilfestellungen\n\n");
 
         area.append("");

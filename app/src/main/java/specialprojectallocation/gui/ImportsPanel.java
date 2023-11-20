@@ -5,9 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.File;
 
 public class ImportsPanel extends JPanel {
     final JLabel lRegistration;
@@ -17,6 +15,8 @@ public class ImportsPanel extends JPanel {
     final JButton read;
     final JButton bRegistration;
     final JButton bSelection;
+    public static File projSel;
+    public static File projReg;
 
     ImportsPanel(){
         this.setLayout(new MigLayout());
@@ -39,23 +39,29 @@ public class ImportsPanel extends JPanel {
 
         ImportsPanel.chooseFile(this.bSelection, this.fSelection);
         ImportsPanel.chooseFile(this.bRegistration, this.fRegistration);
+        this.readFiles();
     }
 
     private static void chooseFile(@NotNull JButton b, JTextField f) {
-        b.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                Gui.changeFontSize(fileChooser, Gui.frame.getFont().getSize());
-                fileChooser.setAcceptAllFileFilterUsed(false);
-                FileNameExtensionFilter fileFilterCsv = new FileNameExtensionFilter("CSV", "csv");
-                FileNameExtensionFilter fileFilterTxt = new FileNameExtensionFilter("TEXT", "txt");
-                fileChooser.addChoosableFileFilter(fileFilterCsv);
-                fileChooser.addChoosableFileFilter(fileFilterTxt);
-                int rueckgabeWert = fileChooser.showOpenDialog(null);
-                if (rueckgabeWert == JFileChooser.APPROVE_OPTION) {
-                    f.setText(fileChooser.getSelectedFile().getAbsolutePath());
-                }
+        b.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            Gui.changeFontSize(fileChooser, Gui.frame.getFont().getSize());
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            FileNameExtensionFilter fileFilterCsv = new FileNameExtensionFilter("CSV", "csv");
+            FileNameExtensionFilter fileFilterTxt = new FileNameExtensionFilter("TEXT", "txt");
+            fileChooser.addChoosableFileFilter(fileFilterCsv);
+            fileChooser.addChoosableFileFilter(fileFilterTxt);
+            int rueckgabeWert = fileChooser.showOpenDialog(null);
+            if (rueckgabeWert == JFileChooser.APPROVE_OPTION) {
+                f.setText(fileChooser.getSelectedFile().getAbsolutePath());
             }
+        });
+    }
+
+    private void readFiles() {File projSel, projReg;
+        this.read.addActionListener(ae -> {
+            ImportsPanel.projReg = new File(fRegistration.getText());
+            ImportsPanel.projSel = new File(fSelection.getText());
         });
     }
 }

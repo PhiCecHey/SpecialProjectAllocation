@@ -19,6 +19,8 @@ import specialprojectallocation.parser.SelectProject;
 import specialprojectallocation.parser.RegisterProject;
 
 public class App {
+    public static File projSel;
+    public static File projReg;
 
     public static void main(String[] args) {
         gui();
@@ -56,7 +58,7 @@ public class App {
             int debug = 4;
 
             String outpath = one.getPath().replace(one.getName(), "");
-            Gurobi g = new Gurobi(constraints, prefs, projects, students, outpath + "projects-students.csv");
+            new Gurobi(constraints, prefs, projects, students, outpath + "projects-students.csv");
         } catch (StudentDuplicateException | NumberFormatException | ProjectDuplicateException | AbbrevTakenException
                  | StudentNotFoundException | GRBException e) {
             // TODO Auto-generated catch block

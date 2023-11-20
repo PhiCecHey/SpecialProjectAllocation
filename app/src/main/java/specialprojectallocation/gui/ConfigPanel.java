@@ -5,9 +5,12 @@ import specialprojectallocation.Config;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class ConfigPanel extends JPanel {
     JButton save;
+
     ConfigPanel() {
         this.setLayout(new MigLayout("gapx 30pt, gapy 20", "[]push[]push[]"));
         JSeparator sepV = new JSeparator(SwingConstants.VERTICAL);
@@ -20,8 +23,8 @@ public class ConfigPanel extends JPanel {
 
         sepV = new JSeparator(SwingConstants.VERTICAL);
         sepV.setMinimumSize(new Dimension(2, 2));
-
         this.add(sepV, "cell 3 0, growy, spany 1, wrap");
+
         this.add(new ConstraintsPanel(), "top, cell 4 0");
 
         JSeparator sepH = new JSeparator();
@@ -56,7 +59,7 @@ public class ConfigPanel extends JPanel {
 
             this.add(new JLabel("Project Selection"), "cell 0 0, spanx, center");
 
-            this.lCsvDelim = new JLabel("CSV Delimiter");
+            this.lCsvDelim = new JLabel("CSV Delimiter:");
             this.lName = new JLabel("Column Name:");
             this.lFirst = new JLabel("Column 1. Project:");
             this.lSecond = new JLabel("Column 2. Project:");
@@ -178,35 +181,73 @@ public class ConfigPanel extends JPanel {
     }
 
     static class ConstraintsPanel extends JPanel {
-        final JLabel lMaxNumProjPerStud;
-        final JLabel lMinNumProjPerStud;
-        final JLabel lMinNumStudsPerGroupProj;
-        JLabel lAddFixedStudsToProjIfStudDidntSelProj;
-        final JTextField fMaxNumProjPerStud;
-        final JTextField fMinNumProjPerStud;
-        final JTextField fMinNumStudsPerGroupProj;
-        JTextField fAddFixedStudsToProjIfStudDidntSelProj;
+        ButtonGroup minNumProjPerStud, maxNumProjPerStud, minNumStudsPerGroupProj;
+
+        class ButtonGroup extends JPanel {
+            JCheckBox check;
+            JRadioButton rForce, rTry;
+            JTextField field;
+            JLabel label;
+
+            ButtonGroup(String f, String l) {
+                this.setLayout(new MigLayout());
+                this.check = new JCheckBox();
+                this.rForce = new JRadioButton();
+                this.rTry = new JRadioButton();
+                this.field = new JTextField(f);
+                this.label = new JLabel(l);
+                this.add(this.check);
+                this.add(this.label);
+                this.add(this.field, "wrap");
+                this.add(this.rForce, "cell 1 1, split 4");
+                this.add(new JLabel("Erzwingen"));
+                this.add(this.rTry, ", gapx 30pt");
+                this.add(new JLabel("Versuchen"));
+
+                this.check.setSelected(true);
+                this.rForce.setSelected(true);
+                this.rTry.setSelected(false);
+                addButtonGroupFunct();
+            }
+
+            private void addButtonGroupFunct() {
+                this.check.addActionListener(ae -> {
+                    if (check.isSelected()) {
+                        field.setEditable(true);
+                        field.setBackground(Color.white);
+                        rForce.setEnabled(true);
+                        rTry.setEnabled(true);
+                    } else {
+                        field.setEditable(false);
+                        field.setBackground(Colors.greyTransp);
+                        rForce.setEnabled(false);
+                        rTry.setEnabled(false);
+                    }
+                });
+                this.rForce.addActionListener(ae -> rTry.setSelected(!rForce.isSelected()));
+                this.rTry.addActionListener(ae -> rForce.setSelected(!rTry.isSelected()));
+            }
+        }
 
         ConstraintsPanel() {
-            this.setLayout(new MigLayout());
+            this.setLayout(new MigLayout("flowy"));
 
-            this.add(new JLabel("Gurobi Constraints"), "cell 0 0, spanx, center");
+            this.maxNumProjPerStud = new ButtonGroup(Integer.toString(Config.Constraints.maxNumProjectsPerStudent),
+                                                     "Maximum Number of Projects per Student:");
+            this.minNumProjPerStud = new ButtonGroup(Integer.toString(Config.Constraints.minNumProjectsPerStudent),
+                                                     "Minimum Number of Projects per Student:");
+            this.minNumStudsPerGroupProj = new ButtonGroup(Integer.toString(Config.Constraints.minNumStudsPerGroupProj),
+                                                           "Minimum Number of " + "Students per " + "Group Project:");
 
-            this.lMaxNumProjPerStud = new JLabel("Maximum Number of Projects per Student:");
-            this.lMinNumProjPerStud = new JLabel("Minimum Number of Projects per Student:");
-            this.lMinNumStudsPerGroupProj = new JLabel("Minimum Number of Students per Group Project:");
-
-            this.fMaxNumProjPerStud = new JTextField(Integer.toString(Config.Constraints.maxNumProjectsPerStudent));
-            this.fMinNumProjPerStud = new JTextField(Integer.toString(Config.Constraints.minNumProjectsPerStudent));
-            this.fMinNumStudsPerGroupProj = new JTextField(
-                    Integer.toString(Config.Constraints.minNumStudsPerGroupProj));
-
-            this.add(lMaxNumProjPerStud, "cell 0 1, gapy 20");
-            this.add(fMaxNumProjPerStud, "cell 1 1, growx");
-            this.add(lMinNumProjPerStud, "cell 0 2");
-            this.add(fMinNumProjPerStud, "cell 1 2, growx");
-            this.add(lMinNumStudsPerGroupProj, "cell 0 3");
-            this.add(fMinNumStudsPerGroupProj, "cell 1 3");
+            this.add(this.maxNumProjPerStud);
+            JSeparator sep1 = new JSeparator();
+            sep1.setMinimumSize(new Dimension(2, 2));
+            this.add(sep1, "spanx, growx");
+            this.add(this.minNumProjPerStud);
+            JSeparator sep2 = new JSeparator();
+            sep2.setMinimumSize(new Dimension(2, 2));
+            this.add(sep2, "spanx, growx");
+            this.add(minNumStudsPerGroupProj);
         }
     }
 }
