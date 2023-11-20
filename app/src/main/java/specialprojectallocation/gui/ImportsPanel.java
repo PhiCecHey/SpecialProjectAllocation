@@ -15,8 +15,8 @@ public class ImportsPanel extends JPanel {
     final JButton read;
     final JButton bRegistration;
     final JButton bSelection;
-    public static File projSel;
-    public static File projReg;
+    static File projSel;
+    static File projReg;
 
     ImportsPanel(){
         this.setLayout(new MigLayout());

@@ -2,36 +2,59 @@ package specialprojectallocation.gui;
 
 import net.miginfocom.swing.MigLayout;
 import specialprojectallocation.Config;
+import specialprojectallocation.algorithm.Gurobi;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class ConfigPanel extends JPanel {
+    static ArrayList<Gurobi.CONSTRAINTS> constraints = new ArrayList<>();
+    static ArrayList<Gurobi.PREFERENCES> preferences = new ArrayList<>();
     JButton save;
+    ProjectAdminPanel projectAdminPanel;
+    ProjectSelectionPanel projectSelectionPanel;
+    ConstraintsPanel constraintsPanel;
 
     ConfigPanel() {
         this.setLayout(new MigLayout("gapx 30pt, gapy 20", "[]push[]push[]"));
         JSeparator sepV = new JSeparator(SwingConstants.VERTICAL);
         sepV.setMinimumSize(new Dimension(2, 2));
 
-        this.add(new ProjectSelectionPanel(), "top, cell 0 0");
+        this.projectSelectionPanel = new ProjectSelectionPanel();
+        this.add(this.projectSelectionPanel, "top, cell 0 0");
         this.add(sepV, "cell 1 0, growy, span 1, wrap");
 
-        this.add(new ProjectAdminPanel(), "top, cell 2 0");
+        this.projectAdminPanel = new ProjectAdminPanel();
+        this.add(this.projectAdminPanel, "top, cell 2 0");
 
         sepV = new JSeparator(SwingConstants.VERTICAL);
         sepV.setMinimumSize(new Dimension(2, 2));
         this.add(sepV, "cell 3 0, growy, spany 1, wrap");
 
-        this.add(new ConstraintsPanel(), "top, cell 4 0");
+        this.constraintsPanel = new ConstraintsPanel();
+        this.add(this.constraintsPanel, "top, cell 4 0");
 
         JSeparator sepH = new JSeparator();
         sepH.setMinimumSize(new Dimension(2, 2));
         this.add(sepH, "cell 0 1, growx, spanx, width 100%, wrap");
         this.save = new JButton("Speichern");
         this.add(save, "cell 0 2, spanx, center");
+
+        this.save();
+    }
+
+    private void save() {
+        this.save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                projectAdminPanel.save();
+                projectSelectionPanel.save();
+                constraintsPanel.save();
+                save.setBackground(Colors.blueTransp);
+            }
+        });
     }
 
     static class ProjectSelectionPanel extends JPanel {
@@ -95,6 +118,18 @@ public class ConfigPanel extends JPanel {
             this.add(fStudProg, "cell 1 7, growx");
             this.add(lEmail, "cell 0 8");
             this.add(fEmail, "cell 1 8, growx");
+        }
+
+        void save() {
+            Config.ProjectSelection.csvDelim = this.fCsvDelim.getText().toCharArray()[0];
+            Config.ProjectSelection.fullName = this.fName.getText();
+            Config.ProjectSelection.first = this.fFirst.getText();
+            Config.ProjectSelection.second = this.fSecond.getText();
+            Config.ProjectSelection.third = this.fThird.getText();
+            Config.ProjectSelection.fourth = this.fFourth.getText();
+            Config.ProjectSelection.studProg = this.fStudProg.getText();
+            Config.ProjectSelection.immaNum = this.fIimmatNum.getText();
+            Config.ProjectSelection.email = this.fEmail.getText();
         }
     }
 
@@ -178,12 +213,32 @@ public class ConfigPanel extends JPanel {
             this.add(lQuotes, "cell 0 11");
             this.add(fQuotes, "cell 1 11, growx");
         }
+
+        void save() {
+            Config.ProjectAdministration.csvDelim = this.fCsvDelim.getText().toCharArray()[0];
+            try {
+                Config.ProjectAdministration.numCharsAbbrev = Integer.parseInt(this.fNumCharsAbbrev.getText());
+            } catch (NumberFormatException e) {
+                this.fNumCharsAbbrev.setBackground(Colors.redTransp);
+                this.fNumCharsAbbrev.setText(Integer.toString(Config.ProjectAdministration.numCharsAbbrev));
+            }
+            Config.ProjectAdministration.abbrev = this.fAbbrev.getText();
+            Config.ProjectAdministration.var = this.fVar.getText();
+            Config.ProjectAdministration.varOneStudent = this.fVarOneStudent.getText();
+            Config.ProjectAdministration.maxNum = this.fMaxNum.getText();
+            Config.ProjectAdministration.mainGroup = this.fMainGroup.getText();
+            Config.ProjectAdministration.mainMaxNum = this.fMainMaxNum.getText();
+            Config.ProjectAdministration.fixed = this.fFixed.getText();
+            Config.ProjectAdministration.delimFixedStuds = this.fDelimFixedStuds.getText();
+            Config.ProjectAdministration.delimFixedStudsNameImma = this.fDelimFixedStudsNameImma.getText();
+            Config.ProjectAdministration.quotes = this.fQuotes.getText().toCharArray()[0];
+        }
     }
 
     static class ConstraintsPanel extends JPanel {
-        ButtonGroup minNumProjPerStud, maxNumProjPerStud, minNumStudsPerGroupProj;
+        ButtonGroup minNumProjPerStud, maxNumProjPerStud, minNumStudsPerGroupProj, fixedStuds, studWantsProj;
 
-        class ButtonGroup extends JPanel {
+        static class ButtonGroup extends JPanel {
             JCheckBox check;
             JRadioButton rForce, rTry;
             JTextField field;
@@ -199,6 +254,25 @@ public class ConfigPanel extends JPanel {
                 this.add(this.check);
                 this.add(this.label);
                 this.add(this.field, "wrap");
+                this.add(this.rForce, "cell 1 1, split 4");
+                this.add(new JLabel("Erzwingen"));
+                this.add(this.rTry, ", gapx 30pt");
+                this.add(new JLabel("Versuchen"));
+
+                this.check.setSelected(true);
+                this.rForce.setSelected(true);
+                this.rTry.setSelected(false);
+                addButtonGroupFunct();
+            }
+
+            ButtonGroup(String l) {
+                this.setLayout(new MigLayout());
+                this.check = new JCheckBox();
+                this.rForce = new JRadioButton();
+                this.rTry = new JRadioButton();
+                this.label = new JLabel(l);
+                this.add(this.check);
+                this.add(this.label, "wrap");
                 this.add(this.rForce, "cell 1 1, split 4");
                 this.add(new JLabel("Erzwingen"));
                 this.add(this.rTry, ", gapx 30pt");
@@ -238,16 +312,97 @@ public class ConfigPanel extends JPanel {
                                                      "Minimum Number of Projects per Student:");
             this.minNumStudsPerGroupProj = new ButtonGroup(Integer.toString(Config.Constraints.minNumStudsPerGroupProj),
                                                            "Minimum Number of " + "Students per " + "Group Project:");
+            this.fixedStuds = new ButtonGroup("Acknowledge Fixed Students");
+            this.studWantsProj = new ButtonGroup("Students only get one of their selected Projects");
 
             this.add(this.maxNumProjPerStud);
+
             JSeparator sep1 = new JSeparator();
             sep1.setMinimumSize(new Dimension(2, 2));
             this.add(sep1, "spanx, growx");
+
             this.add(this.minNumProjPerStud);
+
             JSeparator sep2 = new JSeparator();
             sep2.setMinimumSize(new Dimension(2, 2));
             this.add(sep2, "spanx, growx");
+
             this.add(minNumStudsPerGroupProj);
+
+            JSeparator sep3 = new JSeparator();
+            sep3.setMinimumSize(new Dimension(2, 2));
+            this.add(sep3, "spanx, growx");
+
+            this.add(this.fixedStuds);
+
+            JSeparator sep4 = new JSeparator();
+            sep4.setMinimumSize(new Dimension(2, 2));
+            this.add(sep4, "spanx, growx");
+
+            this.add(studWantsProj);
+        }
+
+        void save() {
+            if (this.maxNumProjPerStud.check.isSelected()) {
+                if (this.maxNumProjPerStud.rForce.isSelected()) {
+                    constraints.add(Gurobi.CONSTRAINTS.maxProjectPerStudent);
+                } else {
+                    preferences.add(Gurobi.PREFERENCES.maxProjectPerStudent);
+                }
+                try {
+                    Config.Constraints.maxNumProjectsPerStudent = Integer.parseInt(
+                            this.maxNumProjPerStud.field.getText());
+                } catch (NumberFormatException e) {
+                    this.maxNumProjPerStud.field.setBackground(Colors.redTransp);
+                    this.maxNumProjPerStud.field.setText(Integer.toString(Config.Constraints.maxNumProjectsPerStudent));
+                }
+            }
+
+            if (this.minNumProjPerStud.check.isSelected()) {
+                if (this.minNumProjPerStud.rForce.isSelected()) {
+                    constraints.add(Gurobi.CONSTRAINTS.minProjectPerStudent);
+                } else {
+                    preferences.add(Gurobi.PREFERENCES.minProjectPerStudent);
+                }
+                try {
+                    Config.Constraints.minNumProjectsPerStudent = Integer.parseInt(
+                            this.minNumProjPerStud.field.getText());
+                } catch (NumberFormatException e) {
+                    this.minNumProjPerStud.field.setBackground(Colors.redTransp);
+                    this.minNumProjPerStud.field.setText(Integer.toString(Config.Constraints.minNumProjectsPerStudent));
+                }
+            }
+
+            if (this.minNumStudsPerGroupProj.check.isSelected()) {
+                if (this.minNumStudsPerGroupProj.rForce.isSelected()) {
+                    constraints.add(Gurobi.CONSTRAINTS.minStudentsPerGroupProject);
+                } else {
+                    preferences.add(Gurobi.PREFERENCES.minStudentsPerGroupProject);
+                }
+                try {
+                    Config.Constraints.minNumStudsPerGroupProj = Integer.parseInt(
+                            this.maxNumProjPerStud.field.getText());
+                } catch (NumberFormatException e) {
+                    this.minNumStudsPerGroupProj.field.setBackground(Colors.redTransp);
+                    this.minNumStudsPerGroupProj.field.setText(
+                            Integer.toString(Config.Constraints.minNumStudsPerGroupProj));
+                }
+            }
+
+            if (this.fixedStuds.check.isSelected()) {
+                if (this.fixedStuds.rForce.isSelected()) {
+                    constraints.add(Gurobi.CONSTRAINTS.fixedStuds);
+                } else {
+                    preferences.add(Gurobi.PREFERENCES.fixedStuds);
+                }
+            }
+
+            if (this.studWantsProj.check.isSelected()) {
+                preferences.add(Gurobi.PREFERENCES.selectedProjs);
+                if (this.studWantsProj.rForce.isSelected()) {
+                    constraints.add(Gurobi.CONSTRAINTS.studWantsProj);
+                }
+            }
         }
     }
 }

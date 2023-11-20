@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Gui {
-
     static JFrame frame;
     static JPanel help;
     static JPanel imports;
@@ -78,11 +77,7 @@ public class Gui {
     }
 
     static void addFontSizeSwitcher() {
-        Gui.plus.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                Gui.changeFontSize(Gui.frame, Gui.frame.getFont().getSize() + 1);
-            }
-        });
+        Gui.plus.addActionListener(ae -> Gui.changeFontSize(Gui.frame, Gui.frame.getFont().getSize() + 1));
 
         Gui.minus.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -90,37 +85,31 @@ public class Gui {
             }
         });
 
-        Gui.zero.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                Gui.changeFontSize(Gui.frame, 22);
-            }
-        });
+        Gui.zero.addActionListener(ae -> Gui.changeFontSize(Gui.frame, 22));
     }
 
     static void addThemeSwitcher() {
-        Gui.theme.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                if (Gui.lightTheme) {
-                    FlatDarkLaf.setup();
-                    theme.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/sun.png"));
-                    plus.setIcon(
-                            new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/plus-light.png"));
-                    zero.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/circle-light"
-                                               + ".png"));
-                    minus.setIcon(
-                            new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/minus-light.png"));
-                } else {
-                    FlatLightLaf.setup();
-                    theme.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/moon.png"));
-                    plus.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/plus-dark.png"));
-                    zero.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/circle-dark"
-                                               + ".png"));
-                    minus.setIcon(
-                            new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/minus-dark.png"));
-                }
-                Gui.lightTheme = !Gui.lightTheme;
-                SwingUtilities.updateComponentTreeUI(Gui.frame);
+        Gui.theme.addActionListener(ae -> {
+            if (Gui.lightTheme) {
+                FlatDarkLaf.setup();
+                theme.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/sun.png"));
+                plus.setIcon(
+                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/plus-light.png"));
+                zero.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/circle-light"
+                                           + ".png"));
+                minus.setIcon(
+                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/minus-light.png"));
+            } else {
+                FlatLightLaf.setup();
+                theme.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/moon.png"));
+                plus.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/plus-dark.png"));
+                zero.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/circle-dark"
+                                           + ".png"));
+                minus.setIcon(
+                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/minus-dark.png"));
             }
+            Gui.lightTheme = !Gui.lightTheme;
+            SwingUtilities.updateComponentTreeUI(Gui.frame);
         });
     }
 }
