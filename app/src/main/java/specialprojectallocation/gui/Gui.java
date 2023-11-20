@@ -38,22 +38,26 @@ public class Gui {
         Gui.help = new HelpPanel();
         Gui.config = new ConfigPanel();
         Gui.imports = new ImportsPanel();
-        Gui.results = new JPanel();
+        Gui.results = new ResultsPanel();
         Gui.pane.addTab("Help", Gui.help);
         Gui.pane.addTab("Imports", Gui.imports);
         Gui.pane.addTab("Config", Gui.config);
         Gui.pane.addTab("Results", Gui.results);
 
+        JSeparator sep = new JSeparator(SwingConstants.VERTICAL);
+        sep.setMinimumSize(new Dimension(2, 1));
+        Gui.frame.add(sep, "cell 1 0, growy, spany, wrap");
+
         String path = "./app/src/main/java/specialprojectallocation/gui/icons/";
         Gui.theme = new JButton(new ImageIcon(path + "moon.png"));
-        Gui.frame.add(Gui.theme, "cell 1 1");
+        Gui.frame.add(Gui.theme, "cell 2 0");
         Gui.addThemeSwitcher();
         Gui.plus = new JButton(new ImageIcon(path + "plus-dark.png"));
         Gui.zero = new JButton(new ImageIcon(path + "circle-dark.png"));
         Gui.minus = new JButton(new ImageIcon(path + "minus-dark.png"));
-        Gui.frame.add(Gui.plus, "cell 1 2");
-        Gui.frame.add(Gui.zero, "cell 1 3");
-        Gui.frame.add(Gui.minus, "cell 1 4, top");
+        Gui.frame.add(Gui.plus, "cell 2 1");
+        Gui.frame.add(Gui.zero, "cell 2 2");
+        Gui.frame.add(Gui.minus, "cell 2 3, top");
         Gui.addFontSizeSwitcher();
 
         frame.pack();

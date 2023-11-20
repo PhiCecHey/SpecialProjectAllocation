@@ -9,18 +9,15 @@ public class ConfigPanel extends JPanel {
     ConfigPanel() {
         this.setLayout(new MigLayout("gapx 30pt"));
 
-        this.add(new JLabel("Project Selection"), "cell 0 0");
-        this.add(new ProjectSelectionPanel(), "top, cell 0 2");
+        this.add(new ProjectSelectionPanel(), "top, cell 0 0");
 
         this.add(new JSeparator(SwingConstants.VERTICAL), "cell 1 0, growy, spany, wrap");
 
-        this.add(new JLabel("Project Administration"), "cell 2 0");
-        this.add(new ProjectAdminPanel(), "top, cell 2 2");
+        this.add(new ProjectAdminPanel(), "top, cell 2 0");
 
         this.add(new JSeparator(SwingConstants.VERTICAL), "cell 3 0, growy, spany, wrap");
 
-        this.add(new JLabel("Gurobi Constraints"), "cell 4 0");
-        this.add(new ConstraintsPanel(), "top, cell 4 2");
+        this.add(new ConstraintsPanel(), "top, cell 4 0");
     }
 
     static class ProjectSelectionPanel extends JPanel {
@@ -46,6 +43,8 @@ public class ConfigPanel extends JPanel {
         ProjectSelectionPanel() {
             this.setLayout(new MigLayout());
 
+            this.add(new JLabel("Project Selection"), "cell 0 0, spanx, center");
+
             this.lCsvDelim = new JLabel("CSV Delimiter");
             this.lName = new JLabel("Column Name:");
             this.lFirst = new JLabel("Column 1. Project:");
@@ -66,22 +65,22 @@ public class ConfigPanel extends JPanel {
             this.fIimmatNum = new JTextField(Config.ProjectSelection.immaNum);
             this.fEmail = new JTextField(Config.ProjectSelection.email);
 
-            this.add(lCsvDelim, "cell 0 0");
-            this.add(fCsvDelim, "cell 1 0, grow");
-            this.add(lName, "cell 0 1");
-            this.add(fName, "cell 1 1, grow");
-            this.add(lFirst, "cell 0 2");
-            this.add(fFirst, "cell 1 2, grow");
-            this.add(lSecond, "cell 0 3");
-            this.add(fSecond, "cell 1 3, grow");
-            this.add(lThird, "cell 0 4");
-            this.add(fThird, "cell 1 4, grow");
-            this.add(lFourth, "cell 0 5");
-            this.add(fFourth, "cell 1 5, grow");
-            this.add(lStudProg, "cell 0 6");
-            this.add(fStudProg, "cell 1 6, grow");
-            this.add(lEmail, "cell 0 7");
-            this.add(fEmail, "cell 1 7, grow");
+            this.add(lCsvDelim, "cell 0 1, gapy 20");
+            this.add(fCsvDelim, "cell 1 1, growx");
+            this.add(lName, "cell 0 2");
+            this.add(fName, "cell 1 2, growx");
+            this.add(lFirst, "cell 0 3");
+            this.add(fFirst, "cell 1 3, growx");
+            this.add(lSecond, "cell 0 4");
+            this.add(fSecond, "cell 1 4, growx");
+            this.add(lThird, "cell 0 5");
+            this.add(fThird, "cell 1 5, growx");
+            this.add(lFourth, "cell 0 6");
+            this.add(fFourth, "cell 1 6, growx");
+            this.add(lStudProg, "cell 0 7");
+            this.add(fStudProg, "cell 1 7, growx");
+            this.add(lEmail, "cell 0 8");
+            this.add(fEmail, "cell 1 8, growx");
         }
     }
 
@@ -114,6 +113,8 @@ public class ConfigPanel extends JPanel {
         ProjectAdminPanel() {
             this.setLayout(new MigLayout());
 
+            this.add(new JLabel("Project Administration"), "cell 0 0, spanx, center");
+
             this.lCsvDelim = new JLabel("CSV Delimiter:");
             this.lNumCharsAbbrev = new JLabel("Number of Characters in Project Abbreviation:");
             this.lAbbrev = new JLabel("Column Abbreviation:");
@@ -140,28 +141,28 @@ public class ConfigPanel extends JPanel {
             this.fDelimFixedStudsNameImma = new JTextField(Config.ProjectAdministration.delimFixedStudsNameImma);
             this.fQuotes = new JTextField(Character.toString(Config.ProjectAdministration.quotes));
 
-            this.add(lCsvDelim, "cell 0 0");
-            this.add(fCsvDelim, "cell 1 0, grow");
-            this.add(lNumCharsAbbrev, "cell 0 1");
-            this.add(fNumCharsAbbrev, "cell 1 1, grow");
-            this.add(lAbbrev, "cell 0 2");
-            this.add(fAbbrev, "cell 1 2, grow");
-            this.add(lVar, "cell 0 3");
-            this.add(fVar, "cell 1 3, grow");
-            this.add(lVarOneStudent, "cell 0 4");
-            this.add(fVarOneStudent, "cell 1 4, grow");
-            this.add(lMaxNum, "cell 0 5");
-            this.add(fMaxNum, "cell 1 5, grow");
-            this.add(lMainGroup, "cell 0 6");
-            this.add(fMainGroup, "cell 1 6, grow");
-            this.add(lMainMaxNum, "cell 0 7");
-            this.add(fMainMaxNum, "cell 1 7, grow");
-            this.add(lFixed, "cell 0 8");
-            this.add(fFixed, "cell 1 8, grow");
-            this.add(lDelimFixedStudsNameImma, "cell 0 9");
-            this.add(fDelimFixedStudsNameImma, "cell 1 9, grow");
-            this.add(lQuotes, "cell 0 10");
-            this.add(fQuotes, "cell 1 10, grow");
+            this.add(lCsvDelim, "cell 0 1, gapy 20");
+            this.add(fCsvDelim, "cell 1 1, growx");
+            this.add(lNumCharsAbbrev, "cell 0 2");
+            this.add(fNumCharsAbbrev, "cell 1 2, growx");
+            this.add(lAbbrev, "cell 0 3");
+            this.add(fAbbrev, "cell 1 3, growx");
+            this.add(lVar, "cell 0 4");
+            this.add(fVar, "cell 1 4, growx");
+            this.add(lVarOneStudent, "cell 0 5");
+            this.add(fVarOneStudent, "cell 1 5, growx");
+            this.add(lMaxNum, "cell 0 6");
+            this.add(fMaxNum, "cell 1 6, growx");
+            this.add(lMainGroup, "cell 0 7");
+            this.add(fMainGroup, "cell 1 7, growx");
+            this.add(lMainMaxNum, "cell 0 8");
+            this.add(fMainMaxNum, "cell 1 8, growx");
+            this.add(lFixed, "cell 0 9");
+            this.add(fFixed, "cell 1 9, growx");
+            this.add(lDelimFixedStudsNameImma, "cell 0 10");
+            this.add(fDelimFixedStudsNameImma, "cell 1 10, growx");
+            this.add(lQuotes, "cell 0 11");
+            this.add(fQuotes, "cell 1 11, growx");
         }
     }
 
@@ -178,6 +179,8 @@ public class ConfigPanel extends JPanel {
         ConstraintsPanel() {
             this.setLayout(new MigLayout());
 
+            this.add(new JLabel("Gurobi Constraints"), "cell 0 0, spanx, center");
+
             this.lMaxNumProjPerStud = new JLabel("Maximum Number of Projects per Student:");
             this.lMinNumProjPerStud = new JLabel("Minimum Number of Projects per Student:");
             this.lMinNumStudsPerGroupProj = new JLabel("Minimum Number of Students per Group Project:");
@@ -187,12 +190,12 @@ public class ConfigPanel extends JPanel {
             this.fMinNumStudsPerGroupProj = new JTextField(
                     Integer.toString(Config.Constraints.minNumStudsPerGroupProj));
 
-            this.add(lMaxNumProjPerStud, "cell 0 0");
-            this.add(fMaxNumProjPerStud, "cell 1 0, grow");
-            this.add(lMinNumProjPerStud, "cell 0 1");
-            this.add(fMinNumProjPerStud, "cell 1 1, grow");
-            this.add(lMinNumStudsPerGroupProj, "cell 0 2");
-            this.add(fMinNumStudsPerGroupProj, "cell 1 2");
+            this.add(lMaxNumProjPerStud, "cell 0 1, gapy 20");
+            this.add(fMaxNumProjPerStud, "cell 1 1, growx");
+            this.add(lMinNumProjPerStud, "cell 0 2");
+            this.add(fMinNumProjPerStud, "cell 1 2, growx");
+            this.add(lMinNumStudsPerGroupProj, "cell 0 3");
+            this.add(fMinNumStudsPerGroupProj, "cell 1 3");
         }
     }
 }
