@@ -2,6 +2,12 @@ package specialprojectallocation.gui;
 
 import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
+import specialprojectallocation.Calculation;
+import specialprojectallocation.Config;
+import specialprojectallocation.Exceptions;
+import specialprojectallocation.objects.Project;
+import specialprojectallocation.parser.RegisterProject;
+import specialprojectallocation.parser.SelectProject;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -15,10 +21,8 @@ public class ImportsPanel extends JPanel {
     final JButton read;
     final JButton bRegistration;
     final JButton bSelection;
-    static File projSel;
-    static File projReg;
 
-    ImportsPanel(){
+    ImportsPanel() {
         this.setLayout(new MigLayout());
 
         this.lRegistration = new JLabel("Project Registration Datei (CSV):");
@@ -58,10 +62,24 @@ public class ImportsPanel extends JPanel {
         });
     }
 
-    private void readFiles() {File projSel, projReg;
+    private void readFiles() {
+        File projSel, projReg;
         this.read.addActionListener(ae -> {
-            ImportsPanel.projReg = new File(fRegistration.getText());
-            ImportsPanel.projSel = new File(fSelection.getText());
+            try {
+                Calculation.projReg = new File(fRegistration.getText());
+                Calculation.projSel = new File(fSelection.getText());
+                Calculation.projects = RegisterProject.read(Calculation.projReg, Config.ProjectAdministration.csvDelim);
+                Calculation.students = SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim);
+                Project.setAllFixed();
+            } catch (Exceptions.StudentNotFoundException e) {// TODO
+                throw new RuntimeException(e);
+            } catch (Exceptions.ProjectDuplicateException e) {// TODO
+                throw new RuntimeException(e);
+            } catch (Exceptions.AbbrevTakenException e) {// TODO
+                throw new RuntimeException(e);
+            } catch (Exceptions.StudentDuplicateException e) {// TODO
+                throw new RuntimeException(e);
+            }
         });
     }
 }

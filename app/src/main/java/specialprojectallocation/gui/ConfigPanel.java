@@ -1,6 +1,7 @@
 package specialprojectallocation.gui;
 
 import net.miginfocom.swing.MigLayout;
+import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
 import specialprojectallocation.algorithm.Gurobi;
 
@@ -11,8 +12,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class ConfigPanel extends JPanel {
-    static ArrayList<Gurobi.CONSTRAINTS> constraints = new ArrayList<>();
-    static ArrayList<Gurobi.PREFERENCES> preferences = new ArrayList<>();
     JButton save;
     ProjectAdminPanel projectAdminPanel;
     ProjectSelectionPanel projectSelectionPanel;
@@ -345,9 +344,9 @@ public class ConfigPanel extends JPanel {
         void save() {
             if (this.maxNumProjPerStud.check.isSelected()) {
                 if (this.maxNumProjPerStud.rForce.isSelected()) {
-                    constraints.add(Gurobi.CONSTRAINTS.maxProjectPerStudent);
+                    Calculation.constraints.add(Gurobi.CONSTRAINTS.maxProjectPerStudent);
                 } else {
-                    preferences.add(Gurobi.PREFERENCES.maxProjectPerStudent);
+                    Calculation.preferences.add(Gurobi.PREFERENCES.maxProjectPerStudent);
                 }
                 try {
                     Config.Constraints.maxNumProjectsPerStudent = Integer.parseInt(
@@ -360,9 +359,9 @@ public class ConfigPanel extends JPanel {
 
             if (this.minNumProjPerStud.check.isSelected()) {
                 if (this.minNumProjPerStud.rForce.isSelected()) {
-                    constraints.add(Gurobi.CONSTRAINTS.minProjectPerStudent);
+                    Calculation.constraints.add(Gurobi.CONSTRAINTS.minProjectPerStudent);
                 } else {
-                    preferences.add(Gurobi.PREFERENCES.minProjectPerStudent);
+                    Calculation.preferences.add(Gurobi.PREFERENCES.minProjectPerStudent);
                 }
                 try {
                     Config.Constraints.minNumProjectsPerStudent = Integer.parseInt(
@@ -375,9 +374,9 @@ public class ConfigPanel extends JPanel {
 
             if (this.minNumStudsPerGroupProj.check.isSelected()) {
                 if (this.minNumStudsPerGroupProj.rForce.isSelected()) {
-                    constraints.add(Gurobi.CONSTRAINTS.minStudentsPerGroupProject);
+                    Calculation.constraints.add(Gurobi.CONSTRAINTS.minStudentsPerGroupProject);
                 } else {
-                    preferences.add(Gurobi.PREFERENCES.minStudentsPerGroupProject);
+                    Calculation.preferences.add(Gurobi.PREFERENCES.minStudentsPerGroupProject);
                 }
                 try {
                     Config.Constraints.minNumStudsPerGroupProj = Integer.parseInt(
@@ -391,16 +390,16 @@ public class ConfigPanel extends JPanel {
 
             if (this.fixedStuds.check.isSelected()) {
                 if (this.fixedStuds.rForce.isSelected()) {
-                    constraints.add(Gurobi.CONSTRAINTS.fixedStuds);
+                    Calculation.constraints.add(Gurobi.CONSTRAINTS.fixedStuds);
                 } else {
-                    preferences.add(Gurobi.PREFERENCES.fixedStuds);
+                    Calculation.preferences.add(Gurobi.PREFERENCES.fixedStuds);
                 }
             }
 
             if (this.studWantsProj.check.isSelected()) {
-                preferences.add(Gurobi.PREFERENCES.selectedProjs);
+                Calculation.preferences.add(Gurobi.PREFERENCES.selectedProjs);
                 if (this.studWantsProj.rForce.isSelected()) {
-                    constraints.add(Gurobi.CONSTRAINTS.studWantsProj);
+                    Calculation.constraints.add(Gurobi.CONSTRAINTS.studWantsProj);
                 }
             }
         }

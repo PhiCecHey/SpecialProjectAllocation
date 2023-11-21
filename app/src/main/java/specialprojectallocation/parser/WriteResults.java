@@ -52,9 +52,7 @@ public class WriteResults {
             }
             fw.close();
             bw.close();
-        } catch (
-
-                IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

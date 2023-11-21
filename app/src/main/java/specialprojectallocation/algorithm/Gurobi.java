@@ -1,5 +1,6 @@
 package specialprojectallocation.algorithm;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -13,6 +14,7 @@ import gurobi.GRBModel;
 import gurobi.GRBVar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
 import specialprojectallocation.Log;
 import specialprojectallocation.objects.Group;
@@ -33,11 +35,10 @@ public class Gurobi {
         fixedStuds,
     }
 
-    private final Allocations allocs;
+    public final Allocations allocs;
     private final GRBModel model;
     private final GRBEnv env;
-    private double[][] results;
-    private static String outFile;
+    public double[][] results;
 
     private final ArrayList<CONSTRAINTS> constraints;
     private final ArrayList<PREFERENCES> preferences;
@@ -70,12 +71,12 @@ public class Gurobi {
             boolean worked = this.extractResults();
             String printConsole = this.print(true, worked);
             System.out.println(printConsole);
+            Calculation.gurobiResultsTui = printConsole;
             Student.studsWithoutProj(this.studsWithoutProj());
             WriteResults.printForSupers(this.results, this.allocs, outFile);
-
+            Calculation.outPath = outFile;
             model.dispose();
             env.dispose();
-
         } catch (GRBException e) {
             System.err.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
             throw e;
@@ -104,8 +105,39 @@ public class Gurobi {
             String printConsole = this.print(true, worked);
             System.out.println(printConsole);
             Student.studsWithoutProj(this.studsWithoutProj());
-            WriteResults.printForSupers(this.results, this.allocs, Gurobi.outFile);
+            //WriteResults.printForSupers(this.results, this.allocs, new File(Gurobi.outFile));
+            model.dispose();
+            env.dispose();
 
+        } catch (GRBException e) {
+            System.err.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
+            throw e;
+        }
+    }
+
+    public Gurobi() throws GRBException {
+        this.constraints = Calculation.constraints;
+        this.preferences = Calculation.preferences;
+        Log.clear();
+
+        try {
+            this.env = new GRBEnv();
+            this.model = new GRBModel(env);
+            this.model.set("LogToConsole", "0");
+            this.model.set(GRB.StringAttr.ModelName, "SpecialProjectAlloc");
+            this.allocs = new Allocations(Calculation.projects, Calculation.students, this.model);
+
+            this.addConstraints();
+            this.addPreferences();
+            GRBLinExpr objective = this.calculateObjectiveLinExpr(0);
+            this.model.setObjective(objective, GRB.MAXIMIZE);
+            this.model.optimize();
+
+            boolean worked = this.extractResults();
+            String printConsole = this.print(true, worked);
+            System.out.println(printConsole);
+            Calculation.gurobiResultsTui = printConsole + "\n\nStudents without project:\n" + this.studsWithoutProj();
+            Student.studsWithoutProj(this.studsWithoutProj());
             model.dispose();
             env.dispose();
 
@@ -152,6 +184,7 @@ public class Gurobi {
         try {
             int optimstatus = model.get(GRB.IntAttr.Status);
             if (optimstatus != GRB.OPTIMAL) {
+                Calculation.gurobiResultsTui = "Model infeasible.";
                 System.out.println("Model infeasible.");
                 Log.append("\n\n\nEs konnte keine Zuteilung gefunden werden.");
                 model.dispose();
