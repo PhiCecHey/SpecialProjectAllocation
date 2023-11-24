@@ -203,11 +203,11 @@ public class ConfigPanel extends JPanel {
             this.add(lFixed, "cell 0 9");
             this.add(fFixed, "cell 1 9, growx");
             this.add(lDelimFixedStuds, "cell 0 10");
-            this.add((fDelimFixedStuds), "cell 1 10");
+            this.add((fDelimFixedStuds), "cell 1 10, growx");
             this.add(lDelimFixedStudsNameImma, "cell 0 11");
             this.add(fDelimFixedStudsNameImma, "cell 1 11, growx");
-            this.add(lQuotes, "cell 0 11");
-            this.add(fQuotes, "cell 1 11, growx");
+            this.add(lQuotes, "cell 0 12");
+            this.add(fQuotes, "cell 1 12, growx");
         }
 
         void save() {
