@@ -16,7 +16,7 @@ public class Gui {
     static JPanel results;
     static JTabbedPane pane;
     static boolean lightTheme = true;
-    static JButton theme, plus, minus, zero;
+    static JButton theme, plus, minus, zero, maximize;
 
     public static void init() {
         FlatLightLaf.setup();
@@ -53,9 +53,11 @@ public class Gui {
         Gui.plus = new JButton(new ImageIcon(path + "plus-dark.png"));
         Gui.zero = new JButton(new ImageIcon(path + "circle-dark.png"));
         Gui.minus = new JButton(new ImageIcon(path + "minus-dark.png"));
+        Gui.maximize = new JButton(new ImageIcon(path + "maximize-dark.png"));
         Gui.frame.add(Gui.plus, "cell 2 1");
         Gui.frame.add(Gui.zero, "cell 2 2");
         Gui.frame.add(Gui.minus, "cell 2 3, top");
+        Gui.frame.add(Gui.maximize, "cell 2 4, top");
         Gui.addFontSizeSwitcher();
 
         frame.pack();
@@ -76,10 +78,13 @@ public class Gui {
 
     static void addFontSizeSwitcher() {
         Gui.plus.addActionListener(ae -> Gui.changeFontSize(Gui.frame, Gui.frame.getFont().getSize() + 1));
-
         Gui.minus.addActionListener(ae -> Gui.changeFontSize(Gui.frame, Gui.frame.getFont().getSize() - 1));
-
         Gui.zero.addActionListener(ae -> Gui.changeFontSize(Gui.frame, 22));
+        Gui.maximize.addActionListener(ae -> {
+            for (int i = 0; i < 10; i++) {
+                SwingUtilities.updateComponentTreeUI(Gui.frame);
+            }
+        });
     }
 
     static void addThemeSwitcher() {
@@ -87,20 +92,21 @@ public class Gui {
             if (Gui.lightTheme) {
                 FlatDarkLaf.setup();
                 theme.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/sun.png"));
-                plus.setIcon(
-                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/plus-light.png"));
-                zero.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/circle-light"
-                                           + ".png"));
-                minus.setIcon(
-                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/minus-light.png"));
+                plus.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/plus-light.png"));
+                zero.setIcon(
+                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/circle-light" + ".png"));
+                minus.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/minus-light.png"));
+                maximize.setIcon(
+                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/maximize-light" + ".png"));
             } else {
                 FlatLightLaf.setup();
                 theme.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/moon.png"));
                 plus.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/plus-dark.png"));
-                zero.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/circle-dark"
-                                           + ".png"));
-                minus.setIcon(
-                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/minus-dark.png"));
+                zero.setIcon(
+                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/circle-dark" + ".png"));
+                minus.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/minus-dark.png"));
+                maximize.setIcon(
+                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/maximize-dark" + ".png"));
             }
             Gui.lightTheme = !Gui.lightTheme;
             SwingUtilities.updateComponentTreeUI(Gui.frame);
