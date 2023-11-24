@@ -3,7 +3,6 @@ package specialprojectallocation.objects;
 import specialprojectallocation.Config;
 import specialprojectallocation.Exceptions;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
-import specialprojectallocation.Exceptions.StudentNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -90,7 +89,7 @@ public class Project {
         return ret && this.isFixed(student);
     }
 
-    public void setFixed() throws StudentNotFoundException {
+    public void setFixed() {
         if (this.stringFixedStuds.isEmpty()) {
             return;
         }

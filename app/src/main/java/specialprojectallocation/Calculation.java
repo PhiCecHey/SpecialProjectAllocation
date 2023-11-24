@@ -12,9 +12,6 @@ public class Calculation {
     public static File projReg;
     public static ArrayList<Project> projects;
     public  static ArrayList<Student> students;
-    public static ArrayList<Gurobi.CONSTRAINTS> constraints = new ArrayList<>();
-    public static ArrayList<Gurobi.PREFERENCES> preferences = new ArrayList<>();
     public static Gurobi gurobi;
-    public static String gurobiResultsTui;
-    public static String outPath;
+    public static String gurobiResultsGui;
 }

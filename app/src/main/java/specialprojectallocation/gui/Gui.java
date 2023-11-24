@@ -7,8 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Gui {
     static JFrame frame;
@@ -79,11 +77,7 @@ public class Gui {
     static void addFontSizeSwitcher() {
         Gui.plus.addActionListener(ae -> Gui.changeFontSize(Gui.frame, Gui.frame.getFont().getSize() + 1));
 
-        Gui.minus.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                Gui.changeFontSize(Gui.frame, Gui.frame.getFont().getSize() - 1);
-            }
-        });
+        Gui.minus.addActionListener(ae -> Gui.changeFontSize(Gui.frame, Gui.frame.getFont().getSize() - 1));
 
         Gui.zero.addActionListener(ae -> Gui.changeFontSize(Gui.frame, 22));
     }

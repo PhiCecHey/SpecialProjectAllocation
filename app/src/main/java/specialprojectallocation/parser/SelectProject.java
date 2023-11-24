@@ -56,7 +56,6 @@ public class SelectProject extends MyParser {
         String[] cells = line.split(String.valueOf(delim));
         for (int i = 0; i < cells.length; ++i) {
             String cell = cells[i];
-            int debug = 4;
             if (cell.contains(Config.ProjectSelection.fullName)) {
                 SelectProject.name = i;
             } else if (cell.contains(Config.ProjectSelection.immaNum)) {

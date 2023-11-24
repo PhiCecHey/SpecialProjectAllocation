@@ -1,21 +1,16 @@
 package specialprojectallocation.gui;
 
 import net.miginfocom.swing.MigLayout;
-import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
-import specialprojectallocation.algorithm.Gurobi;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class ConfigPanel extends JPanel {
-    JButton save;
-    ProjectAdminPanel projectAdminPanel;
-    ProjectSelectionPanel projectSelectionPanel;
-    ConstraintsPanel constraintsPanel;
+    final JButton save;
+    final ProjectAdminPanel projectAdminPanel;
+    final ProjectSelectionPanel projectSelectionPanel;
+    final ConstraintsPanel constraintsPanel;
 
     ConfigPanel() {
         this.setLayout(new MigLayout("gapx 30pt, gapy 20", "[]push[]push[]"));
@@ -46,13 +41,11 @@ public class ConfigPanel extends JPanel {
     }
 
     private void save() {
-        this.save.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                projectAdminPanel.save();
-                projectSelectionPanel.save();
-                constraintsPanel.save();
-                save.setBackground(Colors.blueTransp);
-            }
+        this.save.addActionListener(ae -> {
+            projectAdminPanel.save();
+            projectSelectionPanel.save();
+            constraintsPanel.save();
+            save.setBackground(Colors.blueTransp);
         });
     }
 
@@ -105,18 +98,20 @@ public class ConfigPanel extends JPanel {
             this.add(fCsvDelim, "cell 1 1, growx");
             this.add(lName, "cell 0 2");
             this.add(fName, "cell 1 2, growx");
-            this.add(lFirst, "cell 0 3");
-            this.add(fFirst, "cell 1 3, growx");
-            this.add(lSecond, "cell 0 4");
-            this.add(fSecond, "cell 1 4, growx");
-            this.add(lThird, "cell 0 5");
-            this.add(fThird, "cell 1 5, growx");
-            this.add(lFourth, "cell 0 6");
-            this.add(fFourth, "cell 1 6, growx");
-            this.add(lStudProg, "cell 0 7");
-            this.add(fStudProg, "cell 1 7, growx");
-            this.add(lEmail, "cell 0 8");
-            this.add(fEmail, "cell 1 8, growx");
+            this.add(lImmatNum, "cell 0 3");
+            this.add((fIimmatNum), "cell 1 3, growx");
+            this.add(lFirst, "cell 0 4");
+            this.add(fFirst, "cell 1 4, growx");
+            this.add(lSecond, "cell 0 5");
+            this.add(fSecond, "cell 1 5, growx");
+            this.add(lThird, "cell 0 6");
+            this.add(fThird, "cell 1 6, growx");
+            this.add(lFourth, "cell 0 7");
+            this.add(fFourth, "cell 1 7, growx");
+            this.add(lStudProg, "cell 0 8");
+            this.add(fStudProg, "cell 1 8, growx");
+            this.add(lEmail, "cell 0 9");
+            this.add(fEmail, "cell 1 9, growx");
         }
 
         void save() {
@@ -207,8 +202,10 @@ public class ConfigPanel extends JPanel {
             this.add(fMainMaxNum, "cell 1 8, growx");
             this.add(lFixed, "cell 0 9");
             this.add(fFixed, "cell 1 9, growx");
-            this.add(lDelimFixedStudsNameImma, "cell 0 10");
-            this.add(fDelimFixedStudsNameImma, "cell 1 10, growx");
+            this.add(lDelimFixedStuds, "cell 0 10");
+            this.add((fDelimFixedStuds), "cell 1 10");
+            this.add(lDelimFixedStudsNameImma, "cell 0 11");
+            this.add(fDelimFixedStudsNameImma, "cell 1 11, growx");
             this.add(lQuotes, "cell 0 11");
             this.add(fQuotes, "cell 1 11, growx");
         }
@@ -235,13 +232,18 @@ public class ConfigPanel extends JPanel {
     }
 
     static class ConstraintsPanel extends JPanel {
-        ButtonGroup minNumProjPerStud, maxNumProjPerStud, minNumStudsPerGroupProj, fixedStuds, studWantsProj;
+        final ButtonGroup minNumProjPerStud;
+        final ButtonGroup maxNumProjPerStud;
+        final ButtonGroup minNumStudsPerGroupProj;
+        final ButtonGroup fixedStuds;
+        final ButtonGroup studWantsProj;
 
         static class ButtonGroup extends JPanel {
-            JCheckBox check;
-            JRadioButton rForce, rTry;
+            final JCheckBox check;
+            final JRadioButton rForce;
+            final JRadioButton rTry;
             JTextField field;
-            JLabel label;
+            final JLabel label;
 
             ButtonGroup(String f, String l) {
                 this.setLayout(new MigLayout());
@@ -344,9 +346,11 @@ public class ConfigPanel extends JPanel {
         void save() {
             if (this.maxNumProjPerStud.check.isSelected()) {
                 if (this.maxNumProjPerStud.rForce.isSelected()) {
-                    Calculation.constraints.add(Gurobi.CONSTRAINTS.maxProjectPerStudent);
+                    Config.Constraints.maxProjectPerStudent = true;
+                    Config.Preferences.maxProjectPerStudent = false;
                 } else {
-                    Calculation.preferences.add(Gurobi.PREFERENCES.maxProjectPerStudent);
+                    Config.Constraints.maxProjectPerStudent = false;
+                    Config.Preferences.maxProjectPerStudent = true;
                 }
                 try {
                     Config.Constraints.maxNumProjectsPerStudent = Integer.parseInt(
@@ -359,9 +363,11 @@ public class ConfigPanel extends JPanel {
 
             if (this.minNumProjPerStud.check.isSelected()) {
                 if (this.minNumProjPerStud.rForce.isSelected()) {
-                    Calculation.constraints.add(Gurobi.CONSTRAINTS.minProjectPerStudent);
+                    Config.Constraints.minProjectPerStudent = true;
+                    Config.Preferences.minProjectPerStudent = false;
                 } else {
-                    Calculation.preferences.add(Gurobi.PREFERENCES.minProjectPerStudent);
+                    Config.Preferences.minProjectPerStudent = true;
+                    Config.Constraints.minProjectPerStudent = false;
                 }
                 try {
                     Config.Constraints.minNumProjectsPerStudent = Integer.parseInt(
@@ -374,9 +380,11 @@ public class ConfigPanel extends JPanel {
 
             if (this.minNumStudsPerGroupProj.check.isSelected()) {
                 if (this.minNumStudsPerGroupProj.rForce.isSelected()) {
-                    Calculation.constraints.add(Gurobi.CONSTRAINTS.minStudentsPerGroupProject);
+                    Config.Constraints.minStudentsPerGroupProject = true;
+                    Config.Preferences.minStudentsPerGroupProject = false;
                 } else {
-                    Calculation.preferences.add(Gurobi.PREFERENCES.minStudentsPerGroupProject);
+                    Config.Preferences.minStudentsPerGroupProject = true;
+                    Config.Constraints.minStudentsPerGroupProject = false;
                 }
                 try {
                     Config.Constraints.minNumStudsPerGroupProj = Integer.parseInt(
@@ -390,17 +398,17 @@ public class ConfigPanel extends JPanel {
 
             if (this.fixedStuds.check.isSelected()) {
                 if (this.fixedStuds.rForce.isSelected()) {
-                    Calculation.constraints.add(Gurobi.CONSTRAINTS.fixedStuds);
+                    Config.Constraints.fixedStuds = true;
+                    Config.Preferences.fixedStuds = false;
                 } else {
-                    Calculation.preferences.add(Gurobi.PREFERENCES.fixedStuds);
+                    Config.Preferences.fixedStuds = true;
+                    Config.Constraints.fixedStuds = false;
                 }
             }
 
             if (this.studWantsProj.check.isSelected()) {
-                Calculation.preferences.add(Gurobi.PREFERENCES.selectedProjs);
-                if (this.studWantsProj.rForce.isSelected()) {
-                    Calculation.constraints.add(Gurobi.CONSTRAINTS.studWantsProj);
-                }
+                Config.Preferences.selectedProjs = true;
+                Config.Constraints.studWantsProj = this.studWantsProj.rForce.isSelected();
             }
         }
     }

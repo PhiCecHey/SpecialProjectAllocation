@@ -30,10 +30,6 @@ public class Student {
         return this.name;
     }
 
-    public String email() {
-        return this.email;
-    }
-
     public StudyProgram study() {
         return this.study;
     }

@@ -10,8 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Config;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
-import specialprojectallocation.Exceptions.ProjectDuplicateException;
-import specialprojectallocation.Exceptions.StudentNotFoundException;
 import specialprojectallocation.objects.Group;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
@@ -25,7 +23,7 @@ public class RegisterProject extends MyParser {
     // TOOD: how to handle exceptions?
     @Nullable
     public static ArrayList<Project> read(@NotNull File csv, char delim)
-            throws ProjectDuplicateException, NumberFormatException, AbbrevTakenException, StudentNotFoundException {
+    throws NumberFormatException, AbbrevTakenException {
         ArrayList<Project> projects = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
             System.out.println("READING FILE: " + csv.getAbsolutePath());
@@ -50,7 +48,6 @@ public class RegisterProject extends MyParser {
                      * cells[RegisterProject.mainMaxNum], oneStudent);
                      */
 
-                    Student[] fix = null;
                     int maxNum = oneStudent ? 1 : Integer.MAX_VALUE;
                     if (!cells[RegisterProject.maxNum].isEmpty()) {
                         maxNum = Integer.parseInt(cells[RegisterProject.maxNum]);

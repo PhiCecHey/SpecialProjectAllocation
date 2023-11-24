@@ -63,7 +63,6 @@ public class ImportsPanel extends JPanel {
     }
 
     private void readFiles() {
-        File projSel, projReg;
         this.read.addActionListener(ae -> {
             try {
                 Calculation.projReg = new File(fRegistration.getText());
@@ -71,15 +70,11 @@ public class ImportsPanel extends JPanel {
                 Calculation.projects = RegisterProject.read(Calculation.projReg, Config.ProjectAdministration.csvDelim);
                 Calculation.students = SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim);
                 Project.setAllFixed();
-            } catch (Exceptions.StudentNotFoundException e) {// TODO
+            } catch (Exceptions.StudentNotFoundException | Exceptions.StudentDuplicateException |
+                     Exceptions.AbbrevTakenException e) {// TODO
                 throw new RuntimeException(e);
-            } catch (Exceptions.ProjectDuplicateException e) {// TODO
-                throw new RuntimeException(e);
-            } catch (Exceptions.AbbrevTakenException e) {// TODO
-                throw new RuntimeException(e);
-            } catch (Exceptions.StudentDuplicateException e) {// TODO
-                throw new RuntimeException(e);
-            }
+            } // TODO
+
         });
     }
 }

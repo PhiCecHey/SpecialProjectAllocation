@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import gurobi.GRBException;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
-import specialprojectallocation.Exceptions.ProjectDuplicateException;
 import specialprojectallocation.Exceptions.StudentDuplicateException;
 import specialprojectallocation.Exceptions.StudentNotFoundException;
 import specialprojectallocation.algorithm.Gurobi;
@@ -27,7 +26,7 @@ public class App {
         //tui();
     }
 
-    public static void tui(){
+    public static void tui() {
         System.out.println(System.getProperty("user.dir"));
         try {
             boolean cmd = false;
@@ -45,28 +44,16 @@ public class App {
             ArrayList<Student> students = SelectProject.read(two, Config.ProjectSelection.csvDelim);
             Project.setAllFixed();
 
-            ArrayList<Gurobi.CONSTRAINTS> constraints = new ArrayList<>();
-            constraints.add(Gurobi.CONSTRAINTS.projectPerStudent);
-            constraints.add(Gurobi.CONSTRAINTS.studentsPerProject);
-            constraints.add(Gurobi.CONSTRAINTS.studentAcceptedInProject);
-            constraints.add(Gurobi.CONSTRAINTS.minStudentsPerGroupProject);
-            constraints.add(Gurobi.CONSTRAINTS.fixedStuds);
-            constraints.add(Gurobi.CONSTRAINTS.studWantsProj);
-            ArrayList<Gurobi.PREFERENCES> prefs = new ArrayList<>();
-            prefs.add(Gurobi.PREFERENCES.selectedProjs);
-            //prefs.add(Gurobi.PREFERENCES.fixedStuds);
-            int debug = 4;
-
             String outpath = one.getPath().replace(one.getName(), "");
-            new Gurobi(constraints, prefs, projects, students, outpath + "projects-students.csv");
-        } catch (StudentDuplicateException | NumberFormatException | ProjectDuplicateException | AbbrevTakenException
-                 | StudentNotFoundException | GRBException e) {
+            new Gurobi(projects, students, outpath + "projects-students.csv");
+        } catch (StudentDuplicateException | NumberFormatException | AbbrevTakenException | StudentNotFoundException |
+                 GRBException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-    public static void gui(){
+    public static void gui() {
         Gui.init();
     }
 }

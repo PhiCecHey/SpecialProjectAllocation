@@ -1,6 +1,5 @@
 package specialprojectallocation.algorithm;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -23,35 +22,17 @@ import specialprojectallocation.objects.Student;
 import specialprojectallocation.parser.WriteResults;
 
 public class Gurobi {
-    public enum CONSTRAINTS {
-        minProjectPerStudent, maxProjectPerStudent, projectPerStudent, minStudentsPerProject, maxStudentsPerProject,
-        studentsPerProject, studentAcceptedInProject, studentsPerStudy, minStudentsPerGroupProject, fixedStuds,
-        studWantsProj,
-    }
-
-    public enum PREFERENCES {
-        minProjectPerStudent, maxProjectPerStudent, projectPerStudent, minStudentsPerProject, maxStudentsPerProject,
-        studentsPerProject, studentAcceptedInProject, studentsPerStudy, minStudentsPerGroupProject, selectedProjs,
-        fixedStuds,
-    }
-
     public final Allocations allocs;
     private final GRBModel model;
     private final GRBEnv env;
     public double[][] results;
 
-    private final ArrayList<CONSTRAINTS> constraints;
-    private final ArrayList<PREFERENCES> preferences;
-
     public static ArrayList<Project> projects;
     public static ArrayList<Student> students;
 
-    public Gurobi(final ArrayList<CONSTRAINTS> c, final ArrayList<PREFERENCES> p, final ArrayList<Project> proj,
-                  final ArrayList<Student> stud, String outFile) throws GRBException {
+    public Gurobi(final ArrayList<Project> proj, final ArrayList<Student> stud, String outFile) throws GRBException {
         Gurobi.students = stud;
         Gurobi.projects = proj;
-        this.constraints = c;
-        this.preferences = p;
 
         Log.clear();
 
@@ -69,46 +50,12 @@ public class Gurobi {
             this.model.optimize();
 
             boolean worked = this.extractResults();
-            String printConsole = this.print(true, worked);
-            System.out.println(printConsole);
-            Calculation.gurobiResultsTui = printConsole;
+            System.out.println(this.print(true, worked));
+            Calculation.gurobiResultsGui = this.print(false, worked);
             Student.studsWithoutProj(this.studsWithoutProj());
             WriteResults.printForSupers(this.results, this.allocs, outFile);
-            Calculation.outPath = outFile;
             model.dispose();
             env.dispose();
-        } catch (GRBException e) {
-            System.err.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
-            throw e;
-        }
-    }
-
-    public Gurobi(ArrayList<CONSTRAINTS> constraints, ArrayList<PREFERENCES> preferences) throws GRBException {
-        this.constraints = constraints;
-        this.preferences = preferences;
-        Log.clear();
-
-        try {
-            this.env = new GRBEnv();
-            this.model = new GRBModel(env);
-            this.model.set("LogToConsole", "0");
-            this.model.set(GRB.StringAttr.ModelName, "SpecialProjectAlloc");
-            this.allocs = new Allocations(projects, students, this.model);
-
-            this.addConstraints();
-            this.addPreferences();
-            GRBLinExpr objective = this.calculateObjectiveLinExpr(0);
-            this.model.setObjective(objective, GRB.MAXIMIZE);
-            this.model.optimize();
-
-            boolean worked = this.extractResults();
-            String printConsole = this.print(true, worked);
-            System.out.println(printConsole);
-            Student.studsWithoutProj(this.studsWithoutProj());
-            //WriteResults.printForSupers(this.results, this.allocs, new File(Gurobi.outFile));
-            model.dispose();
-            env.dispose();
-
         } catch (GRBException e) {
             System.err.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
             throw e;
@@ -116,8 +63,6 @@ public class Gurobi {
     }
 
     public Gurobi() throws GRBException {
-        this.constraints = Calculation.constraints;
-        this.preferences = Calculation.preferences;
         Log.clear();
 
         try {
@@ -134,10 +79,11 @@ public class Gurobi {
             this.model.optimize();
 
             boolean worked = this.extractResults();
-            String printConsole = this.print(true, worked);
-            System.out.println(printConsole);
-            Calculation.gurobiResultsTui = printConsole + "\n\nStudents without project:\n" + this.studsWithoutProj();
+            System.out.println(this.print(true, worked));
             Student.studsWithoutProj(this.studsWithoutProj());
+            Calculation.gurobiResultsGui = this.print(false, worked);
+            Calculation.gurobiResultsGui = this.print(false, worked) + "\n\nStudents without project:\n"
+                                           + this.studsWithoutProj();
             model.dispose();
             env.dispose();
 
@@ -184,7 +130,7 @@ public class Gurobi {
         try {
             int optimstatus = model.get(GRB.IntAttr.Status);
             if (optimstatus != GRB.OPTIMAL) {
-                Calculation.gurobiResultsTui = "Model infeasible.";
+                Calculation.gurobiResultsGui = "Model infeasible.";
                 System.out.println("Model infeasible.");
                 Log.append("\n\n\nEs konnte keine Zuteilung gefunden werden.");
                 model.dispose();
@@ -201,15 +147,13 @@ public class Gurobi {
     }
 
     @Nullable
-    private String print(boolean all, boolean worked) {
+    private String print(boolean tui, boolean worked) {
         StringBuilder print = new StringBuilder(Log.log() + "\n");
         if (!worked) {
             return print.toString();
         }
 
-        if (all) {
-            print.append("\n-------------------- SCORE MATRIX --------------------\n");
-        }
+        print.append("\n-------------------- SCORE MATRIX --------------------\n");
 
         // maximum score:
         double max = 0;
@@ -223,7 +167,11 @@ public class Gurobi {
             max += m;
         }
 
-        print.append("Maximum score: \t\t").append(max);
+        String indent = "\t"; // gui
+        if (tui) {
+            indent = "\t\t";
+        }
+        print.append("Maximum score:").append(indent).append(max);
 
         // current score:
         double cur = 0;
@@ -241,63 +189,71 @@ public class Gurobi {
             return null;
         }
 
+
         StringBuilder immas = new StringBuilder();
         for (int s = 0; s < this.allocs.numStuds(); s++) {
             immas.append(this.allocs.get(0, s).student().immatNum()).append("\t");
         }
 
         // score matrix:
-        if (all) {
-            print.append("......................................................");
-            print.append("\n" + "Abbrevs/Immas" + "\t").append(immas);
-            for (int p = 0; p < this.allocs.numProjs(); ++p) {
-                StringBuilder str = new StringBuilder("\t\t\t");
-                for (int s = 0; s < this.allocs.numStuds(); ++s) {
-                    if (this.allocs.get(p, s).score() >= 0) {
-                        if (this.allocs.get(p, s).score() >= 100) {
-                            str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1)))
-                               .append("\t");
-                        } else if (this.allocs.get(p, s).score() >= 10) {
-                            str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2)))
-                               .append("\t");
-                        } else {
-                            str.append(String.format("%.03f", DoubleRounder.round(this.allocs.get(p, s).score(), 3)))
-                               .append("\t");
-                        }
+        indent = "\t\t";
+        if (tui) {
+            indent = "\t\t\t";
+        }
+        print.append("......................................................");
+        print.append("\n" + "Abbrevs/Immas" + "\t").append(immas);
+        for (int p = 0; p < this.allocs.numProjs(); ++p) {
+            StringBuilder str = new StringBuilder(indent);
+            for (int s = 0; s < this.allocs.numStuds(); ++s) {
+                if (this.allocs.get(p, s).score() >= 0) {
+                    if (this.allocs.get(p, s).score() >= 100) {
+                        str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1)))
+                           .append("\t");
+                    } else if (this.allocs.get(p, s).score() >= 10) {
+                        str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2)))
+                           .append("\t");
                     } else {
-                        if (this.allocs.get(p, s).score() >= 100) {
-                            str.append(String.format("%.00f", DoubleRounder.round(this.allocs.get(p, s).score(), 0)))
-                               .append("\t");
-                        } else if (this.allocs.get(p, s).score() >= 10) {
-                            str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1)))
-                               .append("\t");
-                        } else {
-                            str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2)))
-                               .append("\t");
-                        }
+                        str.append(String.format("%.03f", DoubleRounder.round(this.allocs.get(p, s).score(), 3)))
+                           .append("\t");
+                    }
+                } else {
+                    if (this.allocs.get(p, s).score() >= 100) {
+                        str.append(String.format("%.00f", DoubleRounder.round(this.allocs.get(p, s).score(), 0)))
+                           .append("\t");
+                    } else if (this.allocs.get(p, s).score() >= 10) {
+                        str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1)))
+                           .append("\t");
+                    } else {
+                        str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2)))
+                           .append("\t");
                     }
                 }
-                print.append("\n").append(Gurobi.exactNumOfChars(this.allocs.get(p, 0).project().abbrev())).append(str);
             }
-
-            print.append("\n\n--------------------- ALLOCATION ---------------------");
+            print.append("\n").append(Gurobi.exactNumOfChars(this.allocs.get(p, 0).project().abbrev())).append(str);
         }
+
+        print.append("\n\n--------------------- ALLOCATION ---------------------");
 
         print.append("\n" + "Abbrevs/Immas" + "\t").append(immas);
 
+        indent = "";
+        if (tui) {
+            indent = "\t";
+        }
         for (int p = 0; p < this.allocs.numProjs(); p++) {
-            StringBuilder allocated = new StringBuilder("\t\t");
+            StringBuilder allocated = new StringBuilder("\t" + indent);
             for (int s = 0; s < this.allocs.numStuds(); s++) {
                 if (this.results[p][s] == 0) {
-                    allocated.append("\t-\t");
+                    allocated.append("\t-").append(indent);
                 } else {
                     Allocation alloc = this.allocs.get(p, s);
                     if (alloc.getStudentFixed()) {
-                        allocated.append("\t[F]\t");
+                        allocated.append("\t[F]").append(indent);
                     } else if (alloc.student().choiceOfProj(alloc.project()) == -1) {
-                        allocated.append("\t[!]\t");
+                        allocated.append("\t[!]").append(indent);
                     } else {
-                        allocated.append("\t[").append(alloc.student().choiceOfProj(alloc.project())).append("]\t");
+                        allocated.append("\t[").append(alloc.student().choiceOfProj(alloc.project())).append("]")
+                                 .append(indent);
                     }
                 }
             }
@@ -325,55 +281,55 @@ public class Gurobi {
      */
 
     private void addConstraints() {
-        if (this.constraints.contains(CONSTRAINTS.projectPerStudent)) {
+        if (Config.Constraints.projectPerStudent) {
             this.constrProjPerStud();
         }
-        if (this.constraints.contains(CONSTRAINTS.minProjectPerStudent)) {
+        if (Config.Constraints.minProjectPerStudent) {
             this.constrMinStudsPerProj();
         }
-        if (this.constraints.contains(CONSTRAINTS.maxProjectPerStudent)) {
+        if (Config.Constraints.maxProjectPerStudent) {
             this.constrMaxStudsPerProj();
         }
-        if (this.constraints.contains(CONSTRAINTS.studentsPerProject)) {
+        if (Config.Constraints.studentsPerProject) {
             this.constrStudsPerProj();
         }
-        if (this.constraints.contains(CONSTRAINTS.studentAcceptedInProject)) {
+        if (Config.Constraints.studentAcceptedInProject) {
             this.constrStudAcceptedInProj();
         }
-        if (this.constraints.contains(CONSTRAINTS.studentsPerStudy)) {
+        if (Config.Constraints.studentsPerStudy) {
             this.constrStudsPerStudy();
         }
-        if (this.constraints.contains(CONSTRAINTS.minStudentsPerGroupProject)) {
+        if (Config.Constraints.minStudentsPerGroupProject) {
             this.constrMinStudsPerGroupProj();
         }
-        if (this.constraints.contains(CONSTRAINTS.fixedStuds)) {
+        if (Config.Constraints.fixedStuds) {
             this.constrFixedStudents();
         }
-        if (this.constraints.contains(CONSTRAINTS.studWantsProj)) {
+        if (Config.Constraints.studWantsProj) {
             this.constrStudHasToGetASelProj();
         }
     }
 
     private void addPreferences() { // TODO: implement missing pref methods, see configPanel
-        if (this.preferences.contains(PREFERENCES.studentsPerProject)) {
-            this.prefStudentsPerProj(); // TODO
+        if (Config.Preferences.studentsPerProject) {
+            this.prefStudentsPerProj(); // TODO min max
         }
-        if (this.preferences.contains(PREFERENCES.projectPerStudent)) {
-            this.prefProjPerStud(); // TODO
+        if (Config.Preferences.projectPerStudent) {
+            this.prefProjPerStud(); // TODO min max
         }
-        if (this.preferences.contains(PREFERENCES.studentAcceptedInProject)) {
+        if (Config.Preferences.studentAcceptedInProject) {
             this.prefStudsAcceptedInProj();
         }
-        if (this.preferences.contains(PREFERENCES.studentsPerStudy)) {
+        if (Config.Preferences.studentsPerStudy) {
             this.prefStudsPerStudy();
         }
-        if (this.preferences.contains(PREFERENCES.minStudentsPerGroupProject)) {
+        if (Config.Preferences.minStudentsPerGroupProject) {
             this.prefMinStudsPerGroupProj();
         }
-        if (this.preferences.contains(PREFERENCES.selectedProjs)) {
+        if (Config.Preferences.selectedProjs) {
             this.prefSelectedProj();
         }
-        if (this.preferences.contains(PREFERENCES.fixedStuds)) {
+        if (Config.Preferences.fixedStuds) {
             this.prefFixedStuds();
         }
     }

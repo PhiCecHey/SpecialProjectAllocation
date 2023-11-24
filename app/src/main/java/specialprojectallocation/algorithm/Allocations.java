@@ -15,12 +15,6 @@ public class Allocations {
     private final int numStuds;
     private final int numProjs;
 
-    Allocations(final int p, final int s) {
-        this.allocs = new Allocation[p][s]; // [projects] [students]
-        this.numProjs = p;
-        this.numStuds = s;
-    }
-
     Allocations(@NotNull final ArrayList<Project> projects, @NotNull final ArrayList<Student> students, GRBModel model)
             throws GRBException {
         this.numProjs = projects.size();
@@ -50,10 +44,6 @@ public class Allocations {
 
     public Student getStud(final int s) {
         return this.allocs[0][s].student();
-    }
-
-    void set(final int p, final int s, final Allocation allocation) {
-        this.allocs[p][s] = allocation;
     }
 
     public int numStuds() {
