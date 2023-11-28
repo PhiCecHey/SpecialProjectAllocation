@@ -19,14 +19,13 @@ public class Project {
     private Student[] fixedStuds;
     private final String stringFixedStuds;
 
-    public Project(String ab, int max, Group[] gr, String fixed)
-            throws AbbrevTakenException {
+    public Project(String ab, int max, Group[] gr, String fixed) throws AbbrevTakenException {
         ab = ab.strip();
         for (String str : allAbbrevs) {
             if (str.equals(ab)) {
                 throw new AbbrevTakenException(
-                        "Abbrev " + ab + " already taken by project "
-                                + Objects.requireNonNull(Project.findProject(ab)).abbrev());
+                        "Abbrev " + ab + " already taken by project " + Objects.requireNonNull(Project.findProject(ab))
+                                                                               .abbrev());
             }
         }
 
@@ -77,16 +76,18 @@ public class Project {
     }
 
     public boolean isFixedAndStudentsWish(Student student) {
+        if (!this.isFixed(student)) return false;
         boolean ret1 = student.abbrevProj1().equals(this.abbrev);
         boolean ret2 = student.abbrevProj2().equals(this.abbrev);
         boolean ret3 = student.abbrevProj3().equals(this.abbrev);
         boolean ret4 = student.abbrevProj4().equals(this.abbrev);
-        return (ret1 || ret2 || ret3 || ret4) && this.isFixed(student);
+        return (ret1 || ret2 || ret3 || ret4);
     }
 
-    public boolean isFixedAndFirstStudentsWish(Student student) {
-        boolean ret = student.abbrevProj1().equals(this.abbrev);
-        return ret && this.isFixed(student);
+    public boolean isFixedAndStudentsHighestWish(Student student) {
+        if (!this.isFixed(student)) return false;
+        ArrayList<Project> fixedProj = student.getAllFixed();
+        return fixedProj.get(0).abbrev.equals(this.abbrev);
     }
 
     public void setFixed() {
@@ -106,16 +107,11 @@ public class Project {
                 imma = split[1].trim();
             }
             Student student = Student.findStudentByImma(imma);
-            if (student == null)
-                student = Student.findStudentByImma(name);
-            if (student == null)
-                student = Student.findStudentByName(name, false);
-            if (student == null)
-                student = Student.findStudentByName(imma, false);
-            if (student == null)
-                student = Student.findStudentByName(name, true);
-            if (student == null)
-                student = Student.findStudentByName(imma, true);
+            if (student == null) student = Student.findStudentByImma(name);
+            if (student == null) student = Student.findStudentByName(name, false);
+            if (student == null) student = Student.findStudentByName(imma, false);
+            if (student == null) student = Student.findStudentByName(name, true);
+            if (student == null) student = Student.findStudentByName(imma, true);
 
             this.fixedStuds[i] = student;
             i++;

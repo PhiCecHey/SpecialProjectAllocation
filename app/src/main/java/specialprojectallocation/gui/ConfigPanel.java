@@ -232,101 +232,287 @@ public class ConfigPanel extends JPanel {
     }
 
     static class ConstraintsPanel extends JPanel {
-        final ButtonGroup minNumProjPerStud;
-        final ButtonGroup maxNumProjPerStud;
-        final ButtonGroup minNumStudsPerGroupProj;
-        final ButtonGroup fixedStuds;
-        final ButtonGroup studWantsProj;
+        // final ButtonGroup minNumProjPerStud; // TODO: feature required?
+        // final ButtonGroup maxNumProjPerStud; // TODO: feature required?
+        final CheckField minNumStudsPerGroupProj;
+        final CheckThreeRadios fixedStuds;
+        final Check studWantsProj;
+        final CheckFourFields weightSelectedProj;
+        final CheckFiveFields weightRegProj;
 
-        static class ButtonGroup extends JPanel {
+        static class Check extends JPanel {
             final JCheckBox check;
-            final JRadioButton rForce;
-            final JRadioButton rTry;
-            JTextField field;
             final JLabel label;
 
-            ButtonGroup(String f, String l) {
+            Check(String l) {
                 this.setLayout(new MigLayout());
-                this.check = new JCheckBox();
-                this.rForce = new JRadioButton();
-                this.rTry = new JRadioButton();
-                this.field = new JTextField(f);
                 this.label = new JLabel(l);
+                this.check = new JCheckBox();
+                this.check.setSelected(true);
                 this.add(this.check);
                 this.add(this.label);
-                this.add(this.field, "wrap");
-                this.add(this.rForce, "cell 1 1, split 4");
-                this.add(new JLabel("Erzwingen"));
-                this.add(this.rTry, ", gapx 30pt");
-                this.add(new JLabel("Versuchen"));
-
-                this.check.setSelected(true);
-                this.rForce.setSelected(true);
-                this.rTry.setSelected(false);
-                addButtonGroupFunct();
             }
+        }
 
-            ButtonGroup(String l) {
+        static class CheckField extends JPanel {
+            final JTextField field;
+            final JCheckBox check;
+            final JLabel label;
+
+            CheckField(String l, String f) {
                 this.setLayout(new MigLayout());
-                this.check = new JCheckBox();
-                this.rForce = new JRadioButton();
-                this.rTry = new JRadioButton();
                 this.label = new JLabel(l);
-                this.add(this.check);
-                this.add(this.label, "wrap");
-                this.add(this.rForce, "cell 1 1, split 4");
-                this.add(new JLabel("Erzwingen"));
-                this.add(this.rTry, ", gapx 30pt");
-                this.add(new JLabel("Versuchen"));
-
+                this.check = new JCheckBox();
                 this.check.setSelected(true);
-                this.rForce.setSelected(true);
-                this.rTry.setSelected(false);
-                addButtonGroupFunct();
+                this.add(this.check);
+                this.add(this.label);
+                this.field = new JTextField(f);
+                this.add(this.field);
+                addButtonFunct();
             }
 
-            private void addButtonGroupFunct() {
+            private void addButtonFunct() {
                 this.check.addActionListener(ae -> {
-                    if (check.isSelected()) {
+                    if (this.check.isSelected()) {
                         field.setEditable(true);
-                        field.setBackground(Color.white);
-                        rForce.setEnabled(true);
-                        rTry.setEnabled(true);
+                        field.setBackground(Colors.transp);
                     } else {
                         field.setEditable(false);
                         field.setBackground(Colors.greyTransp);
-                        rForce.setEnabled(false);
-                        rTry.setEnabled(false);
                     }
                 });
-                this.rForce.addActionListener(ae -> rTry.setSelected(!rForce.isSelected()));
-                this.rTry.addActionListener(ae -> rForce.setSelected(!rTry.isSelected()));
+            }
+        }
+
+        static class CheckFourFields extends JPanel {
+            final JTextField field1, field2, field3, field4;
+            final JCheckBox check;
+
+            CheckFourFields(String l0, String l1, String f1, String l2, String f2, String l3, String f3, String l4,
+                            String f4) {
+                this.setLayout(new MigLayout());
+                this.check = new JCheckBox();
+                this.check.setSelected(true);
+                JLabel label2 = new JLabel(l2);
+                JLabel label1 = new JLabel(l1);
+                label1.setPreferredSize(label2.getPreferredSize());
+                label2.setPreferredSize(label1.getPreferredSize());
+                JLabel label3 = new JLabel(l3);
+                label3.setPreferredSize(label2.getPreferredSize());
+                JLabel label4 = new JLabel(l4);
+                label4.setPreferredSize(label2.getPreferredSize());
+                this.field1 = new JTextField(f1);
+                this.field2 = new JTextField(f2);
+                this.field3 = new JTextField(f3);
+                this.field4 = new JTextField(f4);
+
+                this.add(this.check);
+                this.add(new JLabel(l0), "wrap");
+                this.add(label1, "cell 1 1, spanx, split 2");
+                this.add(this.field1, "wrap");
+                this.add(label2, "cell 1 2, spanx, split 2");
+                this.add(this.field2, "wrap");
+                this.add(label3, "cell 1 3, spanx, split 2");
+                this.add(this.field3, "wrap");
+                this.add(label4, "cell 1 4, spanx, split 2");
+                this.add(this.field4, "wrap");
+                addButtonFunct();
+            }
+
+            private void addButtonFunct() {
+                this.check.addActionListener(ae -> {
+                    field1.setEditable(this.check.isSelected());
+                    field2.setEditable(this.check.isSelected());
+                    field3.setEditable(this.check.isSelected());
+                    field4.setEditable(this.check.isSelected());
+                    if (this.check.isSelected()) {
+                        JTextField test = new JTextField();
+                        field1.setBackground(test.getBackground());
+                        field2.setBackground(test.getBackground());
+                        field3.setBackground(test.getBackground());
+                        field4.setBackground(test.getBackground());
+                    } else {
+                        field1.setBackground(Colors.greyTransp);
+                        field2.setBackground(Colors.greyTransp);
+                        field3.setBackground(Colors.greyTransp);
+                        field4.setBackground(Colors.greyTransp);
+                    }
+                });
+            }
+        }
+
+        static class CheckFiveFields extends JPanel {
+            final JTextField field1, field2, field3, field4, field5;
+            final JCheckBox check;
+
+            CheckFiveFields(String l0, String l1, String f1, String l2, String f2, String l3, String f3, String l4,
+                            String f4, String l5, String f5) {
+                this.setLayout(new MigLayout());
+                this.check = new JCheckBox();
+                this.check.setSelected(true);
+                JLabel label2 = new JLabel(l2);
+                JLabel label1 = new JLabel(l1);
+                label1.setPreferredSize(label2.getPreferredSize());
+                label2.setPreferredSize(label1.getPreferredSize());
+                JLabel label3 = new JLabel(l3);
+                label3.setPreferredSize(label2.getPreferredSize());
+                JLabel label4 = new JLabel(l4);
+                label4.setPreferredSize(label2.getPreferredSize());
+                JLabel label5 = new JLabel(l5);
+                label5.setPreferredSize(label2.getPreferredSize());
+                this.field1 = new JTextField(f1);
+                this.field2 = new JTextField(f2);
+                this.field3 = new JTextField(f3);
+                this.field4 = new JTextField(f4);
+                this.field5 = new JTextField(f5);
+
+                this.add(this.check);
+                this.add(new JLabel(l0), "wrap");
+                this.add(label1, "cell 1 1, spanx, split 2");
+                this.add(this.field1, "wrap");
+                this.add(label2, "cell 1 2, spanx, split 2");
+                this.add(this.field2, "wrap");
+                this.add(label3, "cell 1 3, spanx, split 2");
+                this.add(this.field3, "wrap");
+                this.add(label4, "cell 1 4, spanx, split 2");
+                this.add(this.field4, "wrap");
+                this.add(label5, "cell 1 5, spanx, split 2");
+                this.add(this.field5, "wrap");
+                addButtonFunct();
+            }
+
+            private void addButtonFunct() {
+                this.check.addActionListener(ae -> {
+                    field1.setEditable(this.check.isSelected());
+                    field2.setEditable(this.check.isSelected());
+                    field3.setEditable(this.check.isSelected());
+                    field4.setEditable(this.check.isSelected());
+                    field5.setEditable(this.check.isSelected());
+                    if (this.check.isSelected()) {
+                        JTextField test = new JTextField();
+                        field1.setBackground(test.getBackground());
+                        field2.setBackground(test.getBackground());
+                        field3.setBackground(test.getBackground());
+                        field4.setBackground(test.getBackground());
+                        field5.setBackground(test.getBackground());
+                    } else {
+                        field1.setBackground(Colors.greyTransp);
+                        field2.setBackground(Colors.greyTransp);
+                        field3.setBackground(Colors.greyTransp);
+                        field4.setBackground(Colors.greyTransp);
+                        field5.setBackground(Colors.greyTransp);
+                    }
+                });
+            }
+        }
+
+        static class CheckThreeRadios extends JPanel {
+            final JCheckBox check;
+            final JLabel label;
+            final JRadioButton one, two, three;
+
+            CheckThreeRadios(String l, String b1, String b2, String b3) {
+                this.setLayout(new MigLayout());
+                this.label = new JLabel(l);
+                this.check = new JCheckBox();
+                this.check.setSelected(true);
+                this.add(this.check);
+                this.add(this.label, "wrap");
+                this.one = new JRadioButton();
+                this.one.setSelected(true);
+                this.two = new JRadioButton();
+                this.three = new JRadioButton();
+                this.add(this.one, "cell 1 1, spanx, split 2");
+                this.add(new JLabel(b1));
+                this.add(this.two, "cell 1 2, spanx, split 2");
+                this.add(new JLabel(b2));
+                this.add(this.three, "cell 1 3, spanx, split 2");
+                this.add(new JLabel(b3));
+                addButtonFunct();
+            }
+
+            private void addButtonFunct() {
+                this.check.addActionListener(ae -> {
+                    if (this.check.isSelected()) {
+                        this.one.setEnabled(true);
+                        this.two.setEnabled(true);
+                        this.three.setEnabled(true);
+                    } else {
+                        this.one.setEnabled(false);
+                        this.two.setEnabled(false);
+                        this.three.setEnabled(false);
+                    }
+                });
+                this.one.addActionListener(ae -> {
+                    two.setSelected(!one.isSelected());
+                    three.setSelected(!one.isSelected());
+                });
+                this.two.addActionListener(ae -> {
+                    one.setSelected(!two.isSelected());
+                    three.setSelected(!two.isSelected());
+                });
+                this.three.addActionListener(ae -> {
+                    one.setSelected(!three.isSelected());
+                    two.setSelected(!three.isSelected());
+                });
             }
         }
 
         ConstraintsPanel() {
             this.setLayout(new MigLayout("flowy"));
 
+            /* TODO: feature required?
             this.maxNumProjPerStud = new ButtonGroup(Integer.toString(Config.Constraints.maxNumProjectsPerStudent),
                                                      "Maximum Number of Projects per Student:");
             this.minNumProjPerStud = new ButtonGroup(Integer.toString(Config.Constraints.minNumProjectsPerStudent),
                                                      "Minimum Number of Projects per Student:");
-            this.minNumStudsPerGroupProj = new ButtonGroup(Integer.toString(Config.Constraints.minNumStudsPerGroupProj),
-                                                           "Minimum Number of " + "Students per " + "Group Project:");
-            this.fixedStuds = new ButtonGroup("Acknowledge Fixed Students");
-            this.studWantsProj = new ButtonGroup("Students only get one of their selected Projects");
+            */
 
+            this.minNumStudsPerGroupProj = new CheckField("Minimale Anzahl an Studierender pro Gruppenprojekt:",
+                                                          Integer.toString(Config.Constraints.minNumStudsPerGroupProj));
+
+            String text0 = "Falls Studierende in mehreren Projekten gesetzt sind, sollen sie hinzugefügt werden zu...";
+            String text1 = "allen Projekten, in denen sie gesetzt sind (überschreibt 'ausschließlich " + "gewählte "
+                           + "Projekte')";
+            String text2 = "allen Projekten hinzufügen, in denen sie gesetzt sind und die sie gewählt haben";
+            String text3 = "dem Projekt hinzufügen, in dem sie gesetzt sind und das sie mit höchster Priorität "
+                           + "gewählt haben";
+            this.fixedStuds = new CheckThreeRadios(text0, text1, text2, text3);
+
+            this.studWantsProj = new Check("Studierende bekommen ausschließlich gewählte Projekte");
+
+            text0 = "Gewichtung der von Studierenden gewählten Projekte";
+            text1 = "Gewicht Erstwahl:";
+            text2 = "Gewicht Zweitwahl:";
+            text3 = "Gewicht Drittwahl:";
+            String text4 = "Gewicht Viertwahl:";
+            this.weightSelectedProj = new CheckFourFields(text0, text1, Double.toString(Config.Preferences.proj1),
+                                                          text2, Double.toString(Config.Preferences.proj2), text3,
+                                                          Double.toString(Config.Preferences.proj3), text4,
+                                                          Double.toString(Config.Preferences.proj4));
+
+            text0 = "Gewichtung der Studiengänge innerhalb der Projekte";
+            text1 = "Gewicht Priorität 1:";
+            text2 = "Gewicht Priorität 2:";
+            text3 = "Gewicht Priorität 3:";
+            text4 = "Gewicht Priorität 4:";
+            String text5 = "Gewicht Priorität 5";
+            this.weightRegProj = new CheckFiveFields(text0, text1, Double.toString(Config.Preferences.studyPrio1),
+                                                     text2, Double.toString(Config.Preferences.studyPrio2), text3,
+                                                     Double.toString(Config.Preferences.studyPrio3), text4,
+                                                     Double.toString(Config.Preferences.studyPrio4), text5,
+                                                     Double.toString(Config.Preferences.studyPrio5));
+
+            /* TODO: feature required?
             this.add(this.maxNumProjPerStud);
-
             JSeparator sep1 = new JSeparator();
             sep1.setMinimumSize(new Dimension(2, 2));
             this.add(sep1, "spanx, growx");
-
             this.add(this.minNumProjPerStud);
-
             JSeparator sep2 = new JSeparator();
             sep2.setMinimumSize(new Dimension(2, 2));
             this.add(sep2, "spanx, growx");
+            */
 
             this.add(minNumStudsPerGroupProj);
 
@@ -341,17 +527,27 @@ public class ConfigPanel extends JPanel {
             this.add(sep4, "spanx, growx");
 
             this.add(studWantsProj);
+
+            JSeparator sep5 = new JSeparator();
+            sep5.setMinimumSize(new Dimension(2, 2));
+            this.add(sep5, "spanx, growx");
+
+            this.add(this.weightSelectedProj);
+
+            JSeparator sep6 = new JSeparator();
+            sep6.setMinimumSize(new Dimension(2, 2));
+            this.add(sep6, "spanx, growx");
+
+            this.add(this.weightRegProj);
         }
 
         void save() {
+            /* TODO: feature required?
+            Config.Constraints.maxProjectPerStudent = this.maxNumProjPerStud.check.isSelected()
+                                                      && this.maxNumProjPerStud.rForce.isSelected();
+            Config.Preferences.maxProjectPerStudent = this.maxNumProjPerStud.check.isSelected()
+                                                      && this.maxNumProjPerStud.rTry.isSelected();
             if (this.maxNumProjPerStud.check.isSelected()) {
-                if (this.maxNumProjPerStud.rForce.isSelected()) {
-                    Config.Constraints.maxProjectPerStudent = true;
-                    Config.Preferences.maxProjectPerStudent = false;
-                } else {
-                    Config.Constraints.maxProjectPerStudent = false;
-                    Config.Preferences.maxProjectPerStudent = true;
-                }
                 try {
                     Config.Constraints.maxNumProjectsPerStudent = Integer.parseInt(
                             this.maxNumProjPerStud.field.getText());
@@ -360,15 +556,11 @@ public class ConfigPanel extends JPanel {
                     this.maxNumProjPerStud.field.setText(Integer.toString(Config.Constraints.maxNumProjectsPerStudent));
                 }
             }
-
+            Config.Constraints.minProjectPerStudent = this.minNumProjPerStud.check.isSelected()
+                                                      && this.minNumProjPerStud.rForce.isSelected();
+            Config.Preferences.minProjectPerStudent = this.minNumProjPerStud.check.isSelected()
+                                                      && this.minNumProjPerStud.rTry.isSelected();
             if (this.minNumProjPerStud.check.isSelected()) {
-                if (this.minNumProjPerStud.rForce.isSelected()) {
-                    Config.Constraints.minProjectPerStudent = true;
-                    Config.Preferences.minProjectPerStudent = false;
-                } else {
-                    Config.Preferences.minProjectPerStudent = true;
-                    Config.Constraints.minProjectPerStudent = false;
-                }
                 try {
                     Config.Constraints.minNumProjectsPerStudent = Integer.parseInt(
                             this.minNumProjPerStud.field.getText());
@@ -377,38 +569,88 @@ public class ConfigPanel extends JPanel {
                     this.minNumProjPerStud.field.setText(Integer.toString(Config.Constraints.minNumProjectsPerStudent));
                 }
             }
+            */
 
+            Config.Constraints.minStudentsPerGroupProject = this.minNumStudsPerGroupProj.check.isSelected();
+            /* doesn't make sense anymore
+            Config.Preferences.minStudentsPerGroupProject = this.minNumStudsPerGroupProj.check.isSelected()
+                                                            && this.minNumStudsPerGroupProj.rTry.isSelected();*/
             if (this.minNumStudsPerGroupProj.check.isSelected()) {
-                if (this.minNumStudsPerGroupProj.rForce.isSelected()) {
-                    Config.Constraints.minStudentsPerGroupProject = true;
-                    Config.Preferences.minStudentsPerGroupProject = false;
-                } else {
-                    Config.Preferences.minStudentsPerGroupProject = true;
-                    Config.Constraints.minStudentsPerGroupProject = false;
-                }
                 try {
                     Config.Constraints.minNumStudsPerGroupProj = Integer.parseInt(
-                            this.maxNumProjPerStud.field.getText());
+                            this.minNumStudsPerGroupProj.field.getText());
                 } catch (NumberFormatException e) {
                     this.minNumStudsPerGroupProj.field.setBackground(Colors.redTransp);
                     this.minNumStudsPerGroupProj.field.setText(
                             Integer.toString(Config.Constraints.minNumStudsPerGroupProj));
                 }
             }
+            Config.Constraints.fixedStuds = this.fixedStuds.check.isSelected();
+            Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj = this.fixedStuds.one.isSelected();
+            Config.Constraints.addFixedStudsToMostWantedProj = this.fixedStuds.three.isSelected();
 
-            if (this.fixedStuds.check.isSelected()) {
-                if (this.fixedStuds.rForce.isSelected()) {
-                    Config.Constraints.fixedStuds = true;
-                    Config.Preferences.fixedStuds = false;
-                } else {
-                    Config.Preferences.fixedStuds = true;
-                    Config.Constraints.fixedStuds = false;
+            Config.Constraints.studWantsProj = this.studWantsProj.check.isSelected();
+
+            Config.Preferences.selectedProjs = this.studWantsProj.check.isSelected();
+
+            if (this.weightSelectedProj.check.isSelected()) {
+                try {
+                    Config.Preferences.proj1 = Double.parseDouble(this.weightSelectedProj.field1.getText());
+                } catch (NumberFormatException e) {
+                    this.weightSelectedProj.field1.setBackground(Colors.redTransp);
+                    this.weightSelectedProj.field1.setText(Double.toString(Config.Preferences.proj1));
+                }
+                try {
+                    Config.Preferences.proj2 = Double.parseDouble(this.weightSelectedProj.field2.getText());
+                } catch (NumberFormatException e) {
+                    this.weightSelectedProj.field2.setBackground(Colors.redTransp);
+                    this.weightSelectedProj.field2.setText(Double.toString(Config.Preferences.proj2));
+                }
+                try {
+                    Config.Preferences.proj3 = Double.parseDouble(this.weightSelectedProj.field3.getText());
+                } catch (NumberFormatException e) {
+                    this.weightSelectedProj.field3.setBackground(Colors.redTransp);
+                    this.weightSelectedProj.field3.setText(Double.toString(Config.Preferences.proj3));
+                }
+                try {
+                    Config.Preferences.proj4 = Double.parseDouble(this.weightSelectedProj.field4.getText());
+                } catch (NumberFormatException e) {
+                    this.weightSelectedProj.field4.setBackground(Colors.redTransp);
+                    this.weightSelectedProj.field4.setText(Double.toString(Config.Preferences.proj4));
                 }
             }
 
-            if (this.studWantsProj.check.isSelected()) {
-                Config.Preferences.selectedProjs = true;
-                Config.Constraints.studWantsProj = this.studWantsProj.rForce.isSelected();
+            if (this.weightRegProj.check.isSelected()) {
+                try {
+                    Config.Preferences.studyPrio1 = Double.parseDouble(this.weightRegProj.field1.getText());
+                } catch (NumberFormatException e) {
+                    this.weightRegProj.field1.setBackground(Colors.redTransp);
+                    this.weightRegProj.field1.setText(Double.toString(Config.Preferences.studyPrio1));
+                }
+                try {
+                    Config.Preferences.studyPrio2 = Double.parseDouble(this.weightRegProj.field2.getText());
+                } catch (NumberFormatException e) {
+                    this.weightRegProj.field2.setBackground(Colors.redTransp);
+                    this.weightRegProj.field2.setText(Double.toString(Config.Preferences.studyPrio2));
+                }
+                try {
+                    Config.Preferences.studyPrio3 = Double.parseDouble(this.weightRegProj.field3.getText());
+                } catch (NumberFormatException e) {
+                    this.weightRegProj.field3.setBackground(Colors.redTransp);
+                    this.weightRegProj.field3.setText(Double.toString(Config.Preferences.studyPrio3));
+                }
+                try {
+                    Config.Preferences.studyPrio4 = Double.parseDouble(this.weightRegProj.field4.getText());
+                } catch (NumberFormatException e) {
+                    this.weightRegProj.field4.setBackground(Colors.redTransp);
+                    this.weightRegProj.field4.setText(Double.toString(Config.Preferences.studyPrio4));
+                }
+                try {
+                    Config.Preferences.studyPrio5 = Double.parseDouble(this.weightRegProj.field5.getText());
+                } catch (NumberFormatException e) {
+                    this.weightRegProj.field5.setBackground(Colors.redTransp);
+                    this.weightRegProj.field5.setText(Double.toString(Config.Preferences.studyPrio5));
+                }
             }
         }
     }

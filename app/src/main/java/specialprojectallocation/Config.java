@@ -36,7 +36,8 @@ public class Config {
         public static int maxNumProjectsPerStudent = 1;
         public static int minNumProjectsPerStudent = 1;
         public static int minNumStudsPerGroupProj = 2;
-        public static final boolean addFixedStudsToProjEvenIfStudDidntSelectProj = true;
+        public static boolean addFixedStudsToProjEvenIfStudDidntSelectProj = true;
+        public static boolean addFixedStudsToMostWantedProj = false;
         public static boolean minProjectPerStudent, maxProjectPerStudent;
         public static final boolean projectPerStudent = true;
         public static boolean minStudentsPerProject, maxStudentsPerProject;
@@ -50,10 +51,15 @@ public class Config {
 
     public static class Preferences {
         // Gurobi preferences values
-        public static final double proj1 = 100.0;
-        public static final double proj2 = 80.0;
-        public static final double proj3 = 50.0;
-        public static final double proj4 = 30.0;
+        public static double proj1 = 100.0;
+        public static double proj2 = 80.0;
+        public static double proj3 = 60.0;
+        public static double proj4 = 40.0;
+        public static double studyPrio1 = 50;
+        public static double studyPrio2 = 40;
+        public static double studyPrio3 = 30;
+        public static double studyPrio4 = 20;
+        public static double studyPrio5 = 10;
         public static double penStudsPerProj = -100;
         public static final double penStudsAcceptedInProj = -100;
         public static double penStudsPerStudy = -100;

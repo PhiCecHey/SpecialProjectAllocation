@@ -110,6 +110,16 @@ public class Student {
         }
     }
 
+    public ArrayList<Project> getAllFixed() {
+        ArrayList<Project> fixed = new ArrayList<>();
+        for (Project p : Project.projects()) {
+            if (p.isFixed(this)) {
+                fixed.add(p);
+            }
+        }
+        return fixed;
+    }
+
     public static Student findStudentByImma(String immatNum) {
         immatNum = immatNum.trim();
         if (immatNum.isEmpty()) {

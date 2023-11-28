@@ -36,6 +36,7 @@ public class ResultsPanel extends JPanel {
         this.add(this.bExport);
 
         ResultsPanel.chooseFolder(this.bFileChooser, this.fExport);
+
         this.bcalc.addActionListener(ae -> {
             try {
                 Calculation.gurobi = new Gurobi();

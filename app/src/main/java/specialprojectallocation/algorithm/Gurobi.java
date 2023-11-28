@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
 import specialprojectallocation.Log;
+import specialprojectallocation.gui.ResultsPanel;
 import specialprojectallocation.objects.Group;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
@@ -50,10 +51,14 @@ public class Gurobi {
             this.model.optimize();
 
             boolean worked = this.extractResults();
+            if (worked) {
+                Student.studsWithoutProj(this.studsWithoutProj());
+            }
             System.out.println(this.print(true, worked));
             Calculation.gurobiResultsGui = this.print(false, worked);
-            Student.studsWithoutProj(this.studsWithoutProj());
-            WriteResults.printForSupers(this.results, this.allocs, outFile);
+            if (worked) {
+                WriteResults.printForSupers(this.results, this.allocs, outFile);
+            }
             model.dispose();
             env.dispose();
         } catch (GRBException e) {
@@ -80,10 +85,13 @@ public class Gurobi {
 
             boolean worked = this.extractResults();
             System.out.println(this.print(true, worked));
-            Student.studsWithoutProj(this.studsWithoutProj());
-            Calculation.gurobiResultsGui = this.print(false, worked);
-            Calculation.gurobiResultsGui = this.print(false, worked) + "\n\nStudents without project:\n"
-                                           + this.studsWithoutProj();
+            if (worked) {
+                Student.studsWithoutProj(this.studsWithoutProj());
+                Calculation.gurobiResultsGui = this.print(false, worked) + "\n\nStudents without project:\n"
+                                               + Student.studsWithoutProj();
+            } else {
+                Calculation.gurobiResultsGui = this.print(false, worked);
+            }
             model.dispose();
             env.dispose();
 
@@ -125,24 +133,18 @@ public class Gurobi {
         return objective;
     }
 
-    private boolean extractResults() {
+    private boolean extractResults() throws GRBException {
         GRBVar[][] grbVars = this.getGRBVars();
-        try {
-            int optimstatus = model.get(GRB.IntAttr.Status);
-            if (optimstatus != GRB.OPTIMAL) {
-                Calculation.gurobiResultsGui = "Model infeasible.";
-                System.out.println("Model infeasible.");
-                Log.append("\n\n\nEs konnte keine Zuteilung gefunden werden.");
-                model.dispose();
-                env.dispose();
-                return false;
-            }
-            this.results = this.model.get(GRB.DoubleAttr.X, grbVars);
-        } catch (GRBException e) {
-            System.err.println("Problem in function extractResults()");
-            e.printStackTrace();
+        int optimstatus = model.get(GRB.IntAttr.Status);
+        if (optimstatus != GRB.OPTIMAL) {
+            Calculation.gurobiResultsGui = "Model infeasible.";
+            System.out.println("Model infeasible.");
+            Log.append("\n\n\nEs konnte keine Zuteilung gefunden werden.");
+            model.dispose();
+            env.dispose();
             return false;
         }
+        this.results = this.model.get(GRB.DoubleAttr.X, grbVars);
         return true;
     }
 
@@ -453,7 +455,9 @@ public class Gurobi {
                 for (int p = 0; p < this.allocs.numProjs(); ++p) {
                     Allocation alloc = this.allocs.get(p, s);
                     Project project = alloc.project();
-                    if (student.wantsProject(project)) {
+                    if (student.wantsProject(project) || (
+                            Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj && project.isFixed(
+                                    student))) {
                         expr.addTerm(1.0, alloc.grbVar());
                     }
                 }
@@ -553,7 +557,9 @@ public class Gurobi {
                     Allocation alloc = this.allocs.get(p, s);
                     Student student = this.allocs.getStud(s);
                     if (project.isFixed(student) && (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj
-                                                     || project.isFixedAndStudentsWish(student))) {
+                                                     || project.isFixedAndStudentsHighestWish(student) || (
+                                                             !Config.Constraints.addFixedStudsToMostWantedProj
+                                                             && project.isFixedAndStudentsWish(student)))) {
                         alloc.setStudentFixed();
                         String st = "fixedStuds" + p + s;
                         expr.addTerm(1.0, alloc.grbVar());
