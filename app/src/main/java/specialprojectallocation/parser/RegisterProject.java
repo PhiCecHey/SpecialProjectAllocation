@@ -1,9 +1,6 @@
 package specialprojectallocation.parser;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,47 +20,44 @@ public class RegisterProject extends MyParser {
     // TOOD: how to handle exceptions?
     @Nullable
     public static ArrayList<Project> read(@NotNull File csv, char delim)
-    throws NumberFormatException, AbbrevTakenException {
+    throws NumberFormatException, AbbrevTakenException, IOException {
         ArrayList<Project> projects = new ArrayList<>();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
-            System.out.println("READING FILE: " + csv.getAbsolutePath());
-            String line = bufferedReader.readLine();
-            if (!RegisterProject.evalHeading(line)) {
-                return null;
-            }
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(csv));
+        System.out.println("READING FILE: " + csv.getAbsolutePath());
+        String line = bufferedReader.readLine();
+        if (!RegisterProject.evalHeading(line)) {
+            return null;
+        }
 
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] cells = RegisterProject.readLineInCsvWithQuotesAndDelim(line, delim);
-                Project found = Project.findProject(cells[RegisterProject.abbrev]);
-                if (found == null) {
-                    boolean oneStudent = cells[RegisterProject.var].toLowerCase()
-                            .contains(Config.ProjectAdministration.varOneStudent);
-                    Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
-                            cells[RegisterProject.maxNum], oneStudent);
+        while ((line = bufferedReader.readLine()) != null) {
+            String[] cells = RegisterProject.readLineInCsvWithQuotesAndDelim(line, delim);
+            Project found = Project.findProject(cells[RegisterProject.abbrev]);
+            if (found == null) {
+                boolean oneStudent = cells[RegisterProject.var].toLowerCase()
+                                                               .contains(Config.ProjectAdministration.varOneStudent);
+                Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
+                                                           cells[RegisterProject.maxNum], oneStudent);
 
-                    // TODO: several groups
-                    // mainMaxNum not usable currently, has to be maxNum
-                    /*
-                     * Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
-                     * cells[RegisterProject.mainMaxNum], oneStudent);
-                     */
+                // TODO: several groups
+                // mainMaxNum not usable currently, has to be maxNum
+                /*
+                 * Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
+                 * cells[RegisterProject.mainMaxNum], oneStudent);
+                 */
 
-                    int maxNum = oneStudent ? 1 : Integer.MAX_VALUE;
-                    if (!cells[RegisterProject.maxNum].isEmpty()) {
-                        maxNum = Integer.parseInt(cells[RegisterProject.maxNum]);
-                    }
-                    Project project = new Project(cells[RegisterProject.abbrev], maxNum, groups, cells[RegisterProject.fixed]);
-                    projects.add(project);
-                } else {
-                    int debug = 4;
-                    // TODO: just take last entry?
-                    // throw new ProjectDuplicateException(
-                    // "Project " + found.abbrev() + " was registired more than once!");
+                int maxNum = oneStudent ? 1 : Integer.MAX_VALUE;
+                if (!cells[RegisterProject.maxNum].isEmpty()) {
+                    maxNum = Integer.parseInt(cells[RegisterProject.maxNum]);
                 }
+                Project project = new Project(cells[RegisterProject.abbrev], maxNum, groups,
+                                              cells[RegisterProject.fixed]);
+                projects.add(project);
+            } else {
+                int debug = 4;
+                // TODO: just take last entry?
+                // throw new ProjectDuplicateException(
+                // "Project " + found.abbrev() + " was registired more than once!");
             }
-        } catch (IOException e) {
-            System.out.println("Something went wrong while trying to read the project file: " + csv.getAbsolutePath());
-            e.printStackTrace();
         }
         return projects;
     }

@@ -17,9 +17,9 @@ public class SelectProject extends MyParser {
             fourth = -1;
 
     @Nullable
-    public static ArrayList<Student> read(File csv, char delim) throws StudentDuplicateException {
+    public static ArrayList<Student> read(File csv, char delim) throws StudentDuplicateException, IOException {
         ArrayList<Student> students = new ArrayList<>();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
+       BufferedReader bufferedReader = new BufferedReader(new FileReader(csv));
             String line = bufferedReader.readLine();
             if (!SelectProject.evalHeading(line, delim)) {
                 return null;
@@ -41,11 +41,6 @@ public class SelectProject extends MyParser {
                             "Student " + found.name() + " applied for a project more than once!");
                 }
             }
-        } catch (IOException e) {
-            System.out.println("Something went wrong while trying to read the student file: " + csv.getAbsolutePath());
-            e.printStackTrace();
-            return null;
-        }
         return students;
     }
 

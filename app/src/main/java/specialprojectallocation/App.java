@@ -4,6 +4,7 @@
 package specialprojectallocation;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import gurobi.GRBException;
@@ -47,7 +48,7 @@ public class App {
             String outpath = one.getPath().replace(one.getName(), "");
             new Gurobi(projects, students, outpath + "projects-students.csv");
         } catch (StudentDuplicateException | NumberFormatException | AbbrevTakenException | StudentNotFoundException |
-                 GRBException e) {
+                 GRBException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

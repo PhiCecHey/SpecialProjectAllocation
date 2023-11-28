@@ -12,12 +12,14 @@ import specialprojectallocation.parser.SelectProject;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class ImportsPanel extends JPanel {
     final JLabel lRegistration;
     final JLabel lSelection;
-    final JTextField fRegistration;
-    final JTextField fSelection;
+    final MyTextFieldInImport fRegistration;
+    final MyTextFieldInImport fSelection;
     final JButton read;
     final JButton bRegistration;
     final JButton bSelection;
@@ -27,11 +29,12 @@ public class ImportsPanel extends JPanel {
 
         this.lRegistration = new JLabel("Project Registration Datei (CSV):");
         this.lSelection = new JLabel("Project Selection Datei (CSV):");
-        this.fRegistration = new JTextField();
-        this.fSelection = new JTextField();
+        this.fRegistration = new MyTextFieldInImport();
+        this.fSelection = new MyTextFieldInImport();
         this.bRegistration = new JButton("...");
         this.bSelection = new JButton("...");
         this.read = new JButton("Dateien Einlesen");
+        MyTextFieldInImport.anyFieldChanged(this.read);
 
         this.add(this.lRegistration);
         this.add(fRegistration, "grow, width 100%");
@@ -46,7 +49,7 @@ public class ImportsPanel extends JPanel {
         this.readFiles();
     }
 
-    private static void chooseFile(@NotNull JButton b, JTextField f) {
+    private static void chooseFile(@NotNull JButton b, MyTextFieldInImport f) {
         b.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             Gui.changeFontSize(fileChooser, Gui.frame.getFont().getSize());
@@ -64,17 +67,29 @@ public class ImportsPanel extends JPanel {
 
     private void readFiles() {
         this.read.addActionListener(ae -> {
+            Calculation.projReg = new File(fRegistration.getText());
+            Calculation.projSel = new File(fSelection.getText());
             try {
-                Calculation.projReg = new File(fRegistration.getText());
-                Calculation.projSel = new File(fSelection.getText());
                 Calculation.projects = RegisterProject.read(Calculation.projReg, Config.ProjectAdministration.csvDelim);
-                Calculation.students = SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim);
-                Project.setAllFixed();
-            } catch (Exceptions.StudentNotFoundException | Exceptions.StudentDuplicateException |
-                     Exceptions.AbbrevTakenException e) {// TODO
+            } catch (Exceptions.AbbrevTakenException e) {
+                this.read.setBackground(Colors.redTransp);
                 throw new RuntimeException(e);
-            } // TODO
-
+            } catch (IOException e) {
+                this.fRegistration.setBackground(Colors.redTransp);
+            }
+            try {
+                Calculation.students = SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim);
+            } catch (IOException e) {
+                this.fSelection.setBackground(Colors.redTransp);
+            } catch (Exceptions.StudentDuplicateException e) {
+                this.read.setBackground(Colors.redTransp);
+                throw new RuntimeException(e);
+            }
+            try {
+                Project.setAllFixed();
+            } catch (Exceptions.StudentNotFoundException e) {
+                this.read.setBackground(Colors.redTransp);
+            }
         });
     }
 }

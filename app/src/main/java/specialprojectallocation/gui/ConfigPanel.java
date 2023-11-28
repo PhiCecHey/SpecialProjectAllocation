@@ -38,6 +38,7 @@ public class ConfigPanel extends JPanel {
         this.add(save, "cell 0 2, spanx, center");
 
         this.save();
+        MyTextFieldInConfig.anyFieldChanged(this.save);
     }
 
     private void save() {
@@ -59,15 +60,15 @@ public class ConfigPanel extends JPanel {
         final JLabel lStudProg;
         final JLabel lImmatNum;
         final JLabel lEmail;
-        final JTextField fCsvDelim;
-        final JTextField fName;
-        final JTextField fFirst;
-        final JTextField fSecond;
-        final JTextField fThird;
-        final JTextField fFourth;
-        final JTextField fStudProg;
-        final JTextField fIimmatNum;
-        final JTextField fEmail;
+        final MyTextFieldInConfig fCsvDelim;
+        final MyTextFieldInConfig fName;
+        final MyTextFieldInConfig fFirst;
+        final MyTextFieldInConfig fSecond;
+        final MyTextFieldInConfig fThird;
+        final MyTextFieldInConfig fFourth;
+        final MyTextFieldInConfig fStudProg;
+        final MyTextFieldInConfig fIimmatNum;
+        final MyTextFieldInConfig fEmail;
 
         ProjectSelectionPanel() {
             this.setLayout(new MigLayout());
@@ -84,15 +85,15 @@ public class ConfigPanel extends JPanel {
             this.lImmatNum = new JLabel("Column Immatriculation Number:");
             this.lEmail = new JLabel("Column Email:");
 
-            this.fCsvDelim = new JTextField(Character.toString(Config.ProjectSelection.csvDelim));
-            this.fName = new JTextField(Config.ProjectSelection.fullName);
-            this.fFirst = new JTextField(Config.ProjectSelection.first);
-            this.fSecond = new JTextField(Config.ProjectSelection.second);
-            this.fThird = new JTextField(Config.ProjectSelection.third);
-            this.fFourth = new JTextField(Config.ProjectSelection.fourth);
-            this.fStudProg = new JTextField(Config.ProjectSelection.studProg);
-            this.fIimmatNum = new JTextField(Config.ProjectSelection.immaNum);
-            this.fEmail = new JTextField(Config.ProjectSelection.email);
+            this.fCsvDelim = new MyTextFieldInConfig(Character.toString(Config.ProjectSelection.csvDelim));
+            this.fName = new MyTextFieldInConfig(Config.ProjectSelection.fullName);
+            this.fFirst = new MyTextFieldInConfig(Config.ProjectSelection.first);
+            this.fSecond = new MyTextFieldInConfig(Config.ProjectSelection.second);
+            this.fThird = new MyTextFieldInConfig(Config.ProjectSelection.third);
+            this.fFourth = new MyTextFieldInConfig(Config.ProjectSelection.fourth);
+            this.fStudProg = new MyTextFieldInConfig(Config.ProjectSelection.studProg);
+            this.fIimmatNum = new MyTextFieldInConfig(Config.ProjectSelection.immaNum);
+            this.fEmail = new MyTextFieldInConfig(Config.ProjectSelection.email);
 
             this.add(lCsvDelim, "cell 0 1, gapy 20");
             this.add(fCsvDelim, "cell 1 1, growx");
@@ -140,18 +141,18 @@ public class ConfigPanel extends JPanel {
         final JLabel lDelimFixedStuds;
         final JLabel lDelimFixedStudsNameImma;
         final JLabel lQuotes;
-        final JTextField fCsvDelim;
-        final JTextField fNumCharsAbbrev;
-        final JTextField fAbbrev;
-        final JTextField fVar;
-        final JTextField fVarOneStudent;
-        final JTextField fMaxNum;
-        final JTextField fMainGroup;
-        final JTextField fMainMaxNum;
-        final JTextField fFixed;
-        final JTextField fDelimFixedStuds;
-        final JTextField fDelimFixedStudsNameImma;
-        final JTextField fQuotes;
+        final MyTextFieldInConfig fCsvDelim;
+        final MyTextFieldInConfig fNumCharsAbbrev;
+        final MyTextFieldInConfig fAbbrev;
+        final MyTextFieldInConfig fVar;
+        final MyTextFieldInConfig fVarOneStudent;
+        final MyTextFieldInConfig fMaxNum;
+        final MyTextFieldInConfig fMainGroup;
+        final MyTextFieldInConfig fMainMaxNum;
+        final MyTextFieldInConfig fFixed;
+        final MyTextFieldInConfig fDelimFixedStuds;
+        final MyTextFieldInConfig fDelimFixedStudsNameImma;
+        final MyTextFieldInConfig fQuotes;
 
         ProjectAdminPanel() {
             this.setLayout(new MigLayout());
@@ -171,18 +172,18 @@ public class ConfigPanel extends JPanel {
             this.lDelimFixedStudsNameImma = new JLabel("Delimiter between Name and Immatriculation Number:");
             this.lQuotes = new JLabel("Character for Quotes:");
 
-            this.fCsvDelim = new JTextField(Character.toString(Config.ProjectAdministration.csvDelim));
-            this.fNumCharsAbbrev = new JTextField(Integer.toString(Config.ProjectAdministration.numCharsAbbrev));
-            this.fAbbrev = new JTextField(Config.ProjectAdministration.abbrev);
-            this.fVar = new JTextField(Config.ProjectAdministration.var);
-            this.fVarOneStudent = new JTextField(Config.ProjectAdministration.varOneStudent);
-            this.fMaxNum = new JTextField(Config.ProjectAdministration.maxNum);
-            this.fMainGroup = new JTextField(Config.ProjectAdministration.mainGroup);
-            this.fMainMaxNum = new JTextField(Config.ProjectAdministration.mainMaxNum);
-            this.fFixed = new JTextField(Config.ProjectAdministration.fixed);
-            this.fDelimFixedStuds = new JTextField(Config.ProjectAdministration.delimFixedStuds);
-            this.fDelimFixedStudsNameImma = new JTextField(Config.ProjectAdministration.delimFixedStudsNameImma);
-            this.fQuotes = new JTextField(Character.toString(Config.ProjectAdministration.quotes));
+            this.fCsvDelim = new MyTextFieldInConfig(Character.toString(Config.ProjectAdministration.csvDelim));
+            this.fNumCharsAbbrev = new MyTextFieldInConfig(Integer.toString(Config.ProjectAdministration.numCharsAbbrev));
+            this.fAbbrev = new MyTextFieldInConfig(Config.ProjectAdministration.abbrev);
+            this.fVar = new MyTextFieldInConfig(Config.ProjectAdministration.var);
+            this.fVarOneStudent = new MyTextFieldInConfig(Config.ProjectAdministration.varOneStudent);
+            this.fMaxNum = new MyTextFieldInConfig(Config.ProjectAdministration.maxNum);
+            this.fMainGroup = new MyTextFieldInConfig(Config.ProjectAdministration.mainGroup);
+            this.fMainMaxNum = new MyTextFieldInConfig(Config.ProjectAdministration.mainMaxNum);
+            this.fFixed = new MyTextFieldInConfig(Config.ProjectAdministration.fixed);
+            this.fDelimFixedStuds = new MyTextFieldInConfig(Config.ProjectAdministration.delimFixedStuds);
+            this.fDelimFixedStudsNameImma = new MyTextFieldInConfig(Config.ProjectAdministration.delimFixedStudsNameImma);
+            this.fQuotes = new MyTextFieldInConfig(Character.toString(Config.ProjectAdministration.quotes));
 
             this.add(lCsvDelim, "cell 0 1, gapy 20");
             this.add(fCsvDelim, "cell 1 1, growx");
@@ -255,7 +256,7 @@ public class ConfigPanel extends JPanel {
         }
 
         static class CheckField extends JPanel {
-            final JTextField field;
+            final MyTextFieldInConfig field;
             final JCheckBox check;
             final JLabel label;
 
@@ -266,7 +267,7 @@ public class ConfigPanel extends JPanel {
                 this.check.setSelected(true);
                 this.add(this.check);
                 this.add(this.label);
-                this.field = new JTextField(f);
+                this.field = new MyTextFieldInConfig(f);
                 this.add(this.field);
                 addButtonFunct();
             }
@@ -285,7 +286,7 @@ public class ConfigPanel extends JPanel {
         }
 
         static class CheckFourFields extends JPanel {
-            final JTextField field1, field2, field3, field4;
+            final MyTextFieldInConfig field1, field2, field3, field4;
             final JCheckBox check;
 
             CheckFourFields(String l0, String l1, String f1, String l2, String f2, String l3, String f3, String l4,
@@ -301,10 +302,10 @@ public class ConfigPanel extends JPanel {
                 label3.setPreferredSize(label2.getPreferredSize());
                 JLabel label4 = new JLabel(l4);
                 label4.setPreferredSize(label2.getPreferredSize());
-                this.field1 = new JTextField(f1);
-                this.field2 = new JTextField(f2);
-                this.field3 = new JTextField(f3);
-                this.field4 = new JTextField(f4);
+                this.field1 = new MyTextFieldInConfig(f1);
+                this.field2 = new MyTextFieldInConfig(f2);
+                this.field3 = new MyTextFieldInConfig(f3);
+                this.field4 = new MyTextFieldInConfig(f4);
 
                 this.add(this.check);
                 this.add(new JLabel(l0), "wrap");
@@ -326,7 +327,7 @@ public class ConfigPanel extends JPanel {
                     field3.setEditable(this.check.isSelected());
                     field4.setEditable(this.check.isSelected());
                     if (this.check.isSelected()) {
-                        JTextField test = new JTextField();
+                        MyTextFieldInConfig test = new MyTextFieldInConfig();
                         field1.setBackground(test.getBackground());
                         field2.setBackground(test.getBackground());
                         field3.setBackground(test.getBackground());
@@ -342,7 +343,7 @@ public class ConfigPanel extends JPanel {
         }
 
         static class CheckFiveFields extends JPanel {
-            final JTextField field1, field2, field3, field4, field5;
+            final MyTextFieldInConfig field1, field2, field3, field4, field5;
             final JCheckBox check;
 
             CheckFiveFields(String l0, String l1, String f1, String l2, String f2, String l3, String f3, String l4,
@@ -360,11 +361,11 @@ public class ConfigPanel extends JPanel {
                 label4.setPreferredSize(label2.getPreferredSize());
                 JLabel label5 = new JLabel(l5);
                 label5.setPreferredSize(label2.getPreferredSize());
-                this.field1 = new JTextField(f1);
-                this.field2 = new JTextField(f2);
-                this.field3 = new JTextField(f3);
-                this.field4 = new JTextField(f4);
-                this.field5 = new JTextField(f5);
+                this.field1 = new MyTextFieldInConfig(f1);
+                this.field2 = new MyTextFieldInConfig(f2);
+                this.field3 = new MyTextFieldInConfig(f3);
+                this.field4 = new MyTextFieldInConfig(f4);
+                this.field5 = new MyTextFieldInConfig(f5);
 
                 this.add(this.check);
                 this.add(new JLabel(l0), "wrap");
@@ -389,7 +390,7 @@ public class ConfigPanel extends JPanel {
                     field4.setEditable(this.check.isSelected());
                     field5.setEditable(this.check.isSelected());
                     if (this.check.isSelected()) {
-                        JTextField test = new JTextField();
+                        MyTextFieldInConfig test = new MyTextFieldInConfig();
                         field1.setBackground(test.getBackground());
                         field2.setBackground(test.getBackground());
                         field3.setBackground(test.getBackground());
