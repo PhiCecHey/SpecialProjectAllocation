@@ -6,7 +6,7 @@ import javax.swing.event.DocumentListener;
 import java.util.ArrayList;
 
 public class MyTextFieldInConfig extends JTextField {
-    static ArrayList<MyTextFieldInConfig> all = new ArrayList<>();
+    static final ArrayList<MyTextFieldInConfig> all = new ArrayList<>();
 
     MyTextFieldInConfig(String s) {
         super(s);

@@ -6,12 +6,7 @@ import javax.swing.event.DocumentListener;
 import java.util.ArrayList;
 
 public class MyTextFieldInImport extends JTextField {
-    static ArrayList<MyTextFieldInImport> all = new ArrayList<>();
-
-    MyTextFieldInImport(String s) {
-        super(s);
-        MyTextFieldInImport.all.add(this);
-    }
+    static final ArrayList<MyTextFieldInImport> all = new ArrayList<>();
 
     MyTextFieldInImport() {
         super();
@@ -34,6 +29,8 @@ public class MyTextFieldInImport extends JTextField {
                 }
 
                 public void warn() {
+                    JTextField test = new JTextField();
+                    field.setBackground(test.getBackground());
                     button.setBackground(Colors.yellowTransp);
                 }
             });

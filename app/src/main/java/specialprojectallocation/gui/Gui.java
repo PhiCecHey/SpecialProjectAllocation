@@ -28,17 +28,16 @@ public class Gui {
         Gui.frame.setTitle("Special Project Allocation");
 
         Gui.pane = new JTabbedPane();
-        //Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-        //Gui.pane.setBorder(padding);
         Gui.frame.add(pane, "cell 0 0, span 1 5");
 
         Gui.help = new HelpPanel();
         Gui.config = new ConfigPanel();
+        JScrollPane p = new JScrollPane(config);
         Gui.imports = new ImportsPanel();
         Gui.results = new ResultsPanel();
         Gui.pane.addTab("Help", Gui.help);
         Gui.pane.addTab("Imports", Gui.imports);
-        Gui.pane.addTab("Config", Gui.config);
+        Gui.pane.addTab("Config", p);
         Gui.pane.addTab("Results", Gui.results);
 
         JSeparator sep = new JSeparator(SwingConstants.VERTICAL);

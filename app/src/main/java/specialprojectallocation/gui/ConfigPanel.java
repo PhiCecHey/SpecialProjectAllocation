@@ -1,6 +1,7 @@
 package specialprojectallocation.gui;
 
 import net.miginfocom.swing.MigLayout;
+import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
 
 import javax.swing.*;
@@ -13,7 +14,7 @@ public class ConfigPanel extends JPanel {
     final ConstraintsPanel constraintsPanel;
 
     ConfigPanel() {
-        this.setLayout(new MigLayout("gapx 30pt, gapy 20", "[]push[]push[]"));
+        this.setLayout(new MigLayout("gapx 30pt, gapy 20"));
         JSeparator sepV = new JSeparator(SwingConstants.VERTICAL);
         sepV.setMinimumSize(new Dimension(2, 2));
 
@@ -33,9 +34,9 @@ public class ConfigPanel extends JPanel {
 
         JSeparator sepH = new JSeparator();
         sepH.setMinimumSize(new Dimension(2, 2));
-        this.add(sepH, "cell 0 1, growx, spanx, width 100%, wrap");
+        this.add(sepH, "cell 0 1, growx, spanx, wrap");
         this.save = new JButton("Speichern");
-        this.add(save, "cell 0 2, spanx, center");
+        this.add(this.save, "cell 0 2, spanx, center");
 
         this.save();
         MyTextFieldInConfig.anyFieldChanged(this.save);
@@ -43,6 +44,7 @@ public class ConfigPanel extends JPanel {
 
     private void save() {
         this.save.addActionListener(ae -> {
+            Calculation.clearGurobi();
             projectAdminPanel.save();
             projectSelectionPanel.save();
             constraintsPanel.save();
@@ -156,7 +158,6 @@ public class ConfigPanel extends JPanel {
 
         ProjectAdminPanel() {
             this.setLayout(new MigLayout());
-
             this.add(new JLabel("Project Administration"), "cell 0 0, spanx, center");
 
             this.lCsvDelim = new JLabel("CSV Delimiter:");
@@ -461,6 +462,7 @@ public class ConfigPanel extends JPanel {
 
         ConstraintsPanel() {
             this.setLayout(new MigLayout("flowy"));
+            this.add(new JLabel("Gurobi Configs"), "cell 0 0, spanx, center");
 
             /* TODO: feature required?
             this.maxNumProjPerStud = new ButtonGroup(Integer.toString(Config.Constraints.maxNumProjectsPerStudent),
@@ -515,7 +517,7 @@ public class ConfigPanel extends JPanel {
             this.add(sep2, "spanx, growx");
             */
 
-            this.add(minNumStudsPerGroupProj);
+            this.add(minNumStudsPerGroupProj, "gapy 20");
 
             JSeparator sep3 = new JSeparator();
             sep3.setMinimumSize(new Dimension(2, 2));
