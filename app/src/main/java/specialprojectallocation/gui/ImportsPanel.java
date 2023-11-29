@@ -77,34 +77,20 @@ public class ImportsPanel extends JPanel {
             Calculation.projSel = new File(fSelection.getText());
             boolean worked = true;
             try {
-                worked = RegisterProject.read(Calculation.projReg, Config.ProjectAdministration.csvDelim);
+                Calculation.projects = RegisterProject.read(Calculation.projReg, Config.ProjectAdministration.csvDelim);
+            } catch (Exceptions.AbbrevTakenException e) {
+                this.read.setBackground(Colors.redTransp);
+                throw new RuntimeException(e);
             } catch (IOException e) {
                 this.fRegistration.setBackground(Colors.redTransp);
-                this.logs.append(e + "\n");
-                worked = false;
-            } catch (Exceptions.AbbrevTakenException e) {
-                this.fRegistration.setBackground(Colors.yellowTransp);
-                this.logs.append(e + "\n");
-                worked = false;
-            } catch (Exception e) {
-                this.fRegistration.setBackground(Colors.redTransp);
-                this.logs.append(e + "\n");
-                worked = false;
             }
             try {
-                worked = worked & SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim);
+                Calculation.students = SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim);
             } catch (IOException e) {
                 this.fSelection.setBackground(Colors.redTransp);
-                this.logs.append(e + "\n");
-                worked = false;
             } catch (Exceptions.StudentDuplicateException e) {
-                this.fSelection.setBackground(Colors.yellowTransp);
-                this.logs.append(e + "\n");
-                worked = false;
-            } catch (Exception e) {
                 this.read.setBackground(Colors.redTransp);
-                this.logs.append(e + "\n");
-                worked = false;
+                throw new RuntimeException(e);
             }
             Project.setAllFixed();
             this.logs.append(Calculation.log() + "\n");

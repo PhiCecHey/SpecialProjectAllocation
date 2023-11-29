@@ -15,8 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
-import specialprojectallocation.Log;
-import specialprojectallocation.gui.ResultsPanel;
 import specialprojectallocation.objects.Group;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
@@ -50,9 +48,10 @@ public class Gurobi {
             boolean worked = this.extractResults();
             System.out.println(this.print(true, worked));
             if (worked) {
-                Student.studsWithoutProj(this.studsWithoutProj());
+                this.studsWithoutProj();
                 Calculation.gurobiResultsGui = this.print(false, worked) + "\n\nStudents without project:\n"
-                                               + Student.studsWithoutProj();
+                                               + Calculation.studentsWithoutProject;
+                WriteResults.printForSupers(this.results, this.allocs);
             } else {
                 Calculation.gurobiResultsGui = this.print(false, worked);
             }
@@ -639,9 +638,7 @@ public class Gurobi {
         }
     }
 
-    @NotNull
-    private ArrayList<Student> studsWithoutProj() {
-        ArrayList<Student> studsWithoutProj = new ArrayList<>();
+    private void studsWithoutProj() {
         for (int s = 0; s < this.allocs.numStuds(); s++) {
             Student student = this.allocs.getStud(s);
             boolean hasProject = false;
@@ -649,9 +646,8 @@ public class Gurobi {
                 hasProject = this.results[p][s] == 1 || hasProject;
             }
             if (!hasProject) {
-                studsWithoutProj.add(student);
+                Calculation.studentsWithoutProject.add(student);
             }
         }
-        return studsWithoutProj;
     }
 }
