@@ -31,44 +31,8 @@ public class Gurobi {
     public static ArrayList<Project> projects;
     public static ArrayList<Student> students;
 
-    public Gurobi(final ArrayList<Project> proj, final ArrayList<Student> stud, String outFile) throws GRBException {
-        Gurobi.students = stud;
-        Gurobi.projects = proj;
-
-        Log.clear();
-
-        try {
-            this.env = new GRBEnv();
-            this.model = new GRBModel(env);
-            this.model.set("LogToConsole", "0");
-            this.model.set(GRB.StringAttr.ModelName, "SpecialProjectAlloc");
-            this.allocs = new Allocations(projects, students, this.model);
-
-            this.addConstraints();
-            this.addPreferences();
-            GRBLinExpr objective = this.calculateObjectiveLinExpr(0);
-            this.model.setObjective(objective, GRB.MAXIMIZE);
-            this.model.optimize();
-
-            boolean worked = this.extractResults();
-            if (worked) {
-                Student.studsWithoutProj(this.studsWithoutProj());
-            }
-            System.out.println(this.print(true, worked));
-            Calculation.gurobiResultsGui = this.print(false, worked);
-            if (worked) {
-                WriteResults.printForSupers(this.results, this.allocs, outFile);
-            }
-            model.dispose();
-            env.dispose();
-        } catch (GRBException e) {
-            System.err.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
-            throw e;
-        }
-    }
-
     public Gurobi() throws GRBException {
-        Log.clear();
+        Calculation.clearGurobi();
 
         try {
             this.env = new GRBEnv();
@@ -94,7 +58,6 @@ public class Gurobi {
             }
             model.dispose();
             env.dispose();
-
         } catch (GRBException e) {
             System.err.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
             throw e;
@@ -139,7 +102,7 @@ public class Gurobi {
         if (optimstatus != GRB.OPTIMAL) {
             Calculation.gurobiResultsGui = "Model infeasible.";
             System.out.println("Model infeasible.");
-            Log.append("\n\n\nEs konnte keine Zuteilung gefunden werden.");
+            Calculation.appendToLog("\n\n\nEs konnte keine Zuteilung gefunden werden.");
             model.dispose();
             env.dispose();
             return false;
@@ -150,7 +113,7 @@ public class Gurobi {
 
     @Nullable
     private String print(boolean tui, boolean worked) {
-        StringBuilder print = new StringBuilder(Log.log() + "\n");
+        StringBuilder print = new StringBuilder(Calculation.log() + "\n");
         if (!worked) {
             return print.toString();
         }

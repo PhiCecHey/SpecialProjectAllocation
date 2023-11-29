@@ -5,22 +5,17 @@ package specialprojectallocation;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import gurobi.GRBException;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
 import specialprojectallocation.Exceptions.StudentDuplicateException;
-import specialprojectallocation.Exceptions.StudentNotFoundException;
 import specialprojectallocation.algorithm.Gurobi;
 import specialprojectallocation.gui.Gui;
 import specialprojectallocation.objects.Project;
-import specialprojectallocation.objects.Student;
 import specialprojectallocation.parser.SelectProject;
 import specialprojectallocation.parser.RegisterProject;
 
 public class App {
-    public static File projSel;
-    public static File projReg;
 
     public static void main(String[] args) {
         gui();
@@ -41,20 +36,20 @@ public class App {
                 two = new File("files/Special_project_selection.csv");
             }
 
-            ArrayList<Project> projects = RegisterProject.read(one, Config.ProjectAdministration.csvDelim);
-            ArrayList<Student> students = SelectProject.read(two, Config.ProjectSelection.csvDelim);
+            RegisterProject.read(one, Config.ProjectAdministration.csvDelim);
+            SelectProject.read(two, Config.ProjectSelection.csvDelim);
             Project.setAllFixed();
 
-            String outpath = one.getPath().replace(one.getName(), "");
-            new Gurobi(projects, students, outpath + "projects-students.csv");
-        } catch (StudentDuplicateException | NumberFormatException | AbbrevTakenException | StudentNotFoundException |
-                 GRBException | IOException e) {
+            Calculation.outPath = one.getPath().replace(one.getName(), "");
+            new Gurobi();
+        } catch (StudentDuplicateException | NumberFormatException | AbbrevTakenException | GRBException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
     public static void gui() {
+        Calculation.clearAll();
         Gui.init();
     }
 }

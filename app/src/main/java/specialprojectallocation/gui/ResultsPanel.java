@@ -41,12 +41,15 @@ public class ResultsPanel extends JPanel {
             try {
                 Calculation.gurobi = new Gurobi();
             } catch (GRBException e) { // TODO
-                throw new RuntimeException(e);
+                area.append(e + "\n");
             }
-            area.setText(Calculation.gurobiResultsGui);
+            area.append(Calculation.gurobiResultsGui + "\n");
         });
 
-        this.bExport.addActionListener(ae -> WriteResults.printForSupers(Calculation.gurobi.results, Calculation.gurobi.allocs, fExport.getText()));
+        this.bExport.addActionListener(ae -> {
+            Calculation.outPath = fExport.getText();
+            WriteResults.printForSupers(Calculation.gurobi.results, Calculation.gurobi.allocs);
+        });
     }
 
     private static void chooseFolder(@NotNull JButton b, JTextField f) {

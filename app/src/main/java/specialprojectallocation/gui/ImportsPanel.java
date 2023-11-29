@@ -12,7 +12,6 @@ import specialprojectallocation.parser.SelectProject;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ImportsPanel extends JPanel {
@@ -23,6 +22,7 @@ public class ImportsPanel extends JPanel {
     final JButton read;
     final JButton bRegistration;
     final JButton bSelection;
+    final JTextArea logs;
 
     ImportsPanel() {
         this.setLayout(new MigLayout());
@@ -35,6 +35,8 @@ public class ImportsPanel extends JPanel {
         this.bSelection = new JButton("...");
         this.read = new JButton("Dateien Einlesen");
         MyTextFieldInImport.anyFieldChanged(this.read);
+        this.logs = new JTextArea();
+        this.logs.setLineWrap(false);
 
         this.add(this.lRegistration);
         this.add(fRegistration, "grow, width 100%");
@@ -43,6 +45,9 @@ public class ImportsPanel extends JPanel {
         this.add(fSelection, "grow, width 100%");
         this.add(bSelection, "wrap");
         this.add(this.read, "gapy 20pt, spanx, center");
+        this.add(new JLabel("Fehlerausgabe:"), "wrap, gapy 20pt");
+        JScrollPane scroll = new JScrollPane(this.logs);
+        this.add(scroll, "spanx, width 100%, height 100%");
 
         ImportsPanel.chooseFile(this.bSelection, this.fSelection);
         ImportsPanel.chooseFile(this.bRegistration, this.fRegistration);
@@ -67,28 +72,44 @@ public class ImportsPanel extends JPanel {
 
     private void readFiles() {
         this.read.addActionListener(ae -> {
+            this.logs.setText("");
             Calculation.projReg = new File(fRegistration.getText());
             Calculation.projSel = new File(fSelection.getText());
+            boolean worked = true;
             try {
-                Calculation.projects = RegisterProject.read(Calculation.projReg, Config.ProjectAdministration.csvDelim);
-            } catch (Exceptions.AbbrevTakenException e) {
-                this.read.setBackground(Colors.redTransp);
-                throw new RuntimeException(e);
+                worked = RegisterProject.read(Calculation.projReg, Config.ProjectAdministration.csvDelim);
             } catch (IOException e) {
                 this.fRegistration.setBackground(Colors.redTransp);
+                this.logs.append(e + "\n");
+                worked = false;
+            } catch (Exceptions.AbbrevTakenException e) {
+                this.fRegistration.setBackground(Colors.yellowTransp);
+                this.logs.append(e + "\n");
+                worked = false;
+            } catch (Exception e) {
+                this.fRegistration.setBackground(Colors.redTransp);
+                this.logs.append(e + "\n");
+                worked = false;
             }
             try {
-                Calculation.students = SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim);
+                worked = worked & SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim);
             } catch (IOException e) {
                 this.fSelection.setBackground(Colors.redTransp);
+                this.logs.append(e + "\n");
+                worked = false;
             } catch (Exceptions.StudentDuplicateException e) {
+                this.fSelection.setBackground(Colors.yellowTransp);
+                this.logs.append(e + "\n");
+                worked = false;
+            } catch (Exception e) {
                 this.read.setBackground(Colors.redTransp);
-                throw new RuntimeException(e);
+                this.logs.append(e + "\n");
+                worked = false;
             }
-            try {
-                Project.setAllFixed();
-            } catch (Exceptions.StudentNotFoundException e) {
-                this.read.setBackground(Colors.redTransp);
+            Project.setAllFixed();
+            this.logs.append(Calculation.log() + "\n");
+            if (worked) {
+                this.read.setBackground(Colors.greenTransp);
             }
         });
     }
