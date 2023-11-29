@@ -1,5 +1,6 @@
 package specialprojectallocation.objects;
 
+import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
 import specialprojectallocation.Exceptions;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
@@ -8,10 +9,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Project {
-
-    private static final ArrayList<Project> projects = new ArrayList<>();
-    private static final ArrayList<String> allAbbrevs = new ArrayList<>();
-
     private final String abbrev;
     private final int maxNumStuds;
     private int minNumStuds; // TODO
@@ -21,7 +18,7 @@ public class Project {
 
     public Project(String ab, int max, Group[] gr, String fixed) throws AbbrevTakenException {
         ab = ab.strip();
-        for (String str : allAbbrevs) {
+        for (String str : Calculation.allAbbrevs) {
             if (str.equals(ab)) {
                 throw new AbbrevTakenException(
                         "Abbrev " + ab + " already taken by project " + Objects.requireNonNull(Project.findProject(ab))
@@ -34,8 +31,8 @@ public class Project {
         this.maxNumStuds = max;
         this.groups = gr;
         this.stringFixedStuds = fixed;
-        Project.projects.add(this);
-        Project.allAbbrevs.add(this.abbrev);
+        Calculation.projects.add(this);
+        Calculation.allAbbrevs.add(this.abbrev);
     }
 
     public String abbrev() {
@@ -119,7 +116,7 @@ public class Project {
     }
 
     public static Project findProject(String abbrev) {
-        for (Project project : Project.projects) {
+        for (Project project : Calculation.projects) {
             if (project.abbrev().equals(abbrev)) {
                 return project;
             }
@@ -127,12 +124,8 @@ public class Project {
         return null;
     }
 
-    public static ArrayList<Project> projects() {
-        return Project.projects;
-    }
-
-    public static void setAllFixed() throws Exceptions.StudentNotFoundException {
-        for (Project project : Project.projects) {
+    public static void setAllFixed() {
+        for (Project project : Calculation.projects) {
             project.setFixed();
         }
     }

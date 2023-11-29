@@ -1,14 +1,12 @@
 package specialprojectallocation.objects;
 
+import specialprojectallocation.Calculation;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class Student {
-    private static final List<Student> students = new ArrayList<>();
-    private static ArrayList<Student> studsWithoutProj = new ArrayList<>();
     private final String immatNum;
     private final String name;
-    private final String email;
     private final StudyProgram study;
     private StudWish selectedProjs;
     private double totalScore;
@@ -16,10 +14,9 @@ public class Student {
     public Student(String imma, String na, String em, StudyProgram stu) {
         this.immatNum = imma;
         this.name = na;
-        this.email = em;
         this.study = stu;
         this.totalScore = 0;
-        Student.students.add(this);
+        Calculation.students.add(this);
     }
 
     public String immatNum() {
@@ -40,7 +37,7 @@ public class Student {
 
     public void selectProjStr(String firstStr, String secondStr, String thirdStr, String fourthStr) {
         Project firstPr = null, secondPr = null, thirdPr = null, fourthPr = null;
-        for (Project project : Project.projects()) {
+        for (Project project : Calculation.projects) {
             if (firstStr.contains(project.abbrev())) {
                 firstPr = project;
             } else if (secondStr.contains(project.abbrev())) {
@@ -112,7 +109,7 @@ public class Student {
 
     public ArrayList<Project> getAllFixed() {
         ArrayList<Project> fixed = new ArrayList<>();
-        for (Project p : Project.projects()) {
+        for (Project p : Calculation.projects) {
             if (p.isFixed(this)) {
                 fixed.add(p);
             }
@@ -125,7 +122,7 @@ public class Student {
         if (immatNum.isEmpty()) {
             return null;
         }
-        for (Student s : Student.students) {
+        for (Student s : Calculation.students) {
             if (s.immatNum().equals(immatNum)) {
                 return s;
             }
@@ -134,7 +131,7 @@ public class Student {
     }
 
     public static Student findStudentByName(String name, boolean experimental) {
-        for (Student s : Student.students) {
+        for (Student s : Calculation.students) {
             if (s.name().equals(name)) {
                 return s;
             }
@@ -163,17 +160,9 @@ public class Student {
                 || project.abbrev().equals(this.abbrevProj3()) || project.abbrev().equals(this.abbrevProj4()));
     }
 
-    public static ArrayList<Student> studsWithoutProj() {
-        return Student.studsWithoutProj;
-    }
-
-    public static void studsWithoutProj(ArrayList<Student> list) {
-        Student.studsWithoutProj = list;
-    }
-
     public int numFixedProject() {
         int numFixedProjs = 0;
-        for (Project project : Project.projects()) {
+        for (Project project : Calculation.projects) {
             if (project.isFixed(this)) {
                 numFixedProjs++;
             }
@@ -190,7 +179,7 @@ public class Student {
     }
 
     public boolean isFixed() {
-        for (Project project : Project.projects()) {
+        for (Project project : Calculation.projects) {
             if (project.isFixed(this)) {
                 return true;
             }

@@ -51,7 +51,9 @@ public class Gurobi {
                 this.studsWithoutProj();
                 Calculation.gurobiResultsGui = this.print(false, worked) + "\n\nStudents without project:\n"
                                                + Calculation.studentsWithoutProject;
-                WriteResults.printForSupers(this.results, this.allocs);
+                if (!(Calculation.outPath == null || Calculation.outPath.equals(""))) {
+                    WriteResults.printForSupers(this.results, this.allocs);
+                }
             } else {
                 Calculation.gurobiResultsGui = this.print(false, worked);
             }

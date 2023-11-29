@@ -1,32 +1,29 @@
 package specialprojectallocation.parser;
 
 import java.io.*;
-import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
 import specialprojectallocation.objects.Group;
 import specialprojectallocation.objects.Project;
-import specialprojectallocation.objects.Student;
 import specialprojectallocation.objects.StudyProgram;
 
 public class RegisterProject extends MyParser {
 
     private static int abbrev = -1, maxNum = -1, mainGroup = -1, mainMaxNum = -1, var = -1, fixed = -1;
 
-    // TODO: test
-    // TOOD: how to handle exceptions?
-    @Nullable
-    public static ArrayList<Project> read(@NotNull File csv, char delim)
+    // TODO: how to handle exceptions?
+    public static boolean read(@NotNull File csv, char delim)
     throws NumberFormatException, AbbrevTakenException, IOException {
-        ArrayList<Project> projects = new ArrayList<>();
+        boolean worked = true;
+        Calculation.clearProjects();
         BufferedReader bufferedReader = new BufferedReader(new FileReader(csv));
-        System.out.println("READING FILE: " + csv.getAbsolutePath());
         String line = bufferedReader.readLine();
         if (!RegisterProject.evalHeading(line)) {
-            return null;
+            return false;
         }
 
         while ((line = bufferedReader.readLine()) != null) {
@@ -51,18 +48,19 @@ public class RegisterProject extends MyParser {
                 }
                 Project project = new Project(cells[RegisterProject.abbrev], maxNum, groups,
                                               cells[RegisterProject.fixed]);
-                projects.add(project);
+                Calculation.projects.add(project);
             } else {
                 int debug = 4;
                 // TODO: just take last entry?
                 // throw new ProjectDuplicateException(
                 // "Project " + found.abbrev() + " was registired more than once!");
+                worked = false;
             }
         }
-        return projects;
+        return worked;
     }
 
-    private static boolean evalHeading(String line) { // TODO
+    private static boolean evalHeading(String line) {
         if (line == null) {
             return false;
         }

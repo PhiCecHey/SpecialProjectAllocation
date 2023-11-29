@@ -5,16 +5,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
 import specialprojectallocation.algorithm.Allocations;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
 
 public class WriteResults {
-    public static void printForSupers(double[][] results, @NotNull Allocations allocs, String path) {
+    public static void printForSupers(double[][] results, @NotNull Allocations allocs) {
         try {
-            FileWriter fw = new FileWriter(path);
-            BufferedWriter bw = new BufferedWriter(new FileWriter(path));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(Calculation.outPath));
             String heading = "Project / Students\n";
             bw.write(heading);
             for (int p = 0; p < allocs.numProjs(); p++) {
@@ -43,16 +43,16 @@ public class WriteResults {
                 }
             }
 
-            if (!Student.studsWithoutProj().isEmpty()) {
+            if (!Calculation.studentsWithoutProject.isEmpty()) {
                 bw.write("\n + Students without a project:" + Config.Output.csvDelim);
-                for (Student student : Student.studsWithoutProj()) {
+                for (Student student : Calculation.studentsWithoutProject) {
                     bw.write(student.name() + " (" + student.immatNum() + ")" + Config.Output.csvDelim);
                 }
                 bw.write("\n");
             }
-            fw.close();
             bw.close();
         } catch (IOException e) {
+            // TODO
             e.printStackTrace();
         }
     }

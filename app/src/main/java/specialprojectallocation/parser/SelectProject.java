@@ -13,35 +13,34 @@ import specialprojectallocation.objects.*;
 
 public class SelectProject extends MyParser {
     // configs
-    private static int name = -1, immaNum = -1, email = -1, studProg = -1, first = -1, second = -1, third = -1,
-            fourth = -1;
+    private static int name = -1, immaNum = -1, email = -1, studProg = -1, first = -1, second = -1, third = -1, fourth
+            = -1;
 
-    @Nullable
-    public static ArrayList<Student> read(File csv, char delim) throws StudentDuplicateException, IOException {
-        ArrayList<Student> students = new ArrayList<>();
-       BufferedReader bufferedReader = new BufferedReader(new FileReader(csv));
-            String line = bufferedReader.readLine();
-            if (!SelectProject.evalHeading(line, delim)) {
-                return null;
-            }
+    public static boolean read(File csv, char delim) throws StudentDuplicateException, IOException {
+        Calculation.clearStudents();
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(csv));
+        String line = bufferedReader.readLine();
+        if (!SelectProject.evalHeading(line, delim)) {
+            return false;
+        }
 
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] cells = SelectProject.readLineInCsvWithQuotesAndDelim(line, Config.ProjectSelection.csvDelim);
-                Student found = Student.findStudentByImma(cells[SelectProject.immaNum]);
-                if (found == null) {
-                    Student student = new Student(cells[SelectProject.immaNum], cells[SelectProject.name],
-                            cells[SelectProject.email],
-                            StudyProgram.StrToStudy(cells[SelectProject.studProg]));
-                    student.selectProjStr(cells[SelectProject.first], cells[SelectProject.second],
-                            cells[SelectProject.third], cells[SelectProject.fourth]);
-                    students.add(student);
-                } else {
-                    // TODO: what to do with duplicate? only take newest?
-                    throw new StudentDuplicateException(
-                            "Student " + found.name() + " applied for a project more than once!");
-                }
+        while ((line = bufferedReader.readLine()) != null) {
+            String[] cells = SelectProject.readLineInCsvWithQuotesAndDelim(line, Config.ProjectSelection.csvDelim);
+            Student found = Student.findStudentByImma(cells[SelectProject.immaNum]);
+            if (found == null) {
+                Student student = new Student(cells[SelectProject.immaNum], cells[SelectProject.name],
+                                              cells[SelectProject.email],
+                                              StudyProgram.StrToStudy(cells[SelectProject.studProg]));
+                student.selectProjStr(cells[SelectProject.first], cells[SelectProject.second],
+                                      cells[SelectProject.third], cells[SelectProject.fourth]);
+                Calculation.students.add(student);
+            } else {
+                // TODO: what to do with duplicate? only take newest?
+                throw new StudentDuplicateException(
+                        "Student " + found.name() + " applied for a project more than once!");
             }
-        return students;
+        }
+        return true;
     }
 
     private static boolean evalHeading(String line, char delim) {
@@ -70,7 +69,7 @@ public class SelectProject extends MyParser {
             }
         }
         return (SelectProject.name != -1 && SelectProject.email != -1 && SelectProject.immaNum != -1
-                && SelectProject.studProg != -1 && SelectProject.first != -1
-                && SelectProject.second != -1 && SelectProject.third != -1 && SelectProject.fourth != -1);
+                && SelectProject.studProg != -1 && SelectProject.first != -1 && SelectProject.second != -1
+                && SelectProject.third != -1 && SelectProject.fourth != -1);
     }
 }
