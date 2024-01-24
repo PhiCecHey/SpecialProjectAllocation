@@ -3,7 +3,6 @@ package specialprojectallocation.parser;
 import java.io.*;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
@@ -28,7 +27,6 @@ public class RegisterProject extends MyParser {
 
             while ((line = bufferedReader.readLine()) != null) {
                 String[] cells = RegisterProject.readLineInCsvWithQuotesAndDelim(line, delim);
-                var debug = Calculation.projects;
                 Project found = Project.findProject(cells[RegisterProject.abbrev]);
                 if (found == null) {
                     boolean oneStudent = cells[RegisterProject.var].toLowerCase()
@@ -47,10 +45,14 @@ public class RegisterProject extends MyParser {
                     if (!cells[RegisterProject.maxNum].isEmpty()) {
                         maxNum = Integer.parseInt(cells[RegisterProject.maxNum]);
                     }
-                    Project project = new Project(cells[RegisterProject.abbrev], maxNum, groups,
+                    // generates new project and adds it to all projects
+                    new Project(cells[RegisterProject.abbrev], maxNum, groups,
                             cells[RegisterProject.fixed]);
                 } else {
                     System.out.println("register projects: found project twice " + found.abbrev());
+                    Calculation.appendToLog(
+                            "Register projects: Found project twice. Skipping second entry. " + found.abbrev());
+
                     // TODO: just take last entry?
                     // throw new ProjectDuplicateException(
                     // "Project " + found.abbrev() + " was registired more than once!");

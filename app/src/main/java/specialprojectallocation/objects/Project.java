@@ -2,7 +2,6 @@ package specialprojectallocation.objects;
 
 import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
-import specialprojectallocation.Exceptions;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
 
 import java.util.ArrayList;

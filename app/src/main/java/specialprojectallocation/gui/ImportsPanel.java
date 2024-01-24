@@ -111,6 +111,8 @@ public class ImportsPanel extends JPanel {
             this.logs.append(Calculation.log() + "\n");
             if (worked) {
                 this.read.setBackground(Colors.greenTransp);
+            } else{
+                logs.setText(Calculation.log());
             }
         });
     }
