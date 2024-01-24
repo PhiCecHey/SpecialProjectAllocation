@@ -64,7 +64,7 @@ public class ResultsPanel extends JPanel {
                 if (!currentDir.endsWith("/")) {
                     currentDir += "/";
                 }
-                f.setText(currentDir += "Zimmerzuteilung_Ergebnisse.csv");
+                f.setText(currentDir += "SpecialProjectAllocation-Results.csv");
             }
         });
     }

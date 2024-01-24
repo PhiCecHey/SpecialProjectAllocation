@@ -41,6 +41,7 @@ public class App {
             Project.setAllFixed();
 
             Calculation.outPath = one.getPath().replace(one.getName(), "");
+
             new Gurobi();
         } catch (StudentDuplicateException | NumberFormatException | AbbrevTakenException | GRBException | IOException e) {
             // TODO Auto-generated catch block

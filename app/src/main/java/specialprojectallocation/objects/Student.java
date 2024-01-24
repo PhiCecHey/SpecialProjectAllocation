@@ -1,5 +1,7 @@
 package specialprojectallocation.objects;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Calculation;
 
 import java.util.ArrayList;
@@ -87,7 +89,7 @@ public class Student {
         return this.selectedProjs.proj4().abbrev();
     }
 
-    public int choiceOfProj(Project project) {
+    public int choiceOfProj(@NotNull Project project) {
         if (project.isFixed(this)) {
             return 0;
         }
@@ -117,6 +119,7 @@ public class Student {
         return fixed;
     }
 
+    @Nullable
     public static Student findStudentByImma(String immatNum) {
         immatNum = immatNum.trim();
         if (immatNum.isEmpty()) {
@@ -130,6 +133,7 @@ public class Student {
         return null;
     }
 
+    @Nullable
     public static Student findStudentByName(String name, boolean experimental) {
         for (Student s : Calculation.students) {
             if (s.name().equals(name)) {
@@ -155,7 +159,7 @@ public class Student {
         return null;
     }
 
-    public boolean wantsProject(Project project) {
+    public boolean wantsProject(@NotNull Project project) {
         return (project.abbrev().equals(this.abbrevProj1()) || project.abbrev().equals(this.abbrevProj2())
                 || project.abbrev().equals(this.abbrevProj3()) || project.abbrev().equals(this.abbrevProj4()));
     }

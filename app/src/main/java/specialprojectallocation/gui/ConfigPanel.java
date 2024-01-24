@@ -590,12 +590,12 @@ public class ConfigPanel extends JPanel {
             }
             Config.Constraints.fixedStuds = this.fixedStuds.check.isSelected();
             Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj = this.fixedStuds.one.isSelected();
+            Config.Constraints.addFixedStudsToAllSelectedProj = this.fixedStuds.two.isSelected();
             Config.Constraints.addFixedStudsToMostWantedProj = this.fixedStuds.three.isSelected();
 
             Config.Constraints.studWantsProj = this.studWantsProj.check.isSelected();
 
-            Config.Preferences.selectedProjs = this.studWantsProj.check.isSelected();
-
+            Config.Preferences.selectedProjs = this.weightSelectedProj.check.isSelected();
             if (this.weightSelectedProj.check.isSelected()) {
                 try {
                     Config.Preferences.proj1 = Double.parseDouble(this.weightSelectedProj.field1.getText());

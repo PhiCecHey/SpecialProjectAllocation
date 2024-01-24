@@ -213,7 +213,7 @@ public class Gurobi {
                     allocated.append("\t-").append(indent);
                 } else {
                     Allocation alloc = this.allocs.get(p, s);
-                    if (alloc.getStudentFixed()) {
+                    if (alloc.getStudentFixed() || alloc.project().isFixed(alloc.student())) {
                         allocated.append("\t[F]").append(indent);
                     } else if (alloc.student().choiceOfProj(alloc.project()) == -1) {
                         allocated.append("\t[!]").append(indent);
@@ -371,7 +371,20 @@ public class Gurobi {
                     expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
                 }
                 String st = "studPerProj" + p;
-                this.model.addRange(expr, this.allocs.getProj(p).min(), this.allocs.getProj(p).max(), st);
+                //this.model.addRange(expr, this.allocs.getProj(p).min(), this.allocs.getProj(p).max(), st);
+                this.model.addRange(expr, 0, this.allocs.getProj(p).max(), st);
+
+                /*GRBVar z1 = this.model.addVar(0.0, 1.0, 0.0, GRB.BINARY, st);
+                GRBVar z2 = this.model.addVar(0.0, 1.0, 0.0, GRB.BINARY, st);
+                GRBLinExpr zExpr = new GRBLinExpr();
+                zExpr.addTerm(1, z1);
+                zExpr.addTerm(1, z2);
+                this.model.addConstr(zExpr, GRB.EQUAL, 1, st);
+                this.model.addGenConstrIndicator(z1, 1, expr, GRB.GREATER_EQUAL,
+                                                 this.allocs.getProj(p).min(), st);
+                this.model.addGenConstrIndicator(z1, 1, expr, GRB.LESS_EQUAL,
+                                                 this.allocs.getProj(p).max(), st);
+                this.model.addGenConstrIndicator(z2, 1, expr, GRB.LESS_EQUAL, 0, st);*/
             }
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
@@ -446,7 +459,7 @@ public class Gurobi {
                     boolean accepted = proj.checkStudyProgram(stud);
                     String st = "studAcceptedInProj" + s + p;
                     if (!accepted) {
-                        // student not allowed in pr oject
+                        // student not allowed in project
                         // make sure student cannot join this project
                         expr = new GRBLinExpr();
                         expr.addTerm(1, this.allocs.get(p, s).grbVar());
@@ -520,6 +533,26 @@ public class Gurobi {
                     expr = new GRBLinExpr();
                     Allocation alloc = this.allocs.get(p, s);
                     Student student = this.allocs.getStud(s);
+                    boolean constraint = false;
+                    if (project.isFixed(student)) {
+                        if (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
+                            constraint = true;
+                        } else if (Config.Constraints.addFixedStudsToAllSelectedProj && project.isFixedAndStudentsWish(
+                                student)) {
+                            constraint = true;
+                        } else if (Config.Constraints.addFixedStudsToMostWantedProj
+                                   && project.isFixedAndStudentsHighestWish(student)) {
+                            constraint = true;
+                        }
+                    }
+                    if (constraint) {
+                        alloc.setStudentFixed();
+                        String st = "fixedStuds" + p + s;
+                        expr.addTerm(1.0, alloc.grbVar());
+                        this.model.addConstr(expr, GRB.EQUAL, 1, st);
+                    }
+
+                    /* buggy
                     if (project.isFixed(student) && (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj
                                                      || project.isFixedAndStudentsHighestWish(student) || (
                                                              !Config.Constraints.addFixedStudsToMostWantedProj
@@ -528,7 +561,7 @@ public class Gurobi {
                         String st = "fixedStuds" + p + s;
                         expr.addTerm(1.0, alloc.grbVar());
                         this.model.addConstr(expr, GRB.EQUAL, 1, st);
-                    }
+                    }*/
                 }
             }
         } catch (GRBException e) {

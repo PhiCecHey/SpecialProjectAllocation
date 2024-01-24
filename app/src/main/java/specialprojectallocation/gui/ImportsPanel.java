@@ -91,6 +91,7 @@ public class ImportsPanel extends JPanel {
                 this.logs.append(e + "\n");
                 worked = false;
             }
+            
             try {
                 worked = SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim) & worked;
             } catch (IOException e) {
