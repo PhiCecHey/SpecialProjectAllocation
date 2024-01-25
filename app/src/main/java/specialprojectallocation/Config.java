@@ -33,43 +33,65 @@ public class Config {
 
     public static class Constraints {
         // Gurobi constraint values
+        public static final boolean projectPerStudent = true;
+        /*public static boolean minProjectPerStudent = false;
+        public static boolean maxProjectPerStudent = false;
         public static int maxNumProjectsPerStudent = 1;
-        public static int minNumProjectsPerStudent = 1;
+        public static int minNumProjectsPerStudent = 1;*/
+
+        public static final boolean studentsPerProject = true;
+        //public static boolean minStudentsPerProject = false;
+        //public static boolean maxStudentsPerProject = false;
+
+        public static boolean minStudentsPerGroupProject = true; // TODO
         public static int minNumStudsPerGroupProj = 2;
-        public static boolean addFixedStudsToProjEvenIfStudDidntSelectProj = true;
+
+        public static boolean studWantsProj = false;
+
+        public static boolean fixedStuds = false; // TODO
+        public static boolean addFixedStudsToProjEvenIfStudDidntSelectProj = false; // TODO
         public static boolean addFixedStudsToAllSelectedProj = false;
         public static boolean addFixedStudsToMostWantedProj = false;
-        public static boolean minProjectPerStudent, maxProjectPerStudent;
-        public static final boolean projectPerStudent = false; // TODO
-        public static boolean minStudentsPerProject, maxStudentsPerProject;
-        public static final boolean studentsPerProject = true;
-        public static final boolean studentAcceptedInProject = true;
-        public static final boolean studentsPerStudy = true;
-        public static boolean minStudentsPerGroupProject = true;
-        public static boolean fixedStuds = true;
-        public static boolean studWantsProj = true;
+
+        public static final boolean studentAcceptedInProject = false; // TODO
+        public static final boolean studentsPerStudy = false; // TODO
     }
 
     public static class Preferences {
         // Gurobi preferences values
+        public static boolean selectedProjs = true;
+
         public static double proj1 = 100.0;
         public static double proj2 = 80.0;
         public static double proj3 = 60.0;
         public static double proj4 = 40.0;
+
+        public static boolean studentAcceptedInProject = false;
+        public static final double penStudsAcceptedInProj = -100;
+
+        public static boolean studentsPerStudy = false;
+        public static double penStudsPerStudy = -100;
+
         public static double studyPrio1 = 50;
         public static double studyPrio2 = 40;
         public static double studyPrio3 = 30;
         public static double studyPrio4 = 20;
         public static double studyPrio5 = 10;
-        public static double penStudsPerProj = -100;
-        public static final double penStudsAcceptedInProj = -100;
-        public static double penStudsPerStudy = -100;
+
+        public static boolean minStudentsPerGroupProject = false;
         public static double penMinStudsPerGroupProj = -100;
+
+        public static boolean fixedStuds = false;
         public static final double penFixedStuds = -100;
-        public static boolean minProjectPerStudent, maxProjectPerStudent, minStudentsPerProject, projectPerStudent,
-                maxStudentsPerProject, studentsPerProject, studentAcceptedInProject, studentsPerStudy,
-                minStudentsPerGroupProject, fixedStuds;
-        public static boolean selectedProjs = true;
+
+        public static boolean projectPerStudent = false;
+        public static boolean minProjectPerStudent = false;
+        public static boolean maxProjectPerStudent = false;
+
+        public static boolean studentsPerProject = false;
+        public static double penStudsPerProj = -100;
+        public static boolean minStudentsPerProject = false;
+        public static boolean maxStudentsPerProject = false;
     }
 
     public static class Output {

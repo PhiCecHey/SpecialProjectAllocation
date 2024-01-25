@@ -11,7 +11,6 @@ public class Calculation {
     public static File projSel;
     public static File projReg;
     public static String outPath;
-    public static File outFile; // TODO for tui
     public static ArrayList<Project> projects = new ArrayList<>();
     public static ArrayList<String> allAbbrevs = new ArrayList<>();
     public static ArrayList<Student> students = new ArrayList<>();
@@ -67,6 +66,7 @@ public class Calculation {
         line.append("-".repeat(Math.max(0, sectionName.length() * 3)));
         Calculation.log += line + "\n\t" + sectionName + "\t\n" + line;
     }
+
     public static String log() {
         return Calculation.log;
     }

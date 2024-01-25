@@ -13,8 +13,8 @@ import specialprojectallocation.objects.*;
 
 public class SelectProject extends MyParser {
     // configs
-    private static int name = -1, immaNum = -1, email = -1, studProg = -1, first = -1, second = -1, third = -1, fourth
-            = -1;
+    private static int name = -1, immaNum = -1, email = -1, studProg = -1, first = -1, second = -1, third = -1,
+            fourth = -1;
 
     public static boolean read(File csv, char delim) throws StudentDuplicateException, IOException {
         Calculation.clearStudents();
@@ -29,11 +29,10 @@ public class SelectProject extends MyParser {
             Student found = Student.findStudentByImma(cells[SelectProject.immaNum]);
             if (found == null) {
                 Student student = new Student(cells[SelectProject.immaNum], cells[SelectProject.name],
-                                              cells[SelectProject.email],
-                                              StudyProgram.StrToStudy(cells[SelectProject.studProg]));
+                        cells[SelectProject.email],
+                        StudyProgram.StrToStudy(cells[SelectProject.studProg]));
                 student.selectProjStr(cells[SelectProject.first], cells[SelectProject.second],
-                                      cells[SelectProject.third], cells[SelectProject.fourth]);
-                Calculation.students.add(student);
+                        cells[SelectProject.third], cells[SelectProject.fourth]);
             } else {
                 // TODO: what to do with duplicate? only take newest?
                 throw new StudentDuplicateException(

@@ -252,12 +252,14 @@ public class Gurobi {
         if (Config.Constraints.projectPerStudent) {
             this.constrProjPerStud();
         }
-        if (Config.Constraints.minProjectPerStudent) {
-            this.constrMinStudsPerProj();
-        }
-        if (Config.Constraints.maxProjectPerStudent) {
-            this.constrMaxStudsPerProj();
-        }
+        /*
+         * if (Config.Constraints.minProjectPerStudent) {
+         * this.constrMinStudsPerProj();
+         * }
+         * if (Config.Constraints.maxProjectPerStudent) {
+         * this.constrMaxStudsPerProj();
+         * }
+         */
         if (Config.Constraints.studentsPerProject) {
             this.constrStudsPerProj();
         }
@@ -315,51 +317,62 @@ public class Gurobi {
                     expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
                 }
                 String st = "projPerStud" + s;
-                this.model.addConstr(expr, GRB.GREATER_EQUAL, Config.Constraints.minNumProjectsPerStudent, st);
-                this.model.addConstr(expr, GRB.LESS_EQUAL,
-                        Math.max(student.numFixedProject(), Config.Constraints.maxNumProjectsPerStudent),
-                        st);
+                /*
+                 * this.model.addConstr(expr, GRB.GREATER_EQUAL,
+                 * Config.Constraints.minNumProjectsPerStudent, st);
+                 * this.model.addConstr(expr, GRB.LESS_EQUAL,
+                 * Math.max(student.numFixedProject(),
+                 * Config.Constraints.maxNumProjectsPerStudent), st);
+                 */
+                this.model.addConstr(expr, GRB.GREATER_EQUAL, 1, st);
+                this.model.addConstr(expr, GRB.LESS_EQUAL, Math.max(student.numFixedProject(), 1), st);
             }
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
         }
     }
 
-    private void constrMinProjPerStud() {
-        try {
-            GRBLinExpr expr;
-            for (int s = 0; s < this.allocs.numStuds(); ++s) {
-                expr = new GRBLinExpr();
-                Student student = this.allocs.getStud(s);
-                for (int p = 0; p < this.allocs.numProjs(); ++p) {
-                    expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
-                }
-                String st = "minProjPerStud" + s;
-                this.model.addConstr(expr, GRB.GREATER_EQUAL, Config.Constraints.minNumProjectsPerStudent, st);
-            }
-        } catch (GRBException e) {
-            System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
-        }
-    }
-
-    private void constrMaxProjPerStud() {
-        try {
-            GRBLinExpr expr;
-            for (int s = 0; s < this.allocs.numStuds(); ++s) {
-                expr = new GRBLinExpr();
-                Student student = this.allocs.getStud(s);
-                for (int p = 0; p < this.allocs.numProjs(); ++p) {
-                    expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
-                }
-                String st = "minProjPerStud" + s;
-                this.model.addConstr(expr, GRB.LESS_EQUAL,
-                        Math.max(student.numFixedProject(), Config.Constraints.maxNumProjectsPerStudent),
-                        st);
-            }
-        } catch (GRBException e) {
-            System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
-        }
-    }
+    /*
+     * private void constrMinProjPerStud() {
+     * try {
+     * GRBLinExpr expr;
+     * for (int s = 0; s < this.allocs.numStuds(); ++s) {
+     * expr = new GRBLinExpr();
+     * Student student = this.allocs.getStud(s);
+     * for (int p = 0; p < this.allocs.numProjs(); ++p) {
+     * expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
+     * }
+     * String st = "minProjPerStud" + s;
+     * this.model.addConstr(expr, GRB.GREATER_EQUAL,
+     * Config.Constraints.minNumProjectsPerStudent, st);
+     * }
+     * } catch (GRBException e) {
+     * System.out.println("Error code: " + e.getErrorCode() + ". " +
+     * e.getMessage());
+     * }
+     * }
+     * 
+     * private void constrMaxProjPerStud() {
+     * try {
+     * GRBLinExpr expr;
+     * for (int s = 0; s < this.allocs.numStuds(); ++s) {
+     * expr = new GRBLinExpr();
+     * Student student = this.allocs.getStud(s);
+     * for (int p = 0; p < this.allocs.numProjs(); ++p) {
+     * expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
+     * }
+     * String st = "minProjPerStud" + s;
+     * this.model.addConstr(expr, GRB.LESS_EQUAL,
+     * Math.max(student.numFixedProject(),
+     * Config.Constraints.maxNumProjectsPerStudent),
+     * st);
+     * }
+     * } catch (GRBException e) {
+     * System.out.println("Error code: " + e.getErrorCode() + ". " +
+     * e.getMessage());
+     * }
+     * }
+     */
 
     /*
      * how many students a project can have, ignores groups
@@ -375,6 +388,7 @@ public class Gurobi {
                 String st = "studPerProj" + p;
                 // this.model.addRange(expr, this.allocs.getProj(p).min(),
                 // this.allocs.getProj(p).max(), st);
+                // TODO: check for min studs per proj
                 this.model.addRange(expr, 0, this.allocs.getProj(p).max(), st);
 
                 /*
@@ -396,38 +410,6 @@ public class Gurobi {
         }
     }
 
-    private void constrMinStudsPerProj() {
-        try {
-            GRBLinExpr expr;
-            for (int p = 0; p < this.allocs.numProjs(); ++p) {
-                expr = new GRBLinExpr();
-                for (int s = 0; s < this.allocs.numStuds(); ++s) {
-                    expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
-                }
-                String st = "minStudPerProj" + p;
-                this.model.addConstr(expr, GRB.GREATER_EQUAL, this.allocs.getProj(p).min(), st);
-            }
-        } catch (GRBException e) {
-            System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
-        }
-    }
-
-    private void constrMaxStudsPerProj() {
-        try {
-            GRBLinExpr expr;
-            for (int p = 0; p < this.allocs.numProjs(); ++p) {
-                expr = new GRBLinExpr();
-                for (int s = 0; s < this.allocs.numStuds(); ++s) {
-                    expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
-                }
-                String st = "maxStudPerProj" + p;
-                this.model.addConstr(expr, GRB.LESS_EQUAL, this.allocs.getProj(p).max(), st);
-            }
-        } catch (GRBException e) {
-            System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
-        }
-    }
-
     private void constrStudHasToGetASelProj() {
         try {
             GRBLinExpr expr;
@@ -437,9 +419,13 @@ public class Gurobi {
                 for (int p = 0; p < this.allocs.numProjs(); ++p) {
                     Allocation alloc = this.allocs.get(p, s);
                     Project project = alloc.project();
-                    if (student.wantsProject(project)
-                            || (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj && project.isFixed(
-                                    student))) {
+                    // TODO
+                    /*
+                     * if (student.wantsProject(project)
+                     * || (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj
+                     * && project.isFixed(student))) {
+                     */
+                    if (student.wantsProject(project)) {
                         expr.addTerm(1.0, alloc.grbVar());
                     }
                 }

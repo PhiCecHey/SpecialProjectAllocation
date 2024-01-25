@@ -18,8 +18,8 @@ import specialprojectallocation.parser.RegisterProject;
 public class App {
 
     public static void main(String[] args) {
-        gui();
-        //tui();
+        //gui();
+        tui();
     }
 
     public static void tui() {
@@ -40,7 +40,7 @@ public class App {
             SelectProject.read(two, Config.ProjectSelection.csvDelim);
             Project.setAllFixed();
 
-            Calculation.outPath = one.getPath().replace(one.getName(), "");
+            Calculation.outPath = one.getPath().replace(one.getName(), "") + "results.csv";
 
             new Gurobi();
         } catch (StudentDuplicateException | NumberFormatException | AbbrevTakenException | GRBException | IOException e) {
