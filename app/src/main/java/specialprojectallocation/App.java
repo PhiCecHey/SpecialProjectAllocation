@@ -18,8 +18,8 @@ import specialprojectallocation.parser.RegisterProject;
 public class App {
 
     public static void main(String[] args) {
-        //gui();
-        tui();
+        gui();
+        //tui();
     }
 
     public static void tui() {

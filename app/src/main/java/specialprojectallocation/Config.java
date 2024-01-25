@@ -43,10 +43,10 @@ public class Config {
         //public static boolean minStudentsPerProject = false;
         //public static boolean maxStudentsPerProject = false;
 
-        public static boolean minStudentsPerGroupProject = true; // TODO
-        public static int minNumStudsPerGroupProj = 2;
+        public static boolean minStudentsPerGroupProject = false; // TODO
+        public static int minNumStudsPerGroupProj = 0;
 
-        public static boolean studWantsProj = false;
+        public static boolean studWantsProj = true;
 
         public static boolean fixedStuds = false; // TODO
         public static boolean addFixedStudsToProjEvenIfStudDidntSelectProj = false; // TODO
