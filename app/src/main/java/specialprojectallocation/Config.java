@@ -43,7 +43,7 @@ public class Config {
         //public static boolean minStudentsPerProject = false;
         //public static boolean maxStudentsPerProject = false;
 
-        public static boolean minStudentsPerGroupProject = false; // TODO
+        public static boolean minStudentsPerGroupProject = true;
         public static int minNumStudsPerGroupProj = 0;
 
         public static boolean studWantsProj = true;

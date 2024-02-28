@@ -250,16 +250,8 @@ public class Gurobi {
 
     private void addConstraints() {
         if (Config.Constraints.projectPerStudent) {
-            this.constrProjPerStud();
+            this.constrMinProjPerStud(); // see fixedStuds constraint for max
         }
-        /*
-         * if (Config.Constraints.minProjectPerStudent) {
-         * this.constrMinStudsPerProj();
-         * }
-         * if (Config.Constraints.maxProjectPerStudent) {
-         * this.constrMaxStudsPerProj();
-         * }
-         */
         if (Config.Constraints.studentsPerProject) {
             this.constrStudsPerProj();
         }
@@ -273,7 +265,10 @@ public class Gurobi {
             this.constrMinStudsPerGroupProj();
         }
         if (Config.Constraints.fixedStuds) {
-            this.constrFixedStudents();
+            this.constrFixedStudents(); // includes upper bound for projPerStud
+        } else {
+            // needs to be called to fix upper bounds for projs per stud
+            this.constrMaxOneProjPerStud();
         }
         if (Config.Constraints.studWantsProj) {
             this.constrStudHasToGetASelProj();
@@ -306,73 +301,65 @@ public class Gurobi {
 
     /*
      * how many projects a student can have
+     * 
+     * private void constrProjPerStud() {
+     * try {
+     * GRBLinExpr expr;
+     * for (int s = 0; s < this.allocs.numStuds(); ++s) {
+     * expr = new GRBLinExpr();
+     * Student student = this.allocs.getStud(s);
+     * for (int p = 0; p < this.allocs.numProjs(); ++p) {
+     * expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
+     * }
+     * String st = "projPerStud" + s;
+     * this.model.addConstr(expr, GRB.GREATER_EQUAL, 1, st);
+     * // care: next line prohibits students having too many projects. bound needs
+     * to
+     * // be tightened
+     * this.model.addConstr(expr, GRB.LESS_EQUAL,
+     * Math.max(student.numFixedProject(), 1), st);
+     * }
+     * } catch (GRBException e) {
+     * System.out.println("Error code: " + e.getErrorCode() + ". " +
+     * e.getMessage());
+     * }
+     * }
      */
-    private void constrProjPerStud() {
+
+    private void constrMinProjPerStud() {
         try {
             GRBLinExpr expr;
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
                 expr = new GRBLinExpr();
-                Student student = this.allocs.getStud(s);
                 for (int p = 0; p < this.allocs.numProjs(); ++p) {
                     expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
                 }
-                String st = "projPerStud" + s;
-                /*
-                 * this.model.addConstr(expr, GRB.GREATER_EQUAL,
-                 * Config.Constraints.minNumProjectsPerStudent, st);
-                 * this.model.addConstr(expr, GRB.LESS_EQUAL,
-                 * Math.max(student.numFixedProject(),
-                 * Config.Constraints.maxNumProjectsPerStudent), st);
-                 */
+                String st = "minProjPerStud" + s;
                 this.model.addConstr(expr, GRB.GREATER_EQUAL, 1, st);
-                this.model.addConstr(expr, GRB.LESS_EQUAL, Math.max(student.numFixedProject(), 1), st);
+            }
+        } catch (GRBException e) {
+            System.out.println("Error code: " + e.getErrorCode() + ". " +
+                    e.getMessage());
+        }
+    }
+
+    private void constrMaxOneProjPerStud() {
+        // needs to be called if fixedStud constraint isnt called to fix upper bounds
+        // for projs per sutd
+        try {
+            GRBLinExpr expr;
+            for (int s = 0; s < this.allocs.numStuds(); ++s) {
+                expr = new GRBLinExpr();
+                for (int p = 0; p < this.allocs.numProjs(); ++p) {
+                    expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
+                }
+                String st = "minProjPerStud" + s;
+                this.model.addConstr(expr, GRB.LESS_EQUAL, 1, st);
             }
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
         }
     }
-
-    /*
-     * private void constrMinProjPerStud() {
-     * try {
-     * GRBLinExpr expr;
-     * for (int s = 0; s < this.allocs.numStuds(); ++s) {
-     * expr = new GRBLinExpr();
-     * Student student = this.allocs.getStud(s);
-     * for (int p = 0; p < this.allocs.numProjs(); ++p) {
-     * expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
-     * }
-     * String st = "minProjPerStud" + s;
-     * this.model.addConstr(expr, GRB.GREATER_EQUAL,
-     * Config.Constraints.minNumProjectsPerStudent, st);
-     * }
-     * } catch (GRBException e) {
-     * System.out.println("Error code: " + e.getErrorCode() + ". " +
-     * e.getMessage());
-     * }
-     * }
-     * 
-     * private void constrMaxProjPerStud() {
-     * try {
-     * GRBLinExpr expr;
-     * for (int s = 0; s < this.allocs.numStuds(); ++s) {
-     * expr = new GRBLinExpr();
-     * Student student = this.allocs.getStud(s);
-     * for (int p = 0; p < this.allocs.numProjs(); ++p) {
-     * expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
-     * }
-     * String st = "minProjPerStud" + s;
-     * this.model.addConstr(expr, GRB.LESS_EQUAL,
-     * Math.max(student.numFixedProject(),
-     * Config.Constraints.maxNumProjectsPerStudent),
-     * st);
-     * }
-     * } catch (GRBException e) {
-     * System.out.println("Error code: " + e.getErrorCode() + ". " +
-     * e.getMessage());
-     * }
-     * }
-     */
 
     /*
      * how many students a project can have, ignores groups
@@ -517,48 +504,52 @@ public class Gurobi {
 
     private void constrFixedStudents() {
         try {
-            GRBLinExpr expr;
-            for (int p = 0; p < this.allocs.numProjs(); ++p) {
-                Project project = this.allocs.getProj(p);
-                for (int s = 0; s < this.allocs.numStuds(); ++s) {
-                    expr = new GRBLinExpr();
+            GRBLinExpr exprFixed;
+            GRBLinExpr exprProjPerStud;
+            for (int s = 0; s < this.allocs.numStuds(); ++s) {
+                Student student = this.allocs.getStud(s);
+                exprProjPerStud = new GRBLinExpr();
+                for (int p = 0; p < this.allocs.numProjs(); ++p) {
+                    Project project = this.allocs.getProj(p);
                     Allocation alloc = this.allocs.get(p, s);
-                    Student student = this.allocs.getStud(s);
+
+                    exprProjPerStud.addTerm(1.0, this.allocs.get(p, s).grbVar());
+                    int projPerStud = 1;
+
+                    exprFixed = new GRBLinExpr();
                     boolean constraint = false;
                     if (project.isFixed(student)) {
                         if (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
                             constraint = true;
+                            // several projects allowed. only add stud to fixed projs
+                            projPerStud = student.numFixedProject();
                         } else if (Config.Constraints.addFixedStudsToAllSelectedProj && project.isFixedAndStudentsWish(
                                 student)) {
                             constraint = true;
+                            // several projects allowed. only add stud to fixed projs that stud selected
+                            projPerStud = student.numFixedWantedProject();
                         } else if (Config.Constraints.addFixedStudsToMostWantedProj
                                 && project.isFixedAndStudentsHighestWish(student)) {
                             constraint = true;
+                            // only one proj allowed. only add stud to most wanted fixed proj
+                            projPerStud = 1;
                         }
                     }
+                    // fix upper bounds for proj per stud
+                    String st = "projPerStud" + s;
+                    this.model.addConstr(exprProjPerStud, GRB.LESS_EQUAL, projPerStud, st);
+
+                    st = "fixedStuds" + p + s;
                     if (constraint) {
                         alloc.setStudentFixed();
-                        String st = "fixedStuds" + p + s;
-                        expr.addTerm(1.0, alloc.grbVar());
-                        this.model.addConstr(expr, GRB.EQUAL, 1, st);
+                        exprFixed.addTerm(1.0, alloc.grbVar());
+                        this.model.addConstr(exprFixed, GRB.EQUAL, 1, st);
                     }
-
-                    /*
-                     * buggy
-                     * if (project.isFixed(student) &&
-                     * (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj
-                     * || project.isFixedAndStudentsHighestWish(student) || (
-                     * !Config.Constraints.addFixedStudsToMostWantedProj
-                     * && project.isFixedAndStudentsWish(student)))) {
-                     * alloc.setStudentFixed();
-                     * String st = "fixedStuds" + p + s;
-                     * expr.addTerm(1.0, alloc.grbVar());
-                     * this.model.addConstr(expr, GRB.EQUAL, 1, st);
-                     * }
-                     */
                 }
             }
-        } catch (GRBException e) {
+        } catch (
+
+        GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
         }
     }
@@ -613,7 +604,7 @@ public class Gurobi {
     }
 
     /**
-     * alternative to constrFixedStuds
+     * alternative to constrStuds
      */
     private void prefFixedStuds() {
         for (int p = 0; p < this.allocs.numProjs(); ++p) {

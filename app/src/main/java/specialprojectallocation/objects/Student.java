@@ -13,7 +13,10 @@ public class Student {
     private StudWish selectedProjs;
     private double totalScore;
 
-    /** Generates new Student and adds student to list of all students. Do not add again after calling instructor! */
+    /**
+     * Generates new Student and adds student to list of all students. Do not add
+     * again after calling instructor!
+     */
     public Student(String imma, String na, String em, StudyProgram stu) {
         this.immatNum = imma;
         this.name = na;
@@ -160,7 +163,7 @@ public class Student {
         return null;
     }
 
-    public boolean  wantsProject(@NotNull Project project) {
+    public boolean wantsProject(@NotNull Project project) {
         return (project.abbrev().equals(this.abbrevProj1()) || project.abbrev().equals(this.abbrevProj2())
                 || project.abbrev().equals(this.abbrevProj3()) || project.abbrev().equals(this.abbrevProj4()));
     }
@@ -173,6 +176,16 @@ public class Student {
             }
         }
         return numFixedProjs;
+    }
+
+    public int numFixedWantedProject() {
+        int numFixedWantedProjs = 0;
+        for (Project project : Calculation.projects) {
+            if (project.isFixed(this) && this.wantsProject(project)) {
+                numFixedWantedProjs++;
+            }
+        }
+        return numFixedWantedProjs;
     }
 
     public void addToTotalScore(double score) {
