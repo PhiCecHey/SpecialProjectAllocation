@@ -55,8 +55,16 @@ public class Student {
             }
         }
         if (firstPr == null || secondPr == null || thirdPr == null || fourthPr == null) {
-            // TODO: add to list of invalid votes with reason
-            int debug = 4;
+            // TODO: invalid project selection. punishment? 
+            boolean found = false;
+            for(Student student : Calculation.studentsWithInvalidSelection){
+                if(student.immatNum == this.immatNum){
+                    found = true;
+                }
+            }
+            if(!found){
+                Calculation.studentsWithInvalidSelection.add(this);
+            }
         }
         this.selectProj(firstPr, secondPr, thirdPr, fourthPr);
     }

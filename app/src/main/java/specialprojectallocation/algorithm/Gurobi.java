@@ -54,6 +54,14 @@ public class Gurobi {
                     namesImmas.append(student.name() + " " + student.immatNum() + ", ");
                 }
                 Calculation.gurobiResultsGui = this.print(false, worked) + "\n\nStudents without project:" + namesImmas;
+
+                namesImmas = new StringBuilder(" ");
+                for (Student student : Calculation.studentsWithInvalidSelection) {
+                    namesImmas.append(student.name() + " " + student.immatNum() + ", ");
+                }
+                Calculation.gurobiResultsGui = this.print(false, worked)
+                        + "\n\nStudents with invalid project selection:" + namesImmas;
+
                 if (!(Calculation.outPath == null || Calculation.outPath.equals(""))) {
                     WriteResults.printForSupers(this.results, this.allocs);
                 }
@@ -617,9 +625,17 @@ public class Gurobi {
                 }
             }
             if (student.totalScore() < Config.Preferences.proj1 + Config.Preferences.proj2 + Config.Preferences.proj3
-                    + Config.Preferences.proj4 + Calculation.projects.size()) {
-                // TODO: student invalid wish, see TODO in Student.java l.60
-                int debug = 4;
+                    + Config.Preferences.proj4) {
+                // TODO: student invalid project selection, see Student.java 
+                boolean found = false;
+                for (Student st : Calculation.studentsWithInvalidSelection) {
+                    if (st.immatNum() == student.immatNum()) {
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    Calculation.studentsWithInvalidSelection.add(student);
+                }
             }
         }
     }

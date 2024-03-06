@@ -101,6 +101,7 @@ public class ImportsPanel extends JPanel {
             }
 
             try {
+                Calculation.clearLog();
                 worked = SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim) & worked;
             } catch (IOException e) {
                 this.fSelection.setBackground(Colors.redTransp);

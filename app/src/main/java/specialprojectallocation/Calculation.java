@@ -15,6 +15,7 @@ public class Calculation {
     public static ArrayList<String> allAbbrevs = new ArrayList<>();
     public static ArrayList<Student> students = new ArrayList<>();
     public static ArrayList<Student> studentsWithoutProject = new ArrayList<>();
+    public static ArrayList<Student> studentsWithInvalidSelection = new ArrayList<>();
     public static Gurobi gurobi;
     public static String gurobiResultsGui = "";
 

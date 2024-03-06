@@ -47,18 +47,12 @@ public class RegisterProject extends MyParser {
                         if (!cells[RegisterProject.maxNum].isEmpty()) {
                             maxNum = Integer.parseInt(cells[RegisterProject.maxNum]);
                         }
-                    } else {
-                        // maxnum out of bounds, error in evalHeading
-                        int debug = 4;
                     }
                     int minNum = 0;
                     if (cells.length > RegisterProject.minNum) {
                         if (!cells[RegisterProject.minNum].isEmpty()) {
                             minNum = Integer.parseInt(cells[RegisterProject.minNum]);
                         }
-                    } else {
-                        // minnum out of bounds, error in evalHeading
-                        int debug = 4;
                     }
                     // generates new project and adds it to all projects
                     new Project(cells[RegisterProject.abbrev], minNum, maxNum, groups,

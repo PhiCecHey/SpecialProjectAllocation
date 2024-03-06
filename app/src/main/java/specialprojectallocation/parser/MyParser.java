@@ -44,6 +44,11 @@ public class MyParser {
     @Contract(pure = true)
     private static String replaceWeirdHtmlChars(String line) {
         line = line.replaceAll("&amp;", "&");
+        line = line.replaceAll("&lt;", "<");
+        line = line.replaceAll("&gt;", ">");
+        line = line.replaceAll("&quot;", "\"");
+        line = line.replaceAll("&apos;", "'");
+        line = line.replaceAll("&sol;", "/");
         return line;
     }
 }
