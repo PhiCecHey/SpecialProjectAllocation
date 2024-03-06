@@ -21,6 +21,7 @@ public class Config {
         public static String abbrev = "Q02_1.2";
         public static String var = "Q18_4.1";
         public static String varOneStudent = "one student";
+        public static String minNum = "MinNoSt";
         public static String maxNum = "Q20_4.3";
         public static String mainGroup = "Q21_4.5";
         public static String mainMaxNum = "Q22_5.1";
@@ -48,8 +49,8 @@ public class Config {
 
         public static boolean studWantsProj = true;
 
-        public static boolean fixedStuds = false; // TODO
-        public static boolean addFixedStudsToProjEvenIfStudDidntSelectProj = false; // TODO
+        public static boolean fixedStuds = true;
+        public static boolean addFixedStudsToProjEvenIfStudDidntSelectProj = true;
         public static boolean addFixedStudsToAllSelectedProj = false;
         public static boolean addFixedStudsToMostWantedProj = false;
 

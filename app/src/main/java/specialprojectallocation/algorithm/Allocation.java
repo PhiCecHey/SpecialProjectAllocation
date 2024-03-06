@@ -6,7 +6,7 @@ import specialprojectallocation.objects.Student;
 
 class Allocation {
     private final GRBVar grbVar;
-    private double score = 1; // TODO: 1 oder 0?
+    private double score = 1;
     private final Student student;
     private final Project project;
     private boolean fixedStudent;

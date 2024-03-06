@@ -86,12 +86,20 @@ public class ImportsPanel extends JPanel {
                 this.fRegistration.setBackground(Colors.yellowTransp);
                 this.logs.append(e + "\n");
                 worked = false;
-            } catch (Exception e) {
+            }  catch (IndexOutOfBoundsException e){
+                this.fRegistration.setBackground(Colors.redTransp);
+                this.logs.append(e + "\n");
+                this.logs.append("Probably weird character in Moodle registration file. \n");
+            }
+            catch (Exception e) {
                 this.fRegistration.setBackground(Colors.redTransp);
                 this.logs.append(e + "\n");
                 worked = false;
             }
-            
+            if (!worked) {
+                this.logs.append(Calculation.log());
+            }
+
             try {
                 worked = SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim) & worked;
             } catch (IOException e) {
@@ -111,9 +119,10 @@ public class ImportsPanel extends JPanel {
             this.logs.append(Calculation.log() + "\n");
             if (worked) {
                 this.read.setBackground(Colors.greenTransp);
-            } else{
-                logs.setText(Calculation.log());
+            } else {
+                this.logs.append(Calculation.log());
             }
         });
     }
 }
+

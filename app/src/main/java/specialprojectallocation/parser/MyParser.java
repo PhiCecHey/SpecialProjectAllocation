@@ -24,6 +24,7 @@ public class MyParser {
                 cellInLine.append(charInLine);
             }
         }
+        cells.add(cellInLine.toString());
         return MyParser.listToStringArray(cells);
     }
 

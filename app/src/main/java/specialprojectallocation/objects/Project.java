@@ -19,7 +19,7 @@ public class Project {
      * Generates project and adds it to list of all projects. Do not add project
      * again after calling this constructor!
      */
-    public Project(String ab, int max, Group[] gr, String fixed) throws AbbrevTakenException {
+    public Project(String ab, int min, int max, Group[] gr, String fixed) throws AbbrevTakenException {
         ab = ab.strip();
         for (String str : Calculation.allAbbrevs) {
             if (str.equals(ab)) {
@@ -31,6 +31,7 @@ public class Project {
 
         // TODO: minNumStuds
         this.abbrev = ab;
+        this.minNumStuds = min;
         this.maxNumStuds = max;
         this.groups = gr;
         this.stringFixedStuds = fixed;

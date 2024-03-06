@@ -60,8 +60,8 @@ dependencies {
     implementation("org.decimal4j:decimal4j:1.0.3")
 
     // https://github.com/JFormDesigner/FlatLaf
-    implementation("com.formdev:flatlaf:3.0")
-    implementation("com.formdev:flatlaf-intellij-themes:3.0")
+    implementation("com.formdev:flatlaf:3.4")
+    implementation("com.formdev:flatlaf-intellij-themes:3.4")
 
     //implementation("com.github.johnrengelman:shadow:7.0.0")
     

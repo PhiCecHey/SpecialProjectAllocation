@@ -12,7 +12,7 @@ import specialprojectallocation.objects.StudyProgram;
 
 public class RegisterProject extends MyParser {
 
-    private static int abbrev = -1, maxNum = -1, mainGroup = -1, mainMaxNum = -1, var = -1, fixed = -1;
+    private static int abbrev = -1, minNum = -1, maxNum = -1, mainGroup = -1, mainMaxNum = -1, var = -1, fixed = -1;
 
     // TODO: how to handle exceptions?
     public static boolean read(@NotNull File csv, char delim)
@@ -30,7 +30,8 @@ public class RegisterProject extends MyParser {
                 Project found = Project.findProject(cells[RegisterProject.abbrev]);
                 if (found == null) {
                     boolean oneStudent = cells[RegisterProject.var].toLowerCase()
-                            .contains(Config.ProjectAdministration.varOneStudent);
+                            .contains(
+                                    Config.ProjectAdministration.varOneStudent);
                     Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
                             cells[RegisterProject.maxNum], oneStudent);
 
@@ -42,11 +43,25 @@ public class RegisterProject extends MyParser {
                      */
 
                     int maxNum = oneStudent ? 1 : Integer.MAX_VALUE;
-                    if (!cells[RegisterProject.maxNum].isEmpty()) {
-                        maxNum = Integer.parseInt(cells[RegisterProject.maxNum]);
+                    if (cells.length > RegisterProject.maxNum) {
+                        if (!cells[RegisterProject.maxNum].isEmpty()) {
+                            maxNum = Integer.parseInt(cells[RegisterProject.maxNum]);
+                        }
+                    } else {
+                        // maxnum out of bounds, error in evalHeading
+                        int debug = 4;
+                    }
+                    int minNum = 0;
+                    if (cells.length > RegisterProject.minNum) {
+                        if (!cells[RegisterProject.minNum].isEmpty()) {
+                            minNum = Integer.parseInt(cells[RegisterProject.minNum]);
+                        }
+                    } else {
+                        // minnum out of bounds, error in evalHeading
+                        int debug = 4;
                     }
                     // generates new project and adds it to all projects
-                    new Project(cells[RegisterProject.abbrev], maxNum, groups,
+                    new Project(cells[RegisterProject.abbrev], minNum, maxNum, groups,
                             cells[RegisterProject.fixed]);
                 } else {
                     System.out.println("register projects: found project twice " + found.abbrev());
@@ -73,6 +88,8 @@ public class RegisterProject extends MyParser {
             // TODO: several study programs (priorities, max num)
             if (cell.contains(Config.ProjectAdministration.abbrev)) {
                 RegisterProject.abbrev = i;
+            } else if (cell.contains(Config.ProjectAdministration.minNum)) {
+                RegisterProject.minNum = i;
             } else if (cell.contains(Config.ProjectAdministration.maxNum)) {
                 RegisterProject.maxNum = i;
             } else if (cell.contains(Config.ProjectAdministration.mainGroup)) {
@@ -85,8 +102,9 @@ public class RegisterProject extends MyParser {
                 RegisterProject.fixed = i;
             }
         }
-        return (RegisterProject.abbrev != -1 && RegisterProject.maxNum != -1 && RegisterProject.mainGroup != -1
-                && RegisterProject.mainMaxNum != -1 && RegisterProject.var != -1 && RegisterProject.fixed != -1);
+        return (RegisterProject.abbrev != -1 && RegisterProject.minNum != -1 && RegisterProject.maxNum != -1
+                && RegisterProject.mainGroup != -1 && RegisterProject.mainMaxNum != -1 && RegisterProject.var != -1
+                && RegisterProject.fixed != -1);
     }
 
     @NotNull
