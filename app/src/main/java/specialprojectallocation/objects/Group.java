@@ -13,6 +13,13 @@ public class Group {
         this.prio = 3;
     }
 
+    public Group(StudyProgram pro, int maxN, int p) {
+        this.program = pro;
+        this.maxNumStuds = maxN;
+        this.minNumStuds = 0;
+        this.prio = p;
+    }
+
     public int max() {
         return this.maxNumStuds;
     }
