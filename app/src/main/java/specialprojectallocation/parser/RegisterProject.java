@@ -39,7 +39,7 @@ public class RegisterProject extends MyParser {
                 if (found == null) {
                     boolean oneStudent = cells[RegisterProject.var].toLowerCase().contains(
                             Config.ProjectAdministration.varOneStudent);
-                    StudyProgram[] usedPrograms = RegisterProject.getPrograms(cells);
+                    ArrayList<StudyProgram> usedPrograms = RegisterProject.getPrograms(cells);
                     Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
                                                                cells[RegisterProject.mainMaxNum], oneStudent);
 
