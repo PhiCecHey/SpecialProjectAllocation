@@ -58,8 +58,9 @@ public class Student {
             // TODO: invalid project selection. punishment? 
             boolean found = false;
             for(Student student : Calculation.studentsWithInvalidSelection){
-                if(student.immatNum == this.immatNum){
+                if (student.immatNum.equals(this.immatNum)) {
                     found = true;
+                    break;
                 }
             }
             if(!found){

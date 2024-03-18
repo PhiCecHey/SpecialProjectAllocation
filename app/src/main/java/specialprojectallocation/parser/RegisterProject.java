@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.checkerframework.checker.units.qual.A;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
@@ -19,8 +17,10 @@ public class RegisterProject extends MyParser {
 
     private static int abbrev = -1, mainMinNum = -1, mainGroup = -1, mainMaxNum = -1, var = -1, fixed = -1,
             startNumsPrios = -1, endNumsPrios = -1;
-    private static HashMap<StudyProgram, Integer> studyPrograms = new HashMap<>(), maxNums = new HashMap<>(), prios
-            = new HashMap<>();
+
+    private static final HashMap<StudyProgram, Integer> studyPrograms = new HashMap<>();
+    private static final HashMap<StudyProgram, Integer> maxNums = new HashMap<>();
+    private static final HashMap<StudyProgram, Integer> prios = new HashMap<>();
 
     // TODO: how to handle exceptions?
     public static boolean read(@NotNull File csv, char delim)
@@ -39,16 +39,11 @@ public class RegisterProject extends MyParser {
                 if (found == null) {
                     boolean oneStudent = cells[RegisterProject.var].toLowerCase().contains(
                             Config.ProjectAdministration.varOneStudent);
-                    ArrayList<StudyProgram> usedPrograms = RegisterProject.getPrograms(cells);
-                    Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
-                                                               cells[RegisterProject.mainMaxNum], oneStudent);
-
-                    // TODO: several groups
-                    // mainMaxNum not usable currently, has to be maxNum
-                    /*
-                     * Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
-                     * cells[RegisterProject.mainMaxNum], oneStudent);
-                     */
+                    ArrayList<Group> groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
+                                                                        cells[RegisterProject.mainMaxNum], oneStudent);
+                    /*ArrayList<Group> groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
+                                                                        cells[RegisterProject.mainMaxNum], cells,
+                                                                        oneStudent);*/
 
                     int maxNum = oneStudent ? 1 : Integer.MAX_VALUE;
                     if (cells.length > RegisterProject.mainMaxNum) {
@@ -86,7 +81,6 @@ public class RegisterProject extends MyParser {
         String[] cells = line.split(String.valueOf(Config.ProjectAdministration.csvDelim));
         for (int i = 0; i < cells.length; ++i) {
             String cell = cells[i];
-            // TODO: several study programs (priorities, max num)
             if (cell.contains(Config.ProjectAdministration.abbrev)) {
                 RegisterProject.abbrev = i;
             } else if (cell.contains(Config.ProjectAdministration.mainMinNum)) {
@@ -104,23 +98,29 @@ public class RegisterProject extends MyParser {
             } else if (cell.contains(Config.ProjectAdministration.endOfNumsPrio)) {
                 RegisterProject.endNumsPrios = i;
             } else if (cell.contains(Config.ProjectAdministration.studyPrograms)) {
-                String strProgram = cell.split("->")[1];
-                StudyProgram program = StudyProgram.StrToStudy(strProgram);
-                RegisterProject.studyPrograms.put(program, i);
-                StudyProgram.readPrograms.add(strProgram); // TODO: useless
+                String[] strProgram = cell.split("->");
+                if (strProgram.length > 1) { // only works with new/ andreas' questionnaire
+                    StudyProgram program = StudyProgram.StrToStudy(strProgram[1]);
+                    RegisterProject.studyPrograms.put(program, i);
+                    StudyProgram.readPrograms.add(strProgram[1]); // TODO: useless}
+                }
             } else if (cell.contains(Config.ProjectAdministration.maxNums)) { // TODO: doesnt consider program other
-                StudyProgram program = StudyProgram.StrToStudy(cell.split(Config.ProjectAdministration.maxNums)[1]);
-                if (RegisterProject.studyPrograms.keySet().contains(program) && !RegisterProject.maxNums.keySet()
-                                                                                                        .contains(
-                                                                                                                program)) {
-                    RegisterProject.maxNums.put(program, i);
+                String[] split = cell.split(Config.ProjectAdministration.maxNums);
+                if (split.length > 1) { // only works with new/ andreas' questionnaire
+                    StudyProgram program = StudyProgram.StrToStudy(split[1]);
+                    if (RegisterProject.studyPrograms.containsKey(program) && !RegisterProject.maxNums.containsKey(
+                            program)) {
+                        RegisterProject.maxNums.put(program, i);
+                    }
                 }
             } else if (cell.contains(Config.ProjectAdministration.prios)) { // TODO: doesnt consider program other
-                StudyProgram program = StudyProgram.StrToStudy(cell.split(Config.ProjectAdministration.prios)[1]);
-                if (RegisterProject.studyPrograms.keySet().contains(program) && !RegisterProject.maxNums.keySet()
-                                                                                                        .contains(
-                                                                                                                program)) {
-                    RegisterProject.maxNums.put(program, i);
+                String[] split = cell.split(Config.ProjectAdministration.prios);
+                if (split.length > 1) { // only works with new/ andreas' questionnaire
+                    StudyProgram program = StudyProgram.StrToStudy(split[1]);
+                    if (RegisterProject.studyPrograms.containsKey(program) && !RegisterProject.maxNums.containsKey(
+                            program)) {
+                        RegisterProject.prios.put(program, i);
+                    }
                 }
             }
         }
@@ -133,65 +133,41 @@ public class RegisterProject extends MyParser {
 
 
     @NotNull
-    private static ArrayList<StudyProgram> getPrograms(String[] cells) {
-        ArrayList<StudyProgram> programs = new ArrayList<>();
-        for (Map.Entry<StudyProgram, Integer> entry : RegisterProject.studyPrograms.entrySet()) {
-            if (cells[entry.getValue()].equals("1")) {
-                programs.add(entry.getKey());
-            }
-        }
-        return programs;
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    private static ArrayList<Integer> getPrios(String[] cells) {
-        ArrayList<Integer> prios = new ArrayList<>();
-        for (Map.Entry<StudyProgram, Integer> entry : RegisterProject.prios.entrySet()) {
-            if (cells[entry.getValue()] != null && !cells[entry.getValue()].isBlank()) {
-                int prio = Integer.parseInt(String.valueOf(cells[entry.getValue()].charAt(0)));
-                prios.add(prio);
-            }
-        }
-        return prios; // TODO map to study
-    }
-
-    @NotNull
-    private static ArrayList<Integer> getMaxNums(String[] cells) {
-        ArrayList<Integer> maxNums = new ArrayList<>();
-        for (Map.Entry<StudyProgram, Integer> entry : RegisterProject.maxNums.entrySet()) {
-            if (cells[entry.getValue()] != null && !cells[entry.getValue()].isBlank()) {
-                int maxNum = Integer.parseInt(cells[entry.getValue()]);
-                maxNums.add(maxNum);
-            }
-        }
-        return maxNums; // TODO map to study
-    }
-
-    @NotNull
-    private static Group[] getGroups(String stMainStudProg, String mainMax, boolean oneStudent) {
+    private static ArrayList<Group> getGroups(String stMainStudProg, String mainMax, boolean oneStudent) {
         // TODO: get other/several groups
         StudyProgram mainP = StudyProgram.StrToStudy(stMainStudProg);
+        ArrayList<Group> gr = new ArrayList<>();
         if (oneStudent) {
-            return new Group[]{new Group(mainP, 1)};
+            gr.add(new Group(mainP, 1));
+            return gr;
         } else if (!mainMax.isEmpty()) {
-            return new Group[]{new Group(mainP, Integer.parseInt(mainMax))};
+            gr.add(new Group(mainP, Integer.parseInt(mainMax)));
+            return gr;
         }
-        return new Group[]{new Group(mainP, Integer.MAX_VALUE)};
+        gr.add(new Group(mainP, Integer.MAX_VALUE));
+        return gr;
     }
 
     @NotNull
-    private static Group[] getGroups(String stMainStudProg, String mainMax, String prio, boolean oneStudent) {
+    private static ArrayList<Group> getGroups(String stMainStudProg, String mainMax, String[] cells,
+                                              boolean oneStudent) {
         // TODO: get other/several groups
         StudyProgram mainP = StudyProgram.StrToStudy(stMainStudProg);
-        ArrayList<StudyProgram> programs = new ArrayList<>();
-        ArrayList<Integer> maxNums = new ArrayList<>();
-        ArrayList<Integer> prios = new ArrayList<>();
+        ArrayList<Group> groups = new ArrayList<>();
         if (oneStudent) {
-            return new Group[]{new Group(mainP, 1)};
+            groups.add(new Group(mainP, 1));
         } else if (!mainMax.isEmpty()) {
             // get used study programs for this project
-            adsf
-        } return null;
+            // get used prios
+            // get used max nums
+            for (Map.Entry<StudyProgram, Integer> programCol : RegisterProject.studyPrograms.entrySet()) {
+                if (cells[programCol.getValue()] != null && !cells[programCol.getValue()].isBlank()) {
+                    int prio = RegisterProject.prios.get(programCol.getKey());
+                    int max = RegisterProject.maxNums.get(programCol.getKey());
+                    groups.add(new Group(programCol.getKey(), max, prio));
+                }
+            }
+        }
+        return groups;
     }
 }

@@ -39,7 +39,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
 
     // This dependency is used by the application.
-    implementation("com.google.guava:guava:31.1-jre")
+    implementation("com.google.guava:guava:33.0.0-jre")
 
     // https://mvnrepository.com/artifact/com.gurobi/gurobi
     //implementation("com.gurobi:gurobi:10.0.3")

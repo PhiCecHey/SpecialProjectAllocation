@@ -22,7 +22,7 @@ public class StudyProgram {
     }
 
     // TODO: next line currently useless
-    public static ArrayList<String> readPrograms = new ArrayList<>();
+    public static final ArrayList<String> readPrograms = new ArrayList<>();
 
     private final AvailProgram program;
     private String other;

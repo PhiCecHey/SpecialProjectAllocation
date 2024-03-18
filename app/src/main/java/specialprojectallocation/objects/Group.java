@@ -1,5 +1,7 @@
 package specialprojectallocation.objects;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Group {
     private final StudyProgram program;
     private final int maxNumStuds;
@@ -32,7 +34,7 @@ public class Group {
         return this.program;
     }
 
-    public boolean checkStudy(Student student) {
+    public boolean checkStudy(@NotNull Student student) {
         boolean a = this.program.equals(StudyProgram.AvailProgram.NotSpecified);
         boolean b = this.program.equals(student.study());
         return a || b;

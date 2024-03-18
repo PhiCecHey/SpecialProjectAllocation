@@ -74,10 +74,10 @@ public class Config {
         public static double proj3 = 60.0;
         public static double proj4 = 40.0;
 
-        public static boolean studentAcceptedInProject = false;
+        public static final boolean studentAcceptedInProject = false;
         public static final double penStudsAcceptedInProj = -100;
 
-        public static boolean studentsPerStudy = false;
+        public static final boolean studentsPerStudy = false;
         public static double penStudsPerStudy = -100;
 
         public static double studyPrio1 = 50;
@@ -86,17 +86,17 @@ public class Config {
         public static double studyPrio4 = 20;
         public static double studyPrio5 = 10;
 
-        public static boolean minStudentsPerGroupProject = false;
+        public static final boolean minStudentsPerGroupProject = false;
         public static double penMinStudsPerGroupProj = -100;
 
-        public static boolean fixedStuds = false;
+        public static final boolean fixedStuds = false;
         public static final double penFixedStuds = -100;
 
-        public static boolean projectPerStudent = false;
+        public static final boolean projectPerStudent = false;
         public static boolean minProjectPerStudent = false;
         public static boolean maxProjectPerStudent = false;
 
-        public static boolean studentsPerProject = false;
+        public static final boolean studentsPerProject = false;
         public static double penStudsPerProj = -100;
         public static boolean minStudentsPerProject = false;
         public static boolean maxStudentsPerProject = false;

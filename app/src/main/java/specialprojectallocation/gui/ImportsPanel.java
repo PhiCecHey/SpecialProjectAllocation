@@ -81,6 +81,7 @@ public class ImportsPanel extends JPanel {
             } catch (IOException e) {
                 this.fRegistration.setBackground(Colors.redTransp);
                 this.logs.append(e + "\n");
+                this.logs.append("File could not be found. \n");
                 worked = false;
             } catch (Exceptions.AbbrevTakenException e) {
                 this.fRegistration.setBackground(Colors.yellowTransp);
@@ -112,7 +113,7 @@ public class ImportsPanel extends JPanel {
                 this.logs.append(e + "\n");
                 worked = false;
             } catch (Exception e) {
-                this.read.setBackground(Colors.redTransp);
+                this.fSelection.setBackground(Colors.redTransp);
                 this.logs.append(e + "\n");
                 worked = false;
             }
@@ -126,4 +127,3 @@ public class ImportsPanel extends JPanel {
         });
     }
 }
-

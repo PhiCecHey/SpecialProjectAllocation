@@ -5,14 +5,15 @@ import specialprojectallocation.Config;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 public class Project {
     private final String abbrev;
     private final int maxNumStuds;
-    private int minNumStuds; // TODO
-    private final Group[] groups; // main group is first in array
-    private Student[] fixedStuds;
+    private final int minNumStuds; // TODO
+    private final ArrayList<Group> groups; // main group is first in array
+    private ArrayList<Student> fixedStuds;
     private final String stringFixedStuds;
 
     /**
@@ -24,12 +25,32 @@ public class Project {
         for (String str : Calculation.allAbbrevs) {
             if (str.equals(ab)) {
                 throw new AbbrevTakenException(
-                        "Abbrev " + ab + " already taken by project "
-                                + Objects.requireNonNull(Project.findProject(ab)).abbrev());
+                        "Abbrev " + ab + " already taken by project " + Objects.requireNonNull(Project.findProject(ab))
+                                                                               .abbrev());
             }
         }
 
-        // TODO: minNumStuds
+        this.abbrev = ab;
+        this.minNumStuds = min;
+        this.maxNumStuds = max;
+        this.stringFixedStuds = fixed;
+        Calculation.projects.add(this);
+        Calculation.allAbbrevs.add(this.abbrev);
+
+        this.groups = new ArrayList<>();
+        Collections.addAll(this.groups, gr);
+    }
+
+    public Project(String ab, int min, int max, ArrayList<Group> gr, String fixed) throws AbbrevTakenException {
+        ab = ab.strip();
+        for (String str : Calculation.allAbbrevs) {
+            if (str.equals(ab)) {
+                throw new AbbrevTakenException(
+                        "Abbrev " + ab + " already taken by project " + Objects.requireNonNull(Project.findProject(ab))
+                                                                               .abbrev());
+            }
+        }
+
         this.abbrev = ab;
         this.minNumStuds = min;
         this.maxNumStuds = max;
@@ -60,12 +81,12 @@ public class Project {
         return this.maxNumStuds;
     }
 
-    public Group[] groups() {
+    public ArrayList<Group> groups() {
         return this.groups;
     }
 
     public boolean isFixed(Student student) {
-        if (this.fixedStuds == null || this.fixedStuds.length == 0 || this.fixedStuds[0] == null) {
+        if (this.fixedStuds == null || this.fixedStuds.isEmpty() || this.fixedStuds.get(0) == null) {
             return false;
         }
         for (Student s : this.fixedStuds) {
@@ -77,8 +98,7 @@ public class Project {
     }
 
     public boolean isFixedAndStudentsWish(Student student) {
-        if (!this.isFixed(student))
-            return false;
+        if (!this.isFixed(student)) return false;
         boolean ret1 = student.abbrevProj1().equals(this.abbrev);
         boolean ret2 = student.abbrevProj2().equals(this.abbrev);
         boolean ret3 = student.abbrevProj3().equals(this.abbrev);
@@ -87,8 +107,7 @@ public class Project {
     }
 
     public boolean isFixedAndStudentsHighestWish(Student student) {
-        if (!this.isFixed(student))
-            return false;
+        if (!this.isFixed(student)) return false;
         ArrayList<Project> fixedProj = student.getAllFixed();
         return fixedProj.get(0).abbrev.equals(this.abbrev);
     }
@@ -98,8 +117,7 @@ public class Project {
             return;
         }
         String[] nameImmas = this.stringFixedStuds.split(Config.ProjectAdministration.delimFixedStuds);
-        this.fixedStuds = new Student[nameImmas.length];
-        int i = 0;
+        this.fixedStuds = new ArrayList<>();
         for (String naIm : nameImmas) {
             String[] split = naIm.split(Config.ProjectAdministration.delimFixedStudsNameImma);
             String name = "", imma = "";
@@ -110,19 +128,13 @@ public class Project {
                 imma = split[1].trim();
             }
             Student student = Student.findStudentByImma(imma);
-            if (student == null)
-                student = Student.findStudentByImma(name);
-            if (student == null)
-                student = Student.findStudentByName(name, false);
-            if (student == null)
-                student = Student.findStudentByName(imma, false);
-            if (student == null)
-                student = Student.findStudentByName(name, true);
-            if (student == null)
-                student = Student.findStudentByName(imma, true);
+            if (student == null) student = Student.findStudentByImma(name);
+            if (student == null) student = Student.findStudentByName(name, false);
+            if (student == null) student = Student.findStudentByName(imma, false);
+            if (student == null) student = Student.findStudentByName(name, true);
+            if (student == null) student = Student.findStudentByName(imma, true);
 
-            this.fixedStuds[i] = student;
-            i++;
+            this.fixedStuds.add(student);
         }
     }
 
