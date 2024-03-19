@@ -5,8 +5,12 @@ import com.formdev.flatlaf.FlatLightLaf;
 import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Gui {
     static JFrame frame;
@@ -17,6 +21,9 @@ public class Gui {
     static JTabbedPane pane;
     static boolean lightTheme = true;
     static JButton theme, plus, minus, zero, maximize;
+    private static ImageIcon moon = new ImageIcon(), plusDark = new ImageIcon(), circleDark = new ImageIcon(), minusDark
+            = new ImageIcon(), maximizeDark = new ImageIcon(), sun = new ImageIcon(), plusLight = new ImageIcon(),
+            circleLight = new ImageIcon(), minusLight = new ImageIcon(), maximizeLight = new ImageIcon();
 
     public static void init() {
         FlatLightLaf.setup();
@@ -44,15 +51,28 @@ public class Gui {
         sep.setMinimumSize(new Dimension(2, 1));
         Gui.frame.add(sep, "cell 1 0, growy, spany, wrap");
 
-        // TODO: path
-        String path = "./app/src/main/java/specialprojectallocation/gui/icons/";
-        Gui.theme = new JButton(new ImageIcon(path + "moon.png"));
+        try {
+            Gui.moon = new ImageIcon(ClassLoader.getSystemResource("icons/moon.png"));
+            Gui.plusDark = new ImageIcon(ClassLoader.getSystemResource("icons/plus-dark.png"));
+            Gui.circleDark = new ImageIcon(ClassLoader.getSystemResource("icons/circle-dark.png"));
+            Gui.minusDark = new ImageIcon(ClassLoader.getSystemResource("icons/minus-dark.png"));
+            Gui.maximizeDark = new ImageIcon(ClassLoader.getSystemResource("icons/maximize-dark.png"));
+            Gui.sun = new ImageIcon(ClassLoader.getSystemResource("icons/sun.png"));
+            Gui.plusLight = new ImageIcon(ClassLoader.getSystemResource("icons/plus-light.png"));
+            Gui.circleLight = new ImageIcon(ClassLoader.getSystemResource("icons/circle-light.png"));
+            Gui.minusLight = new ImageIcon(ClassLoader.getSystemResource("icons/minus-light.png"));
+            Gui.maximizeLight = new ImageIcon(ClassLoader.getSystemResource("icons/maximize-light.png"));
+        } catch (Exception e) {
+            System.out.println("Icons could not be found in resource folder.");
+        }
+
+        Gui.theme = new JButton(moon);
         Gui.frame.add(Gui.theme, "cell 2 0");
         Gui.addThemeSwitcher();
-        Gui.plus = new JButton(new ImageIcon(path + "plus-dark.png"));
-        Gui.zero = new JButton(new ImageIcon(path + "circle-dark.png"));
-        Gui.minus = new JButton(new ImageIcon(path + "minus-dark.png"));
-        Gui.maximize = new JButton(new ImageIcon(path + "maximize-dark.png"));
+        Gui.plus = new JButton(plusDark);
+        Gui.zero = new JButton(circleDark);
+        Gui.minus = new JButton(minusDark);
+        Gui.maximize = new JButton(maximizeDark);
         Gui.frame.add(Gui.plus, "cell 2 1");
         Gui.frame.add(Gui.zero, "cell 2 2");
         Gui.frame.add(Gui.minus, "cell 2 3, top");
@@ -90,22 +110,18 @@ public class Gui {
         Gui.theme.addActionListener(ae -> {
             if (Gui.lightTheme) {
                 FlatDarkLaf.setup();
-                theme.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/sun.png"));
-                plus.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/plus-light.png"));
-                zero.setIcon(
-                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/circle-light" + ".png"));
-                minus.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/minus-light.png"));
-                maximize.setIcon(
-                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/maximize-light" + ".png"));
+                theme.setIcon(Gui.sun);
+                plus.setIcon(Gui.plusLight);
+                zero.setIcon(Gui.circleLight);
+                minus.setIcon(Gui.minusLight);
+                maximize.setIcon(Gui.maximizeLight);
             } else {
                 FlatLightLaf.setup();
-                theme.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/moon.png"));
-                plus.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/plus-dark.png"));
-                zero.setIcon(
-                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/circle-dark" + ".png"));
-                minus.setIcon(new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/minus-dark.png"));
-                maximize.setIcon(
-                        new ImageIcon("./app/src/main/java/specialprojectallocation/gui/icons/maximize-dark" + ".png"));
+                theme.setIcon(Gui.moon);
+                plus.setIcon(Gui.plusDark);
+                zero.setIcon(Gui.circleDark);
+                minus.setIcon(Gui.minusDark);
+                maximize.setIcon(Gui.maximizeDark);
             }
             Gui.lightTheme = !Gui.lightTheme;
             SwingUtilities.updateComponentTreeUI(Gui.frame);
