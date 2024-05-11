@@ -81,8 +81,8 @@ tasks.named<Test>("test") {
 
 // https://github.com/TheBoegl/gradle-launch4j
 launch4j { // TODO: configure
-  mainClassName = "zimmerzuteilung.App"
-  icon = "../../../app/icon/Pforte-4bit.ico"
+  mainClassName = "specialprojectallocation.App"
+  icon = "../../../app/icon/Logo_pforta.ico"
   outfile = "../../../release/${rootProject.name}.exe"
   // jarTask =  tasks.fatJar
   bundledJrePath = "jre"
@@ -98,9 +98,9 @@ tasks.register("prepareKotlinBuildScriptModel") {}
 /*task("sign") { // https://ebourg.github.io/jsign/
     doLast {
         val jsign = project.extensions.getByName("jsign") as groovy.lang.Closure<*>
-        jsign("file"      to "release/Zimmerzuteilung.exe",
-            "name"      to "Zimmerzuteilung",
-            "url"       to "zimmerzuteilung.App",
+        jsign("file"      to "release/specialprojectallocation.exe",
+            "name"      to "specialprojectallocation",
+            "url"       to "specialprojectallocation.App",
             "keystore"  to "keystore.p12",
             "alias"     to "test",
             "storepass" to "secret",
@@ -108,20 +108,10 @@ tasks.register("prepareKotlinBuildScriptModel") {}
     }
 }*/
 
-/*tasks {
-    named<ShadowJar>("shadowJar") {
-        archiveBaseName.set("zimmerzuteilung")
-        mergeServiceFiles()
-        //manifest {
-        //    attributes(mapOf("Main-Class" to "com.app.App"))
-        //}
-    }
-}*/
-
 tasks {
-    val fatJar = register<Jar>("fatJafatJar()r") {
+    val fatJar = register<Jar>("fatJar") {
         dependsOn.addAll(listOf("compileJava", "compileKotlin", "processResources")) // We need this for Gradle optimization to work
-        archiveClassifier.set("standalone") // Naming the jar
+        archiveClassifier.set("fatJar") // Naming the jar
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         manifest { attributes(mapOf("Main-Class" to application.mainClass)) } // Provided we set it up in the application plugin configuration
         val sourcesMain = sourceSets.main.get()
