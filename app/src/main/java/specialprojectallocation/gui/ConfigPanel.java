@@ -545,9 +545,9 @@ public class ConfigPanel extends JPanel {
 
             JSeparator sep6 = new JSeparator();
             sep6.setMinimumSize(new Dimension(2, 2));
-            this.add(sep6, "spanx, growx");
+            // this.add(sep6, "spanx, growx"); // TODO: add back
 
-            this.add(this.weightRegProj);
+            // this.add(this.weightRegProj); // TODO: add back
         }
 
         void save() {

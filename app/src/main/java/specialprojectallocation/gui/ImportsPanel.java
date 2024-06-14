@@ -75,53 +75,57 @@ public class ImportsPanel extends JPanel {
             this.logs.setText("");
             Calculation.projReg = new File(fRegistration.getText());
             Calculation.projSel = new File(fSelection.getText());
-            boolean worked = true;
+            int worked = 0;
             try {
                 worked = RegisterProject.read(Calculation.projReg, Config.ProjectAdministration.csvDelim);
             } catch (IOException e) {
-                this.fRegistration.setBackground(Colors.redTransp);
-                this.logs.append(e + "\n");
-                worked = false;
+                Calculation.appendToLog(e + "\n" + "Cannot find file");
+                worked = 2;
             } catch (Exceptions.AbbrevTakenException e) {
-                this.fRegistration.setBackground(Colors.yellowTransp);
-                this.logs.append(e + "\n");
-                worked = false;
-            }  catch (IndexOutOfBoundsException e){
+                Calculation.appendToLog(e + "\n" + "Project registered twice.");
+                worked = 1;
+            } catch (IndexOutOfBoundsException e) {
+                Calculation.appendToLog(e + "\n" + "Probably weird character in Moodle registration file.");
+                worked = 2;
+            } catch (Exception e) {
                 this.fRegistration.setBackground(Colors.redTransp);
-                this.logs.append(e + "\n");
-                this.logs.append("Probably weird character in Moodle registration file. \n");
+                Calculation.appendToLog(e + "\n");
+                worked = 2;
             }
-            catch (Exception e) {
-                this.fRegistration.setBackground(Colors.redTransp);
-                this.logs.append(e + "\n");
-                worked = false;
+            if (worked == 0) {
+                this.fRegistration.setBackground(Colors.greenTransp);
             }
-            if (!worked) {
+            if (worked == 1) {
                 this.logs.append(Calculation.log());
+                this.fRegistration.setBackground(Colors.yellowTransp);
+            } else {
+                this.logs.append(Calculation.log());
+                this.fRegistration.setBackground(Colors.redTransp);
             }
 
             try {
                 Calculation.clearLog();
                 worked = SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim) & worked;
             } catch (IOException e) {
-                this.fSelection.setBackground(Colors.redTransp);
-                this.logs.append(e + "\n");
-                worked = false;
+                Calculation.appendToLog(e + "\n" + "Cannot find file");
+                worked = 2;
             } catch (Exceptions.StudentDuplicateException e) {
-                this.fSelection.setBackground(Colors.yellowTransp);
-                this.logs.append(e + "\n");
-                worked = false;
+                Calculation.appendToLog(e + "\n" + "Student registered twice.");
+                worked = 1;
             } catch (Exception e) {
-                this.read.setBackground(Colors.redTransp);
-                this.logs.append(e + "\n");
-                worked = false;
+                Calculation.appendToLog(e + "\n");
+                worked = 2;
             }
             Project.setAllFixed();
             this.logs.append(Calculation.log() + "\n");
-            if (worked) {
+            if (worked == 0) {
                 this.read.setBackground(Colors.greenTransp);
+            } else if (worked == 1) {
+                this.logs.append(Calculation.log());
+                this.read.setBackground(Colors.yellowTransp);
             } else {
                 this.logs.append(Calculation.log());
+                this.read.setBackground(Colors.redTransp);
             }
         });
     }

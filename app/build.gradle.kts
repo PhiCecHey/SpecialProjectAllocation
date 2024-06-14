@@ -80,14 +80,14 @@ tasks.named<Test>("test") {
 }
 
 // https://github.com/TheBoegl/gradle-launch4j
-launch4j { // TODO: configure
+/*launch4j { // TODO: configure
   mainClassName = "specialprojectallocation.App"
   icon = "../../../app/icon/Logo_pforta.ico"
   outfile = "../../../release/${rootProject.name}.exe"
   // jarTask =  tasks.fatJar
   bundledJrePath = "jre"
   chdir = "."
-}
+}*/
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
@@ -111,7 +111,7 @@ tasks.register("prepareKotlinBuildScriptModel") {}
 tasks {
     val fatJar = register<Jar>("fatJar") {
         dependsOn.addAll(listOf("compileJava", "compileKotlin", "processResources")) // We need this for Gradle optimization to work
-        archiveClassifier.set("fatJar") // Naming the jar
+        archiveClassifier.set("fatJar-specialprojectallocation") // Naming the jar
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         manifest { attributes(mapOf("Main-Class" to application.mainClass)) } // Provided we set it up in the application plugin configuration
         val sourcesMain = sourceSets.main.get()

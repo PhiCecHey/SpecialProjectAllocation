@@ -48,7 +48,11 @@ public class ResultsPanel extends JPanel {
 
         this.bExport.addActionListener(ae -> {
             Calculation.outPath = fExport.getText();
-            WriteResults.printForSupers(Calculation.gurobi.results, Calculation.gurobi.allocs);
+            try {
+                WriteResults.printForSupers(Calculation.gurobi.results, Calculation.gurobi.allocs);
+            } catch (NullPointerException e) {
+                this.area.append("\nCalculation is deleted after changing the config. Calculate results again before exporting." + e + "\n");
+            }
         });
     }
 

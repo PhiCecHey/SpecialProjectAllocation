@@ -15,14 +15,15 @@ public class RegisterProject extends MyParser {
     private static int abbrev = -1, minNum = -1, maxNum = -1, mainGroup = -1, mainMaxNum = -1, var = -1, fixed = -1;
 
     // TODO: how to handle exceptions?
-    public static boolean read(@NotNull File csv, char delim)
+    public static int read(@NotNull File csv, char delim)
             throws NumberFormatException, AbbrevTakenException, IOException {
-        boolean worked = true;
+        int worked = 0;
         Calculation.clearProjects();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
             String line = bufferedReader.readLine();
             if (!RegisterProject.evalHeading(line)) {
-                return false;
+                Calculation.appendToLog("Error while registering project: Check if this is the right CSV file: " + csv.getAbsolutePath());
+                return 2;
             }
 
             while ((line = bufferedReader.readLine()) != null) {
@@ -65,7 +66,7 @@ public class RegisterProject extends MyParser {
                     // TODO: just take last entry?
                     // throw new ProjectDuplicateException(
                     // "Project " + found.abbrev() + " was registired more than once!");
-                    worked = false;
+                    worked = 1;
                 }
             }
         }

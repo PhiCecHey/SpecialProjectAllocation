@@ -42,7 +42,7 @@ public class Gui {
         JScrollPane p = new JScrollPane(config);
         Gui.imports = new ImportsPanel();
         Gui.results = new ResultsPanel();
-        Gui.pane.addTab("Help", Gui.help);
+        //Gui.pane.addTab("Help", Gui.help); // TODO add back
         Gui.pane.addTab("Imports", Gui.imports);
         Gui.pane.addTab("Config", p);
         Gui.pane.addTab("Results", Gui.results);
