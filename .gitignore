@@ -33,3 +33,5 @@ files
 .vscode
 .idea
 *workspace
+release
+Release
