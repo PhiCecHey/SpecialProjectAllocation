@@ -32,3 +32,5 @@ build
 files
 .vscode
 .idea
+release
+Release
