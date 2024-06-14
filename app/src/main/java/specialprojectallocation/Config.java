@@ -21,28 +21,35 @@ public class Config {
         public static String abbrev = "Q02_1.2";
         public static String var = "Q18_4.1";
         public static String varOneStudent = "one student";
-        public static String minNum = "MinNoSt";
-        public static String maxNum = "Q20_4.3";
+        public static String mainMinNum = "Q20_4.3.2";
+        // public static String maxNum = "Q20_4.3.1";
         public static String mainGroup = "Q21_4.5";
-        public static String mainMaxNum = "Q22_5.1";
-        public static String fixed = "Q24_6";
-        // TODO: several study programs (priorities, max num)
+        public static String mainMaxNum = "Q20_4.3.1";
+        public static String fixed = "Q41_6";
         public static String delimFixedStuds = ";";
         public static String delimFixedStudsNameImma = ",";
         public static char quotes = '\"';
+        // TODO: several study programs (priorities, max num)
+        public static String startOfNumsPrio = "Q23"; // next cell after last study program in csv. TODO: put in gui
+        public static String endOfNumsPrio = "Q41_6";
+        public static String studyPrograms = "Q22";
+        public static String maxNums = "_Num";
+        public static String prios = "Priority";
     }
 
     public static class Constraints {
         // Gurobi constraint values
         public static final boolean projectPerStudent = true;
-        /*public static boolean minProjectPerStudent = false;
-        public static boolean maxProjectPerStudent = false;
-        public static int maxNumProjectsPerStudent = 1;
-        public static int minNumProjectsPerStudent = 1;*/
+        /*
+         * public static boolean minProjectPerStudent = false;
+         * public static boolean maxProjectPerStudent = false;
+         * public static int maxNumProjectsPerStudent = 1;
+         * public static int minNumProjectsPerStudent = 1;
+         */
 
         public static final boolean studentsPerProject = true;
-        //public static boolean minStudentsPerProject = false;
-        //public static boolean maxStudentsPerProject = false;
+        // public static boolean minStudentsPerProject = false;
+        // public static boolean maxStudentsPerProject = false;
 
         public static boolean minStudentsPerGroupProject = true;
         public static int minNumStudsPerGroupProj = 0;
@@ -67,10 +74,10 @@ public class Config {
         public static double proj3 = 60.0;
         public static double proj4 = 40.0;
 
-        public static boolean studentAcceptedInProject = false;
+        public static final boolean studentAcceptedInProject = false;
         public static final double penStudsAcceptedInProj = -100;
 
-        public static boolean studentsPerStudy = false;
+        public static final boolean studentsPerStudy = false;
         public static double penStudsPerStudy = -100;
 
         public static double studyPrio1 = 50;
@@ -79,17 +86,17 @@ public class Config {
         public static double studyPrio4 = 20;
         public static double studyPrio5 = 10;
 
-        public static boolean minStudentsPerGroupProject = false;
+        public static final boolean minStudentsPerGroupProject = false;
         public static double penMinStudsPerGroupProj = -100;
 
-        public static boolean fixedStuds = false;
+        public static final boolean fixedStuds = false;
         public static final double penFixedStuds = -100;
 
-        public static boolean projectPerStudent = false;
+        public static final boolean projectPerStudent = false;
         public static boolean minProjectPerStudent = false;
         public static boolean maxProjectPerStudent = false;
 
-        public static boolean studentsPerProject = false;
+        public static final boolean studentsPerProject = false;
         public static double penStudsPerProj = -100;
         public static boolean minStudentsPerProject = false;
         public static boolean maxStudentsPerProject = false;

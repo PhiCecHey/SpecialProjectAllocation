@@ -81,6 +81,10 @@ public class ImportsPanel extends JPanel {
             } catch (IOException e) {
                 Calculation.appendToLog(e + "\n" + "Cannot find file");
                 worked = 2;
+                this.fRegistration.setBackground(Colors.redTransp);
+                this.logs.append(e + "\n");
+                this.logs.append("File could not be found. \n");
+                worked = false;
             } catch (Exceptions.AbbrevTakenException e) {
                 Calculation.appendToLog(e + "\n" + "Project registered twice.");
                 worked = 1;
@@ -115,6 +119,9 @@ public class ImportsPanel extends JPanel {
             } catch (Exception e) {
                 Calculation.appendToLog(e + "\n");
                 worked = 2;
+                this.fSelection.setBackground(Colors.redTransp);
+                this.logs.append(e + "\n");
+                worked = false;
             }
             Project.setAllFixed();
             this.logs.append(Calculation.log() + "\n");
@@ -130,4 +137,3 @@ public class ImportsPanel extends JPanel {
         });
     }
 }
-
