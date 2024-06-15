@@ -73,58 +73,72 @@ public class ImportsPanel extends JPanel {
     private void readFiles() {
         this.read.addActionListener(ae -> {
             this.logs.setText("");
+            Calculation.clearLog();
             Calculation.projReg = new File(fRegistration.getText());
             Calculation.projSel = new File(fSelection.getText());
             int worked = 0;
             try {
                 worked = RegisterProject.read(Calculation.projReg, Config.ProjectAdministration.csvDelim);
             } catch (IOException e) {
-                Calculation.appendToLog("RegisterProject: File could not be found!" + e + "\n");
+                Calculation.appendToLog("RegisterProject: File could not be found! " + e + "\n");
                 worked = 2;
             } catch (Exceptions.AbbrevTakenException e) {
-                this.fRegistration.setBackground(Colors.yellowTransp);
-                this.logs.append(e + "\n");
-                worked = false;
+                Calculation.appendToLog("RegisterProject: Project duplicate! Will only take first entry." + e + "\n");
+                worked = 1;
             } catch (IndexOutOfBoundsException e) {
-                this.fRegistration.setBackground(Colors.redTransp);
-                this.logs.append(e + "\n");
-                this.logs.append("Probably weird character in Moodle registration file. \n");
+                Calculation.appendToLog("Probably weird character in Moodle registration file. " + e + "\n");
+                worked = 2;
             } catch (Exception e) {
-                this.fRegistration.setBackground(Colors.redTransp);
-                this.logs.append(e + "\n");
-                worked = false;
+                Calculation.appendToLog(e + "\n");
+                worked = 3;
             }
             if (worked == 0) {
+                Calculation.appendToLog("RegisterProject: Parsed file successfully.");
                 this.fRegistration.setBackground(Colors.greenTransp);
             } else if (worked == 1) {
+                Calculation.appendToLog("RegisterProject: Parsed file with errors.");
                 this.fRegistration.setBackground(Colors.yellowTransp);
-            } else if (worked == 2) {
+            } else if (worked >= 2) {
+                Calculation.appendToLog("RegisterProject: Could not parse file.");
                 this.fRegistration.setBackground(Colors.redTransp);
             }
-            this.logs.append(Calculation.log() + "\n");
+            this.logs.append(Calculation.log());
 
             try {
                 Calculation.clearLog();
-                worked = SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim) & worked;
+                worked = SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim);
             } catch (IOException e) {
                 this.fSelection.setBackground(Colors.redTransp);
-                Calculation.appendToLog("SelectProject: File not found!" + e + "\n");
+                Calculation.appendToLog("SelectProject: File not found! " + e + "\n");
                 worked = 2;
             } catch (Exceptions.StudentDuplicateException e) {
-                Calculation.appendToLog("SelectProject: Student duplicate!" + e + "\n");
+                Calculation.appendToLog("SelectProject: Student duplicate! " + e + "\n");
                 worked = 1;
+            } catch (IndexOutOfBoundsException e) {
+                Calculation.appendToLog("");
+                worked = 2;
             } catch (Exception e) {
                 Calculation.appendToLog(e + "\n");
-                worked = 2;
+                worked = 3;
             }
             if (worked == 0) {
+                Calculation.appendToLog("SelectProject: Parsed file successfully.");
                 this.fSelection.setBackground(Colors.greenTransp);
             } else if (worked == 1) {
+                Calculation.appendToLog("SelectProject: Parsed file with errors.");
                 this.fSelection.setBackground(Colors.yellowTransp);
-            } else if (worked == 2) {
+            } else if (worked >= 2) {
+                Calculation.appendToLog("SelectProject: Could not parse file.");
                 this.fSelection.setBackground(Colors.redTransp);
             }
-            this.logs.append(Calculation.log() + "\n");
+            this.logs.append(Calculation.log());
+            if (this.fRegistration.getBackground().equals(Colors.redTransp) || this.fSelection.getBackground().equals(Colors.redTransp)) {
+                this.read.setBackground(Colors.redTransp);
+            } else if (this.fRegistration.getBackground().equals(Colors.yellowTransp) || this.fSelection.getBackground().equals(Colors.yellowTransp)) {
+                this.read.setBackground(Colors.yellowTransp);
+            } else {
+                this.read.setBackground(Colors.greenTransp);
+            }
 
             Project.setAllFixed();
         });

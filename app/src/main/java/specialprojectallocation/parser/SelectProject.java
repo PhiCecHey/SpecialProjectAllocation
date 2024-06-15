@@ -20,23 +20,29 @@ public class SelectProject extends MyParser {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(csv));
         String line = bufferedReader.readLine();
         if (!SelectProject.evalHeading(line, delim)) {
-            Calculation.appendToLog("SelectProject: Could not evaluate first row of SelectProjectFile! Wrong file or wrong delim?");
+            Calculation.appendToLog("SelectProject: Could not evaluate first row of SelectProjectFile! Wrong file or wrong delim in config tab?");
             return 2;
         }
 
         while ((line = bufferedReader.readLine()) != null) {
             String[] cells = SelectProject.readLineInCsvWithQuotesAndDelim(line, Config.ProjectSelection.csvDelim);
-            Student found = Student.findStudentByImma(cells[SelectProject.immaNum]);
-            if (found == null) {
-                Student student = new Student(cells[SelectProject.immaNum], cells[SelectProject.name], cells[SelectProject.email], StudyProgram.StrToStudy(cells[SelectProject.studProg]));
-                student.selectProjStr(cells[SelectProject.first], cells[SelectProject.second], cells[SelectProject.third], cells[SelectProject.fourth]);
-            } else {
-                // TODO: what to do with duplicate? only take newest?
-                Calculation.appendToLog("Student " + found.name() + " applied for a project more than once!"););
-                return 1;
-                //throw new StudentDuplicateException("Student " + found.name() + " applied for a project more than once!");
+            try {
+                Student found = Student.findStudentByImma(cells[SelectProject.immaNum]);
+                if (found == null) {
+                    Student student = new Student(cells[SelectProject.immaNum], cells[SelectProject.name], cells[SelectProject.email], StudyProgram.StrToStudy(cells[SelectProject.studProg]));
+                    student.selectProjStr(cells[SelectProject.first], cells[SelectProject.second], cells[SelectProject.third], cells[SelectProject.fourth]);
+                } else {
+                    // TODO: what to do with duplicate? only take newest?
+                    Calculation.appendToLog("SelectProject: Student " + found.name() + " applied for a project more than once! Will only take first entry.");
+                    return 1;
+                    //throw new StudentDuplicateException("Student " + found.name() + " applied for a project more than once!");
+                }
+            } catch (IndexOutOfBoundsException e) {
+                Calculation.appendToLog("SelectProject: Possibly wrong file?");
+                return 2;
             }
-        } return 0;
+        }
+        return 0;
     }
 
     private static boolean evalHeading(String line, char delim) {

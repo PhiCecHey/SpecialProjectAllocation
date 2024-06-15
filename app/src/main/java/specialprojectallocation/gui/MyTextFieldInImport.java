@@ -31,7 +31,8 @@ public class MyTextFieldInImport extends JTextField {
                 public void warn() {
                     JTextField test = new JTextField();
                     field.setBackground(test.getBackground());
-                    button.setBackground(Colors.yellowTransp);
+
+                    button.setBackground(Colors.blueTransp);
                 }
             });
         }

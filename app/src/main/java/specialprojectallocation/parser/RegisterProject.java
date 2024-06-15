@@ -21,45 +21,51 @@ public class RegisterProject extends MyParser {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
             String line = bufferedReader.readLine();
             if (!RegisterProject.evalHeading(line)) {
-                Calculation.appendToLog("RegisterProject: Could not evaluate first row of SelectProjectFile! Wrong file or wrong delim?");
+                Calculation.appendToLog("RegisterProject: Could not evaluate first row of RegisterProjectFile! Wrong file or wrong delim in config tab?");
                 return 2;
             }
 
             while ((line = bufferedReader.readLine()) != null) {
                 String[] cells = RegisterProject.readLineInCsvWithQuotesAndDelim(line, delim);
-                Project found = Project.findProject(cells[RegisterProject.abbrev]);
-                if (found == null) {
-                    boolean oneStudent = cells[RegisterProject.var].toLowerCase().contains(Config.ProjectAdministration.varOneStudent);
-                    Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup], cells[RegisterProject.maxNum], oneStudent);
+                try {
+                    Project found = Project.findProject(cells[RegisterProject.abbrev]);
 
-                    // TODO: several groups
-                    // mainMaxNum not usable currently, has to be maxNum
-                    /*
-                     * Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
-                     * cells[RegisterProject.mainMaxNum], oneStudent);
-                     */
+                    if (found == null) {
+                        boolean oneStudent = cells[RegisterProject.var].toLowerCase().contains(Config.ProjectAdministration.varOneStudent);
+                        Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup], cells[RegisterProject.maxNum], oneStudent);
 
-                    int maxNum = oneStudent ? 1 : Integer.MAX_VALUE;
-                    if (cells.length > RegisterProject.maxNum) {
-                        if (!cells[RegisterProject.maxNum].isEmpty()) {
-                            maxNum = Integer.parseInt(cells[RegisterProject.maxNum]);
+                        // TODO: several groups
+                        // mainMaxNum not usable currently, has to be maxNum
+                        /*
+                         * Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
+                         * cells[RegisterProject.mainMaxNum], oneStudent);
+                         */
+
+                        int maxNum = oneStudent ? 1 : Integer.MAX_VALUE;
+                        if (cells.length > RegisterProject.maxNum) {
+                            if (!cells[RegisterProject.maxNum].isEmpty()) {
+                                maxNum = Integer.parseInt(cells[RegisterProject.maxNum]);
+                            }
                         }
-                    }
-                    int minNum = 0;
-                    if (cells.length > RegisterProject.minNum) {
-                        if (!cells[RegisterProject.minNum].isEmpty()) {
-                            minNum = Integer.parseInt(cells[RegisterProject.minNum]);
+                        int minNum = 0;
+                        if (cells.length > RegisterProject.minNum) {
+                            if (!cells[RegisterProject.minNum].isEmpty()) {
+                                minNum = Integer.parseInt(cells[RegisterProject.minNum]);
+                            }
                         }
-                    }
-                    // generates new project and adds it to all projects
-                    new Project(cells[RegisterProject.abbrev], minNum, maxNum, groups, cells[RegisterProject.fixed]);
-                } else {
-                    Calculation.appendToLog("RegisterProjects: Found project twice. Skipping second entry. " + found.abbrev());
+                        // generates new project and adds it to all projects
+                        new Project(cells[RegisterProject.abbrev], minNum, maxNum, groups, cells[RegisterProject.fixed]);
+                    } else {
+                        Calculation.appendToLog("RegisterProject: Found project twice. Skipping second entry. " + found.abbrev());
 
-                    // TODO: just take last entry?
-                    // throw new ProjectDuplicateException(
-                    // "Project " + found.abbrev() + " was registired more than once!");
-                    worked = 1;
+                        // TODO: just take last entry?
+                        // throw new ProjectDuplicateException(
+                        // "Project " + found.abbrev() + " was registired more than once!");
+                        worked = 1;
+                    }
+                } catch (IndexOutOfBoundsException e) {
+                    Calculation.appendToLog("RegisterProject: Possibly wrong file? Else maybe weird character in moodle file.");
+                    return 2;
                 }
             }
         }
