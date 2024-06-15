@@ -15,25 +15,22 @@ public class RegisterProject extends MyParser {
     private static int abbrev = -1, minNum = -1, maxNum = -1, mainGroup = -1, mainMaxNum = -1, var = -1, fixed = -1;
 
     // TODO: how to handle exceptions?
-    public static boolean read(@NotNull File csv, char delim)
-            throws NumberFormatException, AbbrevTakenException, IOException {
-        boolean worked = true;
+    public static int read(@NotNull File csv, char delim) throws NumberFormatException, AbbrevTakenException, IOException {
+        int worked = 0;
         Calculation.clearProjects();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
             String line = bufferedReader.readLine();
             if (!RegisterProject.evalHeading(line)) {
-                return false;
+                Calculation.appendToLog("RegisterProject: Could not evaluate first row of SelectProjectFile! Wrong file or wrong delim?");
+                return 2;
             }
 
             while ((line = bufferedReader.readLine()) != null) {
                 String[] cells = RegisterProject.readLineInCsvWithQuotesAndDelim(line, delim);
                 Project found = Project.findProject(cells[RegisterProject.abbrev]);
                 if (found == null) {
-                    boolean oneStudent = cells[RegisterProject.var].toLowerCase()
-                            .contains(
-                                    Config.ProjectAdministration.varOneStudent);
-                    Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
-                            cells[RegisterProject.maxNum], oneStudent);
+                    boolean oneStudent = cells[RegisterProject.var].toLowerCase().contains(Config.ProjectAdministration.varOneStudent);
+                    Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup], cells[RegisterProject.maxNum], oneStudent);
 
                     // TODO: several groups
                     // mainMaxNum not usable currently, has to be maxNum
@@ -55,17 +52,14 @@ public class RegisterProject extends MyParser {
                         }
                     }
                     // generates new project and adds it to all projects
-                    new Project(cells[RegisterProject.abbrev], minNum, maxNum, groups,
-                            cells[RegisterProject.fixed]);
+                    new Project(cells[RegisterProject.abbrev], minNum, maxNum, groups, cells[RegisterProject.fixed]);
                 } else {
-                    System.out.println("register projects: found project twice " + found.abbrev());
-                    Calculation.appendToLog(
-                            "Register projects: Found project twice. Skipping second entry. " + found.abbrev());
+                    Calculation.appendToLog("RegisterProjects: Found project twice. Skipping second entry. " + found.abbrev());
 
                     // TODO: just take last entry?
                     // throw new ProjectDuplicateException(
                     // "Project " + found.abbrev() + " was registired more than once!");
-                    worked = false;
+                    worked = 1;
                 }
             }
         }
@@ -96,9 +90,7 @@ public class RegisterProject extends MyParser {
                 RegisterProject.fixed = i;
             }
         }
-        return (RegisterProject.abbrev != -1 && RegisterProject.minNum != -1 && RegisterProject.maxNum != -1
-                && RegisterProject.mainGroup != -1 && RegisterProject.mainMaxNum != -1 && RegisterProject.var != -1
-                && RegisterProject.fixed != -1);
+        return (RegisterProject.abbrev != -1 && RegisterProject.minNum != -1 && RegisterProject.maxNum != -1 && RegisterProject.mainGroup != -1 && RegisterProject.mainMaxNum != -1 && RegisterProject.var != -1 && RegisterProject.fixed != -1);
     }
 
     @NotNull
@@ -106,10 +98,10 @@ public class RegisterProject extends MyParser {
         // TODO: get other/several groups
         StudyProgram mainP = StudyProgram.StrToStudy(stMainStudProg);
         if (oneStudent) {
-            return new Group[] { new Group(mainP, 1) };
+            return new Group[]{new Group(mainP, 1)};
         } else if (!mainMax.isEmpty()) {
-            return new Group[] { new Group(mainP, Integer.parseInt(mainMax)) };
+            return new Group[]{new Group(mainP, Integer.parseInt(mainMax))};
         }
-        return new Group[] { new Group(mainP, Integer.MAX_VALUE) };
+        return new Group[]{new Group(mainP, Integer.MAX_VALUE)};
     }
 }
