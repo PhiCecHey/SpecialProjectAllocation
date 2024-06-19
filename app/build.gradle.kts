@@ -119,6 +119,12 @@ tasks {
             .map { if (it.isDirectory) it else zipTree(it) } +
                 sourcesMain.output
         from(contents)
+
+        copy {
+            from("build/libs/")
+            into(layout.buildDirectory.dir("../../release"))
+            include("**/*fatJar.jar")
+        }
     }
     build {
         dependsOn(fatJar) // Trigger fat jar creation during build
