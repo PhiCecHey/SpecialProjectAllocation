@@ -48,6 +48,7 @@ public class Config {
         public static int minNumStudsPerGroupProj = 0;
 
         public static boolean studWantsProj = true;
+        public static boolean noInvalids = false;
 
         public static boolean fixedStuds = true;
         public static boolean addFixedStudsToProjEvenIfStudDidntSelectProj = true;

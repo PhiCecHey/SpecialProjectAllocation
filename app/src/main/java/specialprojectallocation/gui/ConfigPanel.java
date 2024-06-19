@@ -174,8 +174,8 @@ public class ConfigPanel extends JPanel {
             this.lQuotes = new JLabel("Character for Quotes:");
 
             this.fCsvDelim = new MyTextFieldInConfig(Character.toString(Config.ProjectAdministration.csvDelim));
-            this.fNumCharsAbbrev = new MyTextFieldInConfig(
-                    Integer.toString(Config.ProjectAdministration.numCharsAbbrev));
+            this.fNumCharsAbbrev =
+                    new MyTextFieldInConfig(Integer.toString(Config.ProjectAdministration.numCharsAbbrev));
             this.fAbbrev = new MyTextFieldInConfig(Config.ProjectAdministration.abbrev);
             this.fVar = new MyTextFieldInConfig(Config.ProjectAdministration.var);
             this.fVarOneStudent = new MyTextFieldInConfig(Config.ProjectAdministration.varOneStudent);
@@ -184,8 +184,8 @@ public class ConfigPanel extends JPanel {
             this.fMainMaxNum = new MyTextFieldInConfig(Config.ProjectAdministration.mainMaxNum);
             this.fFixed = new MyTextFieldInConfig(Config.ProjectAdministration.fixed);
             this.fDelimFixedStuds = new MyTextFieldInConfig(Config.ProjectAdministration.delimFixedStuds);
-            this.fDelimFixedStudsNameImma = new MyTextFieldInConfig(
-                    Config.ProjectAdministration.delimFixedStudsNameImma);
+            this.fDelimFixedStudsNameImma =
+                    new MyTextFieldInConfig(Config.ProjectAdministration.delimFixedStudsNameImma);
             this.fQuotes = new MyTextFieldInConfig(Character.toString(Config.ProjectAdministration.quotes));
 
             this.add(lCsvDelim, "cell 0 1, gapy 20");
@@ -241,6 +241,7 @@ public class ConfigPanel extends JPanel {
         final CheckField minNumStudsPerGroupProj;
         final CheckThreeRadios fixedStuds;
         final Check studWantsProj;
+        final Check noInvalids;
         final CheckFourFields weightSelectedProj;
         final CheckFiveFields weightRegProj;
 
@@ -255,6 +256,16 @@ public class ConfigPanel extends JPanel {
                 this.check.setSelected(true);
                 this.add(this.check);
                 this.add(this.label);
+            }
+
+            Check(String l, boolean check) {
+                this.setLayout(new MigLayout());
+                this.label = new JLabel(l);
+                this.check = new JCheckBox();
+                this.check.setSelected(true);
+                this.add(this.check);
+                this.add(this.label);
+                this.check.setSelected(check);
             }
         }
 
@@ -293,7 +304,7 @@ public class ConfigPanel extends JPanel {
             final JCheckBox check;
 
             CheckFourFields(String l0, String l1, String f1, String l2, String f2, String l3, String f3, String l4,
-                    String f4) {
+                            String f4) {
                 this.setLayout(new MigLayout());
                 this.check = new JCheckBox();
                 this.check.setSelected(true);
@@ -350,7 +361,7 @@ public class ConfigPanel extends JPanel {
             final JCheckBox check;
 
             CheckFiveFields(String l0, String l1, String f1, String l2, String f2, String l3, String f3, String l4,
-                    String f4, String l5, String f5) {
+                            String f4, String l5, String f5) {
                 this.setLayout(new MigLayout());
                 this.check = new JCheckBox();
                 this.check.setSelected(true);
@@ -476,15 +487,14 @@ public class ConfigPanel extends JPanel {
              * "Minimum Number of Projects per Student:");
              */
 
-            this.minNumStudsPerGroupProj = new CheckField("Minimale Anzahl an Studierender pro Gruppenprojekt:",
+            this.minNumStudsPerGroupProj = new CheckField("Minimale Anzahl an Studierenden pro Gruppenprojekt:",
                     Integer.toString(Config.Constraints.minNumStudsPerGroupProj));
 
             String text0 = "Falls Studierende in mehreren Projekten gesetzt sind, sollen sie hinzugefügt werden zu...";
-            String text1 = "allen Projekten, in denen sie gesetzt sind (überschreibt 'ausschließlich "
-                    + "gewählte Projekte')";
-            String text2 = "allen Projekten hinzufügen, in denen sie gesetzt sind und die sie gewählt haben";
-            String text3 = "dem Projekt hinzufügen, in dem sie gesetzt sind und das sie mit höchster Priorität "
-                    + "gewählt haben";
+            String text1 =
+                    "allen Projekten, in denen sie gesetzt sind (überschreibt 'ausschließlich gewählte Projekte')";
+            String text2 = "allen Projekten, in denen sie gesetzt sind und die sie gewählt haben";
+            String text3 = "dem Projekt, in dem sie gesetzt sind und das sie mit höchster Priorität gewählt haben";
             this.fixedStuds = new CheckThreeRadios(text0, text1, text2, text3);
 
             this.studWantsProj = new Check("Studierende bekommen ausschließlich gewählte Projekte");
@@ -494,10 +504,10 @@ public class ConfigPanel extends JPanel {
             text2 = "Gewicht Zweitwahl:";
             text3 = "Gewicht Drittwahl:";
             String text4 = "Gewicht Viertwahl:";
-            this.weightSelectedProj = new CheckFourFields(text0, text1, Double.toString(Config.Preferences.proj1),
-                    text2, Double.toString(Config.Preferences.proj2), text3,
-                    Double.toString(Config.Preferences.proj3), text4,
-                    Double.toString(Config.Preferences.proj4));
+            this.weightSelectedProj =
+                    new CheckFourFields(text0, text1, Double.toString(Config.Preferences.proj1), text2,
+                            Double.toString(Config.Preferences.proj2), text3, Double.toString(Config.Preferences.proj3),
+                            text4, Double.toString(Config.Preferences.proj4));
 
             text0 = "Gewichtung der Studiengänge innerhalb der Projekte";
             text1 = "Gewicht Priorität 1:";
@@ -505,11 +515,12 @@ public class ConfigPanel extends JPanel {
             text3 = "Gewicht Priorität 3:";
             text4 = "Gewicht Priorität 4:";
             String text5 = "Gewicht Priorität 5";
-            this.weightRegProj = new CheckFiveFields(text0, text1, Double.toString(Config.Preferences.studyPrio1),
-                    text2, Double.toString(Config.Preferences.studyPrio2), text3,
-                    Double.toString(Config.Preferences.studyPrio3), text4,
-                    Double.toString(Config.Preferences.studyPrio4), text5,
-                    Double.toString(Config.Preferences.studyPrio5));
+            this.weightRegProj =
+                    new CheckFiveFields(text0, text1, Double.toString(Config.Preferences.studyPrio1), text2,
+                            Double.toString(Config.Preferences.studyPrio2), text3,
+                            Double.toString(Config.Preferences.studyPrio3), text4,
+                            Double.toString(Config.Preferences.studyPrio4), text5,
+                            Double.toString(Config.Preferences.studyPrio5));
 
             /*
              * TODO: feature required?
@@ -535,7 +546,7 @@ public class ConfigPanel extends JPanel {
             sep4.setMinimumSize(new Dimension(2, 2));
             this.add(sep4, "spanx, growx");
 
-            this.add(studWantsProj);
+            this.add(this.studWantsProj);
 
             JSeparator sep5 = new JSeparator();
             sep5.setMinimumSize(new Dimension(2, 2));
@@ -545,9 +556,16 @@ public class ConfigPanel extends JPanel {
 
             JSeparator sep6 = new JSeparator();
             sep6.setMinimumSize(new Dimension(2, 2));
-            // this.add(sep6, "spanx, growx"); TODO: add back
+            this.add(sep6, "spanx, growx");
 
-            // this.add(this.weightRegProj); TODO: add back
+            this.add(this.weightRegProj);
+
+            JSeparator sep7 = new JSeparator();
+            sep6.setMinimumSize(new Dimension(2, 2));
+            this.add(sep6, "spanx, growx");
+
+            this.noInvalids = new Check("Inavlide Wahlen werden ignoriert", false);
+            this.add(this.noInvalids);
         }
 
         void save() {
@@ -595,12 +613,12 @@ public class ConfigPanel extends JPanel {
              */
             if (Config.Constraints.minStudentsPerGroupProject = this.minNumStudsPerGroupProj.check.isSelected()) {
                 try {
-                    Config.Constraints.minNumStudsPerGroupProj = Integer.parseInt(
-                            this.minNumStudsPerGroupProj.field.getText());
+                    Config.Constraints.minNumStudsPerGroupProj =
+                            Integer.parseInt(this.minNumStudsPerGroupProj.field.getText());
                 } catch (NumberFormatException e) {
                     this.minNumStudsPerGroupProj.field.setBackground(Colors.redTransp);
-                    this.minNumStudsPerGroupProj.field
-                            .setText(Integer.toString(Config.Constraints.minNumStudsPerGroupProj));
+                    this.minNumStudsPerGroupProj.field.setText(
+                            Integer.toString(Config.Constraints.minNumStudsPerGroupProj));
                 }
             }
             Config.Constraints.fixedStuds = this.fixedStuds.check.isSelected();
@@ -609,6 +627,7 @@ public class ConfigPanel extends JPanel {
             Config.Constraints.addFixedStudsToMostWantedProj = this.fixedStuds.three.isSelected();
 
             Config.Constraints.studWantsProj = this.studWantsProj.check.isSelected();
+            Config.Constraints.noInvalids = this.noInvalids.check.isSelected();
 
             Config.Preferences.selectedProjs = this.weightSelectedProj.check.isSelected();
             if (this.weightSelectedProj.check.isSelected()) {
