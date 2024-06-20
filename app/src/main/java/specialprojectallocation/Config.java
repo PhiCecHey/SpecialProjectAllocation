@@ -48,7 +48,7 @@ public class Config {
         public static int minNumStudsPerGroupProj = 0;
 
         public static boolean studWantsProj = true;
-        public static boolean noInvalids = false;
+        public static boolean noInvalids = false; // TODO doesnt have any use yet
 
         public static boolean fixedStuds = true;
         public static boolean addFixedStudsToProjEvenIfStudDidntSelectProj = true;

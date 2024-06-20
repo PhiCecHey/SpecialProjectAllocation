@@ -59,8 +59,8 @@ public class Gurobi {
                 for (Student student : Calculation.studentsWithInvalidSelection) {
                     namesImmas.append(student.name() + " " + student.immatNum() + ", ");
                 }
-                Calculation.gurobiResultsGui = this.print(false, worked)
-                        + "\n\nStudents with invalid project selection:" + namesImmas;
+                Calculation.gurobiResultsGui += "\n\nStudents with invalid project selection:" + namesImmas;
+
 
                 if (!(Calculation.outPath == null || Calculation.outPath.equals(""))) {
                     WriteResults.printForSupers(this.results, this.allocs);
@@ -233,8 +233,8 @@ public class Gurobi {
                     }
                 }
             }
-            if (allocated.toString().contains("#") || allocated.toString().contains("[") || allocated.toString()
-                    .contains("F")) {
+            if (allocated.toString().contains("#") || allocated.toString().contains("[") ||
+                    allocated.toString().contains("F")) {
                 String formattedAbbrev = Gurobi.exactNumOfChars(this.allocs.get(p, 0).project().abbrev());
                 print.append("\n").append(formattedAbbrev).append(allocated).append(" ");
             }
@@ -309,20 +309,26 @@ public class Gurobi {
         try {
             GRBLinExpr expr;
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
+                // ignore student if invalid selections should be ignored and student has invalid selection
+                Student student = this.allocs.getStud(s);
+                int max = 1;
+                if (Config.Constraints.noInvalids && Student.checkStudentInInvalid(student.immatNum())) {
+                    max = 0;
+                }
                 expr = new GRBLinExpr();
                 for (int p = 0; p < this.allocs.numProjs(); ++p) {
                     expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
                 }
                 String st = "minProjPerStud" + s;
-                this.model.addConstr(expr, GRB.GREATER_EQUAL, 1, st);
+                this.model.addConstr(expr, GRB.GREATER_EQUAL, max, st);
+
             }
         } catch (GRBException e) {
-            System.out.println("Error code: " + e.getErrorCode() + ". " +
-                    e.getMessage());
+            System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
         }
     }
 
-    private void constrMaxProjPerStud() {
+    private void constrMaxProjPerStud() { // TODO: test
         try {
             GRBLinExpr expr;
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
@@ -330,10 +336,10 @@ public class Gurobi {
                 for (int p = 0; p < this.allocs.numProjs(); ++p) {
                     expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
                 }
+                Student student = this.allocs.getStud(s);
                 int projPerStud = 1;
                 if (Config.Constraints.fixedStuds) {
                     if (Config.Constraints.fixedStuds) {
-                        Student student = this.allocs.getStud(s);
                         if (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
                             // several projects allowed. only add stud to fixed projs
                             projPerStud = student.numFixedProject();
@@ -347,6 +353,9 @@ public class Gurobi {
                     }
                 }
                 projPerStud = Math.max(1, projPerStud);
+                if (Config.Constraints.noInvalids && Student.checkStudentInInvalid(student.immatNum())) {
+                    projPerStud = 0; // TODO: test
+                }
                 String st = "maxProjPerStud" + s;
                 this.model.addConstr(expr, GRB.LESS_EQUAL, projPerStud, st);
             }
@@ -379,10 +388,8 @@ public class Gurobi {
                 zExpr.addTerm(1, z2);
                 this.model.addConstr(zExpr, GRB.EQUAL, 1, st);
                 var min = this.allocs.getProj(p).min();
-                this.model.addGenConstrIndicator(z1, 1, expr, GRB.GREATER_EQUAL,
-                        this.allocs.getProj(p).min(), st);
-                this.model.addGenConstrIndicator(z1, 1, expr, GRB.LESS_EQUAL,
-                        this.allocs.getProj(p).max(), st);
+                this.model.addGenConstrIndicator(z1, 1, expr, GRB.GREATER_EQUAL, this.allocs.getProj(p).min(), st);
+                this.model.addGenConstrIndicator(z1, 1, expr, GRB.LESS_EQUAL, this.allocs.getProj(p).max(), st);
                 this.model.addGenConstrIndicator(z2, 1, expr, GRB.LESS_EQUAL, 0, st);
             }
         } catch (GRBException e) {
@@ -394,8 +401,11 @@ public class Gurobi {
         try {
             GRBLinExpr expr;
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
-                expr = new GRBLinExpr();
                 Student student = this.allocs.getStud(s);
+                if (Config.Constraints.noInvalids && Student.checkStudentInInvalid(student.immatNum())) {
+                    continue;
+                }
+                expr = new GRBLinExpr();
                 for (int p = 0; p < this.allocs.numProjs(); ++p) {
                     Allocation alloc = this.allocs.get(p, s);
                     Project project = alloc.project();
@@ -505,14 +515,16 @@ public class Gurobi {
                     Allocation alloc = this.allocs.get(p, s);
                     Student student = this.allocs.getStud(s);
                     boolean constraint = false;
-                    if (project.isFixed(student)) {
+                    // ignore students with invalid selections
+                    if (!(Config.Constraints.noInvalids && Student.checkStudentInInvalid(student.immatNum())) &&
+                            project.isFixed(student)) {
                         if (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
                             constraint = true;
-                        } else if (Config.Constraints.addFixedStudsToAllSelectedProj && project.isFixedAndStudentsWish(
-                                student)) {
+                        } else if (Config.Constraints.addFixedStudsToAllSelectedProj &&
+                                project.isFixedAndStudentsWish(student)) {
                             constraint = true;
-                        } else if (Config.Constraints.addFixedStudsToMostWantedProj
-                                && project.isFixedAndStudentsHighestWish(student)) {
+                        } else if (Config.Constraints.addFixedStudsToMostWantedProj &&
+                                project.isFixedAndStudentsHighestWish(student)) {
                             constraint = true;
                         }
                     }
@@ -587,9 +599,9 @@ public class Gurobi {
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
                 Allocation alloc = this.allocs.get(p, s);
                 Student student = this.allocs.getStud(s);
-                boolean studFixedForProj = project.isFixed(student)
-                        && (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj
-                                || project.isFixedAndStudentsWish(student));
+                boolean studFixedForProj = project.isFixed(student) &&
+                        (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj ||
+                                project.isFixedAndStudentsWish(student));
                 if (studFixedForProj) {
                     alloc.setStudentFixed();
                 } else if (student.isFixed()) {
@@ -624,13 +636,14 @@ public class Gurobi {
                     alloc.addToScore(Config.Preferences.proj4);
                 }
             }
-            if (student.totalScore() < Config.Preferences.proj1 + Config.Preferences.proj2 + Config.Preferences.proj3
-                    + Config.Preferences.proj4) {
+            if (student.totalScore() < Config.Preferences.proj1 + Config.Preferences.proj2 + Config.Preferences.proj3 +
+                    Config.Preferences.proj4) {
                 // TODO: student invalid project selection, see Student.java 
                 boolean found = false;
                 for (Student st : Calculation.studentsWithInvalidSelection) {
                     if (st.immatNum() == student.immatNum()) {
                         found = true;
+                        break;
                     }
                 }
                 if (!found) {

@@ -564,7 +564,7 @@ public class ConfigPanel extends JPanel {
             sep6.setMinimumSize(new Dimension(2, 2));
             this.add(sep6, "spanx, growx");
 
-            this.noInvalids = new Check("Inavlide Wahlen werden ignoriert", false);
+            this.noInvalids = new Check("Studierende mit invaliden Wahlen werden keinem Projekt hinzugefügt", false);
             this.add(this.noInvalids);
         }
 

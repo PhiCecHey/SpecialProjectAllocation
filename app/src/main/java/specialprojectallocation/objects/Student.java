@@ -57,12 +57,12 @@ public class Student {
         if (firstPr == null || secondPr == null || thirdPr == null || fourthPr == null) {
             // TODO: invalid project selection. punishment? 
             boolean found = false;
-            for(Student student : Calculation.studentsWithInvalidSelection){
-                if(student.immatNum == this.immatNum){
+            for (Student student : Calculation.studentsWithInvalidSelection) {
+                if (student.immatNum == this.immatNum) {
                     found = true;
                 }
             }
-            if(!found){
+            if (!found) {
                 Calculation.studentsWithInvalidSelection.add(this);
             }
         }
@@ -146,6 +146,20 @@ public class Student {
     }
 
     @Nullable
+    public static boolean checkStudentInInvalid(String immatNum) {
+        immatNum = immatNum.trim();
+        if (immatNum.isEmpty()) {
+            return false;
+        }
+        for (Student s : Calculation.studentsWithInvalidSelection) {
+            if (s.immatNum().equals(immatNum)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Nullable
     public static Student findStudentByName(String name, boolean experimental) {
         for (Student s : Calculation.students) {
             if (s.name().equals(name)) {
@@ -172,8 +186,8 @@ public class Student {
     }
 
     public boolean wantsProject(@NotNull Project project) {
-        return (project.abbrev().equals(this.abbrevProj1()) || project.abbrev().equals(this.abbrevProj2())
-                || project.abbrev().equals(this.abbrevProj3()) || project.abbrev().equals(this.abbrevProj4()));
+        return (project.abbrev().equals(this.abbrevProj1()) || project.abbrev().equals(this.abbrevProj2()) ||
+                project.abbrev().equals(this.abbrevProj3()) || project.abbrev().equals(this.abbrevProj4()));
     }
 
     public int numFixedProject() {
