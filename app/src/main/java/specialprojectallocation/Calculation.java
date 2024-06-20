@@ -47,6 +47,10 @@ public class Calculation {
         Calculation.studentsWithoutProject = new ArrayList<>();
     }
 
+    public static void clearWithoutProj(){
+        Calculation.studentsWithoutProject = new ArrayList<>();
+    }
+
     public static void clearGurobi() {
         Calculation.gurobi = null;
         Calculation.gurobiResultsGui = "";

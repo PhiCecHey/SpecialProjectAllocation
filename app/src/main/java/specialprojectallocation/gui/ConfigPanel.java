@@ -241,7 +241,7 @@ public class ConfigPanel extends JPanel {
         final CheckField minNumStudsPerGroupProj;
         final CheckThreeRadios fixedStuds;
         final Check studWantsProj;
-        final Check noInvalids;
+        final CheckTwoRadios invalids;
         final CheckFourFields weightSelectedProj;
         final CheckFiveFields weightRegProj;
 
@@ -473,6 +473,75 @@ public class ConfigPanel extends JPanel {
             }
         }
 
+        static class CheckTwoRadios extends JPanel {
+            final JCheckBox check;
+            final JLabel label;
+            final JRadioButton one, two;
+
+            CheckTwoRadios(String l, String b1, String b2) {
+                this.setLayout(new MigLayout());
+                this.label = new JLabel(l);
+                this.check = new JCheckBox();
+                this.check.setSelected(false);
+                this.add(this.check);
+                this.add(this.label, "wrap");
+                this.one = new JRadioButton();
+                this.one.setSelected(true);
+                this.two = new JRadioButton();
+                this.add(this.one, "cell 1 1, spanx, split 2");
+                this.add(new JLabel(b1));
+                this.add(this.two, "cell 1 2, spanx, split 2");
+                this.add(new JLabel(b2));
+                addButtonFunct();
+            }
+
+            CheckTwoRadios(String l, String b1, String b2, boolean selected) {
+                this.setLayout(new MigLayout());
+                this.label = new JLabel(l);
+                this.check = new JCheckBox();
+                this.check.setSelected(false);
+                this.add(this.check);
+                this.add(this.label, "wrap");
+                this.one = new JRadioButton();
+                this.one.setSelected(true);
+                this.two = new JRadioButton();
+                this.add(this.one, "cell 1 1, spanx, split 2");
+                this.add(new JLabel(b1));
+                this.add(this.two, "cell 1 2, spanx, split 2");
+                this.add(new JLabel(b2));
+                addButtonFunct();
+                if (!selected) {
+                    this.unselect();
+                }
+            }
+
+            private void unselect() {
+                this.check.setSelected(false);
+                this.one.setSelected(true);
+                this.two.setSelected(false);
+                this.one.setEnabled(false);
+                this.two.setEnabled(false);
+            }
+
+            private void addButtonFunct() {
+                this.check.addActionListener(ae -> {
+                    if (this.check.isSelected()) {
+                        this.one.setEnabled(true);
+                        this.two.setEnabled(true);
+                    } else {
+                        this.one.setEnabled(false);
+                        this.two.setEnabled(false);
+                    }
+                });
+                this.one.addActionListener(ae -> {
+                    two.setSelected(!one.isSelected());
+                });
+                this.two.addActionListener(ae -> {
+                    one.setSelected(!two.isSelected());
+                });
+            }
+        }
+
         ConstraintsPanel() {
             this.setLayout(new MigLayout("flowy"));
             this.add(new JLabel("Gurobi Configs"), "cell 0 0, spanx, center");
@@ -564,8 +633,11 @@ public class ConfigPanel extends JPanel {
             sep6.setMinimumSize(new Dimension(2, 2));
             this.add(sep6, "spanx, growx");
 
-            this.noInvalids = new Check("Studierende mit invaliden Wahlen werden keinem Projekt hinzugefügt", false);
-            this.add(this.noInvalids);
+            text0 = "Studierende mit invaliden Wahlen...";
+            text1 = "werden keinem Projekt zugewiesen";
+            text2 = "werden nur Projekten zugewiesen, in denen sie auch gesetzt sind";
+            this.invalids = new CheckTwoRadios(text0, text1, text2, false);
+            this.add(this.invalids);
         }
 
         void save() {
@@ -627,7 +699,10 @@ public class ConfigPanel extends JPanel {
             Config.Constraints.addFixedStudsToMostWantedProj = this.fixedStuds.three.isSelected();
 
             Config.Constraints.studWantsProj = this.studWantsProj.check.isSelected();
-            Config.Constraints.noInvalids = this.noInvalids.check.isSelected();
+
+            Config.Constraints.invalids = this.invalids.check.isSelected();
+            Config.Constraints.ignoreInvalids = this.invalids.one.isSelected();
+            Config.Constraints.addInvalidsToFixed = this.invalids.two.isSelected();
 
             Config.Preferences.selectedProjs = this.weightSelectedProj.check.isSelected();
             if (this.weightSelectedProj.check.isSelected()) {

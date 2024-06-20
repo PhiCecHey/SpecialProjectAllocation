@@ -31,6 +31,7 @@ public class Gurobi {
 
     public Gurobi() throws GRBException {
         Calculation.clearGurobi();
+        Calculation.clearWithoutProj();
 
         try {
             this.env = new GRBEnv();
@@ -311,16 +312,16 @@ public class Gurobi {
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
                 // ignore student if invalid selections should be ignored and student has invalid selection
                 Student student = this.allocs.getStud(s);
-                int max = 1;
-                if (Config.Constraints.noInvalids && Student.checkStudentInInvalid(student.immatNum())) {
-                    max = 0;
+                int min = 1;
+                if (Config.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())) {
+                    min = 0;
                 }
                 expr = new GRBLinExpr();
                 for (int p = 0; p < this.allocs.numProjs(); ++p) {
                     expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
                 }
                 String st = "minProjPerStud" + s;
-                this.model.addConstr(expr, GRB.GREATER_EQUAL, max, st);
+                this.model.addConstr(expr, GRB.GREATER_EQUAL, min, st);
 
             }
         } catch (GRBException e) {
@@ -338,24 +339,29 @@ public class Gurobi {
                 }
                 Student student = this.allocs.getStud(s);
                 int projPerStud = 1;
+
                 if (Config.Constraints.fixedStuds) {
-                    if (Config.Constraints.fixedStuds) {
-                        if (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
-                            // several projects allowed. only add stud to fixed projs
-                            projPerStud = student.numFixedProject();
-                        } else if (Config.Constraints.addFixedStudsToAllSelectedProj) {
-                            // several projects allowed. only add stud to fixed projs that stud selected
-                            projPerStud = student.numFixedWantedProject();
-                        } else if (Config.Constraints.addFixedStudsToMostWantedProj) {
-                            // only one proj allowed. only add stud to most wanted fixed proj
-                            projPerStud = 1;
-                        }
+                    if (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
+                        // several projects allowed. only add stud to fixed projs
+                        projPerStud = Math.max(1, student.numFixedProject());
+                    } else if (Config.Constraints.addFixedStudsToAllSelectedProj) {
+                        // several projects allowed. only add stud to fixed projs that stud selected
+                        projPerStud = Math.max(1, student.numFixedWantedProject());
+                    } else if (Config.Constraints.addFixedStudsToMostWantedProj) {
+                        // only one proj allowed. only add stud to most wanted fixed proj
+                        projPerStud = 1;
                     }
                 }
-                projPerStud = Math.max(1, projPerStud);
-                if (Config.Constraints.noInvalids && Student.checkStudentInInvalid(student.immatNum())) {
-                    projPerStud = 0; // TODO: test
+
+                // ignore students with invalid selections
+                if ((Config.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum()) &&
+                        Config.Constraints.ignoreInvalids) ||
+                        // ignore students with invalid selections that should only be added to the projects they are
+                        // fixed in but the fixed option is disabled
+                        (!Config.Constraints.fixedStuds && Config.Constraints.addInvalidsToFixed)) {
+                    projPerStud = 0;
                 }
+
                 String st = "maxProjPerStud" + s;
                 this.model.addConstr(expr, GRB.LESS_EQUAL, projPerStud, st);
             }
@@ -402,7 +408,7 @@ public class Gurobi {
             GRBLinExpr expr;
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
                 Student student = this.allocs.getStud(s);
-                if (Config.Constraints.noInvalids && Student.checkStudentInInvalid(student.immatNum())) {
+                if (Config.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())) {
                     continue;
                 }
                 expr = new GRBLinExpr();
@@ -516,7 +522,7 @@ public class Gurobi {
                     Student student = this.allocs.getStud(s);
                     boolean constraint = false;
                     // ignore students with invalid selections
-                    if (!(Config.Constraints.noInvalids && Student.checkStudentInInvalid(student.immatNum())) &&
+                    if (!(Config.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())) &&
                             project.isFixed(student)) {
                         if (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
                             constraint = true;
