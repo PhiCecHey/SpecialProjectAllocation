@@ -40,6 +40,8 @@ public class ConfigPanel extends JPanel {
 
         this.save();
         MyTextFieldInConfig.anyFieldChanged(this.save);
+        MyCheckboxInConfig.anyCheckChanged(this.save);
+        MyRadioInConfig.anyCheckChanged(this.save);
     }
 
     private void save() {
@@ -246,13 +248,13 @@ public class ConfigPanel extends JPanel {
         final CheckFiveFields weightRegProj;
 
         static class Check extends JPanel {
-            final JCheckBox check;
+            final MyCheckboxInConfig check;
             final JLabel label;
 
             Check(String l) {
                 this.setLayout(new MigLayout());
                 this.label = new JLabel(l);
-                this.check = new JCheckBox();
+                this.check = new MyCheckboxInConfig();
                 this.check.setSelected(true);
                 this.add(this.check);
                 this.add(this.label);
@@ -261,7 +263,7 @@ public class ConfigPanel extends JPanel {
             Check(String l, boolean check) {
                 this.setLayout(new MigLayout());
                 this.label = new JLabel(l);
-                this.check = new JCheckBox();
+                this.check = new MyCheckboxInConfig();
                 this.check.setSelected(true);
                 this.add(this.check);
                 this.add(this.label);
@@ -271,13 +273,13 @@ public class ConfigPanel extends JPanel {
 
         static class CheckField extends JPanel {
             final MyTextFieldInConfig field;
-            final JCheckBox check;
+            final MyCheckboxInConfig check;
             final JLabel label;
 
             CheckField(String l, String f) {
                 this.setLayout(new MigLayout());
                 this.label = new JLabel(l);
-                this.check = new JCheckBox();
+                this.check = new MyCheckboxInConfig();
                 this.check.setSelected(true);
                 this.add(this.check);
                 this.add(this.label);
@@ -301,12 +303,12 @@ public class ConfigPanel extends JPanel {
 
         static class CheckFourFields extends JPanel {
             final MyTextFieldInConfig field1, field2, field3, field4;
-            final JCheckBox check;
+            final MyCheckboxInConfig check;
 
             CheckFourFields(String l0, String l1, String f1, String l2, String f2, String l3, String f3, String l4,
                             String f4) {
                 this.setLayout(new MigLayout());
-                this.check = new JCheckBox();
+                this.check = new MyCheckboxInConfig();
                 this.check.setSelected(true);
                 JLabel label2 = new JLabel(l2);
                 JLabel label1 = new JLabel(l1);
@@ -358,12 +360,12 @@ public class ConfigPanel extends JPanel {
 
         static class CheckFiveFields extends JPanel {
             final MyTextFieldInConfig field1, field2, field3, field4, field5;
-            final JCheckBox check;
+            final MyCheckboxInConfig check;
 
             CheckFiveFields(String l0, String l1, String f1, String l2, String f2, String l3, String f3, String l4,
                             String f4, String l5, String f5) {
                 this.setLayout(new MigLayout());
-                this.check = new JCheckBox();
+                this.check = new MyCheckboxInConfig();
                 this.check.setSelected(true);
                 JLabel label2 = new JLabel(l2);
                 JLabel label1 = new JLabel(l1);
@@ -422,21 +424,21 @@ public class ConfigPanel extends JPanel {
         }
 
         static class CheckThreeRadios extends JPanel {
-            final JCheckBox check;
+            final MyCheckboxInConfig check;
             final JLabel label;
-            final JRadioButton one, two, three;
+            final MyRadioInConfig one, two, three;
 
             CheckThreeRadios(String l, String b1, String b2, String b3) {
                 this.setLayout(new MigLayout());
                 this.label = new JLabel(l);
-                this.check = new JCheckBox();
+                this.check = new MyCheckboxInConfig();
                 this.check.setSelected(true);
                 this.add(this.check);
                 this.add(this.label, "wrap");
-                this.one = new JRadioButton();
+                this.one = new MyRadioInConfig();
                 this.one.setSelected(true);
-                this.two = new JRadioButton();
-                this.three = new JRadioButton();
+                this.two = new MyRadioInConfig();
+                this.three = new MyRadioInConfig();
                 this.add(this.one, "cell 1 1, spanx, split 2");
                 this.add(new JLabel(b1));
                 this.add(this.two, "cell 1 2, spanx, split 2");
@@ -474,20 +476,20 @@ public class ConfigPanel extends JPanel {
         }
 
         static class CheckTwoRadios extends JPanel {
-            final JCheckBox check;
+            final MyCheckboxInConfig check;
             final JLabel label;
-            final JRadioButton one, two;
+            final MyRadioInConfig one, two;
 
             CheckTwoRadios(String l, String b1, String b2) {
                 this.setLayout(new MigLayout());
                 this.label = new JLabel(l);
-                this.check = new JCheckBox();
+                this.check = new MyCheckboxInConfig();
                 this.check.setSelected(false);
                 this.add(this.check);
                 this.add(this.label, "wrap");
-                this.one = new JRadioButton();
+                this.one = new MyRadioInConfig();
                 this.one.setSelected(true);
-                this.two = new JRadioButton();
+                this.two = new MyRadioInConfig();
                 this.add(this.one, "cell 1 1, spanx, split 2");
                 this.add(new JLabel(b1));
                 this.add(this.two, "cell 1 2, spanx, split 2");
@@ -498,13 +500,13 @@ public class ConfigPanel extends JPanel {
             CheckTwoRadios(String l, String b1, String b2, boolean selected) {
                 this.setLayout(new MigLayout());
                 this.label = new JLabel(l);
-                this.check = new JCheckBox();
+                this.check = new MyCheckboxInConfig();
                 this.check.setSelected(false);
                 this.add(this.check);
                 this.add(this.label, "wrap");
-                this.one = new JRadioButton();
+                this.one = new MyRadioInConfig();
                 this.one.setSelected(true);
-                this.two = new JRadioButton();
+                this.two = new MyRadioInConfig();
                 this.add(this.one, "cell 1 1, spanx, split 2");
                 this.add(new JLabel(b1));
                 this.add(this.two, "cell 1 2, spanx, split 2");

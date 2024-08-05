@@ -8,6 +8,10 @@ import specialprojectallocation.algorithm.Gurobi;
 import specialprojectallocation.parser.WriteResults;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
+import java.awt.*;
 
 public class ResultsPanel extends JPanel {
     final JTextArea area;
@@ -16,6 +20,11 @@ public class ResultsPanel extends JPanel {
     final JButton bFileChooser;
     final JLabel lExport;
     final JScrollPane pane;
+    final JButton bSearch;
+    final JTextField fSearch;
+    final JButton bClearHighlight;
+    Highlighter.HighlightPainter painter;
+    byte numHighlights;
 
     ResultsPanel() {
         this.setLayout(new MigLayout());
@@ -27,13 +36,22 @@ public class ResultsPanel extends JPanel {
         this.bExport = new JButton("Exportieren");
         this.bcalc = new JButton("Berechnen");
         this.bFileChooser = new JButton("...");
+        this.bSearch = new JButton("Highlight");
+        this.fSearch = new JTextField();
+        this.bClearHighlight = new JButton("Clear");
+        this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.cyan);
+        this.numHighlights = 0;
 
         this.add(this.bcalc, "spanx, center");
         this.add(pane, "cell 0 1, span 4, grow, width 100%, height 100%, wrap");
-        this.add(lExport);
-        this.add(this.fExport, "grow, width 100%");
-        this.add(this.bFileChooser);
-        this.add(this.bExport);
+        this.add(new JLabel("Im Text suchen nach: "), "cell 0 2, right");
+        this.add(this.fSearch, "cell 1 2, grow");
+        this.add(this.bSearch, "cell 2 2, grow");
+        this.add(this.bClearHighlight, "cell 3 2");
+        this.add(lExport, "cell 0 3");
+        this.add(this.fExport, "cell 1 3, grow, width 100%");
+        this.add(this.bFileChooser, "cell 2 3");
+        this.add(this.bExport, "cell 2 3");
 
         ResultsPanel.chooseFolder(this.bFileChooser, this.fExport);
 
@@ -50,6 +68,41 @@ public class ResultsPanel extends JPanel {
             Calculation.outPath = fExport.getText();
             WriteResults.printForSupers(Calculation.gurobi.results, Calculation.gurobi.allocs);
         });
+
+        this.bSearch.addActionListener(ae -> {
+            this.search();
+        });
+
+        this.bClearHighlight.addActionListener(ae -> {
+            this.area.getHighlighter().removeAllHighlights();
+        });
+    }
+
+    private void search() {
+        int offset = this.area.getText().indexOf(this.fSearch.getText());
+        int length = this.fSearch.getText().length();
+        while (offset != -1) {
+            try {
+                if (this.numHighlights == 1) {
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.orange);
+                } else if (this.numHighlights == 2) {
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.green);
+                } else if (this.numHighlights == 3) {
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.red);
+                } else if (this.numHighlights == 4) {
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.yellow);
+                } else if (this.numHighlights == 5) {
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.blue);
+                } else {
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.cyan);
+                }
+                this.area.getHighlighter().addHighlight(offset, offset + length, this.painter);
+                offset = this.area.getText().indexOf(this.fSearch.getText(), offset + 1);
+            } catch (BadLocationException ble) {
+                System.out.println(ble);
+            }
+        }
+        this.numHighlights++;
     }
 
     private static void chooseFolder(@NotNull JButton b, JTextField f) {
