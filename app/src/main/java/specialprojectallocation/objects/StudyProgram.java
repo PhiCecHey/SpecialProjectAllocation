@@ -2,6 +2,8 @@ package specialprojectallocation.objects;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import specialprojectallocation.Calculation;
 
 public class StudyProgram {
     public enum AvailProgram {
@@ -14,18 +16,31 @@ public class StudyProgram {
         WasserUndUmwelt,
         ZertifikatWasserUndUmwelt,
         ZertifikatWBA,
+        ProjektmanagementBau,
         Other,
         All,
         NotSpecified,
     }
 
-    private final AvailProgram program;
-    private String other;
+    private AvailProgram program; //obsolete
+    private String other; //obsolete
 
+    private String studyProgram;
+    private String abbrev;
+
+    public StudyProgram(String name, String abbr) {
+        this.studyProgram = name;
+        this.abbrev = abbr;
+    }
+
+    // ------------------- OBSOLETE -------------------
+
+    // obsolete
     public StudyProgram(final AvailProgram p) {
         this.program = p;
     }
 
+    // obsolete
     public StudyProgram(final AvailProgram p, final String o) {
         this.program = p;
         if (p == AvailProgram.Other) {
@@ -33,6 +48,7 @@ public class StudyProgram {
         }
     }
 
+    // obsolete
     @NotNull
     @Contract("_ -> new")
     public static StudyProgram StrToStudy(String str) {
@@ -65,10 +81,38 @@ public class StudyProgram {
         return new StudyProgram(AvailProgram.Other, str);
     }
 
+    @NotNull
+    @Contract("_ -> new")
+    public static StudyProgram AbbrevToStudy(String abbrev) {
+        abbrev = abbrev.toLowerCase();
+        if (abbrev.isEmpty()) {
+            return new StudyProgram(AvailProgram.NotSpecified);
+        } else if (abbrev.equals("nhm")) {
+            return new StudyProgram(AvailProgram.NaturalHazardsAndRiskInStructuralEngineering);
+        } else if (abbrev.equals("kim")) {
+            return new StudyProgram(AvailProgram.BauingenieurwesenKonstruktiverIngenieurbau);
+        } else if (abbrev.equals("bvm")) {
+            return new StudyProgram(AvailProgram.Baustoffingenieurwissenschaft);
+        } else if (abbrev.equals("dem")) {
+            return new StudyProgram(AvailProgram.DigitalEngineering);
+        } else if (abbrev.equals("mbm")) {
+            return new StudyProgram(AvailProgram.ManagementBauImmobilienInfrastruktur);
+        } else if (abbrev.equals("uim")) {
+            return new StudyProgram(AvailProgram.Umweltingenieurwissenschaften);
+        } else if (abbrev.equals("pmm")) {
+            return new StudyProgram(AvailProgram.ProjektmanagementBau);
+        } else if (abbrev.contains("all")) {
+            return new StudyProgram(AvailProgram.All);
+        }
+        return new StudyProgram(AvailProgram.Other, abbrev);
+    }
+
+    // obsolete
     public String other() {
         return this.other;
     }
 
+    // obsolete
     public boolean equals(StudyProgram p) {
         if (this.program == AvailProgram.Other && p.program == AvailProgram.Other) {
             return this.other.equalsIgnoreCase(p.other);
@@ -76,6 +120,7 @@ public class StudyProgram {
         return p.program == this.program;
     }
 
+    // obsolete
     public boolean equals(AvailProgram p) {
         if (p == AvailProgram.Other || this.program == AvailProgram.Other) {
             // cannot check String other
@@ -84,6 +129,7 @@ public class StudyProgram {
         return p == this.program;
     }
 
+    // obsolete
     public boolean equals(String p) {
         StudyProgram pr = StudyProgram.StrToStudy(p);
         if (pr.program == AvailProgram.Other && this.program.equals(AvailProgram.Other)) {

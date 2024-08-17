@@ -16,20 +16,31 @@ public class Config {
 
     public static class ProjectAdministration {
         // read instructors wishes
-        public static char csvDelim = ';';
-        public static int numCharsAbbrev = 6;
-        public static String abbrev = "Q02_1.2";
-        public static String var = "Q18_4.1";
-        public static String varOneStudent = "one student";
-        public static String minNum = "MinNoSt";
-        public static String maxNum = "Q20_4.3";
-        public static String mainGroup = "Q21_4.5";
-        public static String mainMaxNum = "Q22_5.1";
-        public static String fixed = "Q24_6";
-        // TODO: several study programs (priorities, max num)
+        public static char csvDelim = ',';
+        public static char quotes = '\"';
         public static String delimFixedStuds = ";";
         public static String delimFixedStudsNameImma = ",";
-        public static char quotes = '\"';
+
+        public static int numCharsAbbrev = 6;
+        public static String abbrev = "Q02_1.2";
+
+        public static String var = "Q18_4.1";
+        public static String varOneStudent = "one student";
+
+        public static String minNum = "Q21_4.3.2";
+        public static String maxNum = "Q20_4.3.1";
+
+        // TODO: disable following two
+        public static String mainGroup = "Q21_4.5";
+        public static String mainMaxNum = "Q20_4.3.1"; // obsolete
+
+        public static String fixed = "Fest gesetzte Studierende";
+
+        // TODO: include in config tab
+        public static String listOfPrograms = "Study Programs";
+        public static String delimProgramAbbrev = "--";
+        public static String maxGroup = "Num";
+        public static String prioGroup = "Priority";
     }
 
     public static class Constraints {

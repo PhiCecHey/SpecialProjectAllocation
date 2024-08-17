@@ -138,6 +138,7 @@ public class ConfigPanel extends JPanel {
         final JLabel lAbbrev;
         final JLabel lVar;
         final JLabel lVarOneStudent;
+        final JLabel lMinNum;
         final JLabel lMaxNum;
         final JLabel lMainGroup;
         final JLabel lMainMaxNum;
@@ -150,6 +151,7 @@ public class ConfigPanel extends JPanel {
         final MyTextFieldInConfig fAbbrev;
         final MyTextFieldInConfig fVar;
         final MyTextFieldInConfig fVarOneStudent;
+        final MyTextFieldInConfig fMinNum;
         final MyTextFieldInConfig fMaxNum;
         final MyTextFieldInConfig fMainGroup;
         final MyTextFieldInConfig fMainMaxNum;
@@ -167,6 +169,7 @@ public class ConfigPanel extends JPanel {
             this.lAbbrev = new JLabel("Column Abbreviation:");
             this.lVar = new JLabel("Column Project Variation:");
             this.lVarOneStudent = new JLabel("Column One Student Variation:");
+            this.lMinNum = new JLabel("Column Minimum Number of Participants:");
             this.lMaxNum = new JLabel("Column Maximum Number of Participants:");
             this.lMainGroup = new JLabel("Column Main Group of Project:");
             this.lMainMaxNum = new JLabel("Column Maximum Number of Participants in Main Group:");
@@ -181,6 +184,7 @@ public class ConfigPanel extends JPanel {
             this.fAbbrev = new MyTextFieldInConfig(Config.ProjectAdministration.abbrev);
             this.fVar = new MyTextFieldInConfig(Config.ProjectAdministration.var);
             this.fVarOneStudent = new MyTextFieldInConfig(Config.ProjectAdministration.varOneStudent);
+            this.fMinNum = new MyTextFieldInConfig(Config.ProjectAdministration.minNum);
             this.fMaxNum = new MyTextFieldInConfig(Config.ProjectAdministration.maxNum);
             this.fMainGroup = new MyTextFieldInConfig(Config.ProjectAdministration.mainGroup);
             this.fMainMaxNum = new MyTextFieldInConfig(Config.ProjectAdministration.mainMaxNum);
@@ -200,20 +204,22 @@ public class ConfigPanel extends JPanel {
             this.add(fVar, "cell 1 4, growx");
             this.add(lVarOneStudent, "cell 0 5");
             this.add(fVarOneStudent, "cell 1 5, growx");
-            this.add(lMaxNum, "cell 0 6");
-            this.add(fMaxNum, "cell 1 6, growx");
-            this.add(lMainGroup, "cell 0 7");
-            this.add(fMainGroup, "cell 1 7, growx");
-            this.add(lMainMaxNum, "cell 0 8");
-            this.add(fMainMaxNum, "cell 1 8, growx");
-            this.add(lFixed, "cell 0 9");
-            this.add(fFixed, "cell 1 9, growx");
-            this.add(lDelimFixedStuds, "cell 0 10");
-            this.add((fDelimFixedStuds), "cell 1 10, growx");
-            this.add(lDelimFixedStudsNameImma, "cell 0 11");
-            this.add(fDelimFixedStudsNameImma, "cell 1 11, growx");
-            this.add(lQuotes, "cell 0 12");
-            this.add(fQuotes, "cell 1 12, growx");
+            this.add(lMinNum, "cell 0 6");
+            this.add(fMinNum, "cell 1 6, growx");
+            this.add(lMaxNum, "cell 0 7");
+            this.add(fMaxNum, "cell 1 7, growx");
+            this.add(lMainGroup, "cell 0 8");
+            this.add(fMainGroup, "cell 1 8, growx");
+            this.add(lMainMaxNum, "cell 0 9");
+            this.add(fMainMaxNum, "cell 1 9, growx");
+            this.add(lFixed, "cell 0 10");
+            this.add(fFixed, "cell 1 10, growx");
+            this.add(lDelimFixedStuds, "cell 0 11");
+            this.add((fDelimFixedStuds), "cell 1 11, growx");
+            this.add(lDelimFixedStudsNameImma, "cell 0 12");
+            this.add(fDelimFixedStudsNameImma, "cell 1 12, growx");
+            this.add(lQuotes, "cell 0 13");
+            this.add(fQuotes, "cell 1 13, growx");
         }
 
         void save() {

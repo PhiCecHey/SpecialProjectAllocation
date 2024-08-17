@@ -3,6 +3,7 @@ package specialprojectallocation;
 import specialprojectallocation.algorithm.Gurobi;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
+import specialprojectallocation.objects.StudyProgram;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class Calculation {
     public static File projReg;
     public static String outPath;
     public static ArrayList<Project> projects = new ArrayList<>();
-    public static ArrayList<String> allAbbrevs = new ArrayList<>();
+    private static ArrayList<String> allAbbrevs = new ArrayList<>();
     public static ArrayList<Student> students = new ArrayList<>();
     public static ArrayList<Student> studentsWithoutProject = new ArrayList<>();
     public static ArrayList<Student> studentsWithInvalidSelection = new ArrayList<>();
@@ -32,6 +33,16 @@ public class Calculation {
         Calculation.gurobiResultsGui = "";
     }
 
+    public static void addAbbrev(String abbrev) {
+        if (!Calculation.allAbbrevs.contains(abbrev)) {
+            Calculation.allAbbrevs.add(abbrev);
+        }
+    }
+
+    public static ArrayList<String> abbrevs() {
+        return Calculation.allAbbrevs;
+    }
+
     public static void clearInputs() {
         Calculation.projSel = null;
         Calculation.projReg = null;
@@ -47,7 +58,7 @@ public class Calculation {
         Calculation.studentsWithoutProject = new ArrayList<>();
     }
 
-    public static void clearWithoutProj(){
+    public static void clearWithoutProj() {
         Calculation.studentsWithoutProject = new ArrayList<>();
     }
 
@@ -79,4 +90,5 @@ public class Calculation {
     public static void clearLog() {
         Calculation.log = "";
     }
+
 }

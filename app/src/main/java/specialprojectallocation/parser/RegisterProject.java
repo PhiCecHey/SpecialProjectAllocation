@@ -1,6 +1,7 @@
 package specialprojectallocation.parser;
 
 import java.io.*;
+import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
 import specialprojectallocation.Calculation;
@@ -12,7 +13,9 @@ import specialprojectallocation.objects.StudyProgram;
 
 public class RegisterProject extends MyParser {
 
-    private static int abbrev = -1, minNum = -1, maxNum = -1, mainGroup = -1, mainMaxNum = -1, var = -1, fixed = -1;
+
+    private static int abbrev = -1, minNum = -1, maxNum = -1, mainGroup = -1, mainMaxNum = -1, var = -1, fixed = -1, listOfPrograms = -1;
+    private static ArrayList<AbbrevAllowedMaxPrio> studyPrograms = new ArrayList<>();
 
     // TODO: how to handle exceptions?
     public static int read(@NotNull File csv, char delim) throws NumberFormatException, AbbrevTakenException, IOException {
@@ -32,14 +35,6 @@ public class RegisterProject extends MyParser {
 
                     if (found == null) {
                         boolean oneStudent = cells[RegisterProject.var].toLowerCase().contains(Config.ProjectAdministration.varOneStudent);
-                        Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup], cells[RegisterProject.maxNum], oneStudent);
-
-                        // TODO: several groups
-                        // mainMaxNum not usable currently, has to be maxNum
-                        /*
-                         * Group[] groups = RegisterProject.getGroups(cells[RegisterProject.mainGroup],
-                         * cells[RegisterProject.mainMaxNum], oneStudent);
-                         */
 
                         int maxNum = oneStudent ? 1 : Integer.MAX_VALUE;
                         if (cells.length > RegisterProject.maxNum) {
@@ -53,6 +48,9 @@ public class RegisterProject extends MyParser {
                                 minNum = Integer.parseInt(cells[RegisterProject.minNum]);
                             }
                         }
+
+                        Group[] groups = RegisterProject.createGroups(cells, maxNum);
+
                         // generates new project and adds it to all projects
                         new Project(cells[RegisterProject.abbrev], minNum, maxNum, groups, cells[RegisterProject.fixed]);
                     } else {
@@ -79,7 +77,6 @@ public class RegisterProject extends MyParser {
         String[] cells = line.split(String.valueOf(Config.ProjectAdministration.csvDelim));
         for (int i = 0; i < cells.length; ++i) {
             String cell = cells[i];
-            // TODO: several study programs (priorities, max num)
             if (cell.contains(Config.ProjectAdministration.abbrev)) {
                 RegisterProject.abbrev = i;
             } else if (cell.contains(Config.ProjectAdministration.minNum)) {
@@ -88,19 +85,79 @@ public class RegisterProject extends MyParser {
                 RegisterProject.maxNum = i;
             } else if (cell.contains(Config.ProjectAdministration.mainGroup)) {
                 RegisterProject.mainGroup = i;
-            } else if (cell.contains(Config.ProjectAdministration.mainMaxNum)) {
+            } /*else if (cell.contains(Config.ProjectAdministration.mainMaxNum)) {
                 RegisterProject.mainMaxNum = i;
-            } else if (cell.contains(Config.ProjectAdministration.var)) {
+            } */ else if (cell.contains(Config.ProjectAdministration.var)) {
                 RegisterProject.var = i;
             } else if (cell.contains(Config.ProjectAdministration.fixed)) {
                 RegisterProject.fixed = i;
+            } else if (cell.contains(Config.ProjectAdministration.listOfPrograms)) {
+                if (RegisterProject.listOfPrograms == -1) RegisterProject.listOfPrograms = i; // marks last program
+                String abbrev = cell.split(Config.ProjectAdministration.listOfPrograms)[1].replace("->", "");
+                abbrev = abbrev.split(Config.ProjectAdministration.delimProgramAbbrev)[0].trim().toLowerCase();
+                RegisterProject.studyPrograms.add(new AbbrevAllowedMaxPrio(abbrev, i));
+                Calculation.addAbbrev(abbrev);
             }
         }
-        return (RegisterProject.abbrev != -1 && RegisterProject.minNum != -1 && RegisterProject.maxNum != -1 && RegisterProject.mainGroup != -1 && RegisterProject.mainMaxNum != -1 && RegisterProject.var != -1 && RegisterProject.fixed != -1);
+        for (int i = RegisterProject.listOfPrograms; i < cells.length; i++) {
+            String cell = cells[i];
+            String abbrev = "";
+            try {
+                abbrev = cell.split(" ")[1].replace("\"", "").replace("\'", "").toLowerCase();
+            } catch (IndexOutOfBoundsException e) {
+                continue;
+            }
+            for (AbbrevAllowedMaxPrio entry : RegisterProject.studyPrograms) {
+                if (entry.abbrev.equals(abbrev)) {
+                    if (cell.contains(Config.ProjectAdministration.maxGroup)) {
+                        entry.num = i;
+                    } else if (cell.contains(Config.ProjectAdministration.prioGroup)) {
+                        entry.prio = i;
+                    } else {
+                        int debug = 4;
+                    }
+                } else {
+                    int debug = 2;
+                }
+            }
+        }
+        return (RegisterProject.abbrev != -1 && RegisterProject.minNum != -1 && RegisterProject.maxNum != -1 && RegisterProject.var != -1 && RegisterProject.fixed != -1);
     }
 
     @NotNull
-    private static Group[] getGroups(String stMainStudProg, String mainMax, boolean oneStudent) {
+    private static Group[] createGroups(@NotNull String[] cells, int projMax) {
+        String projAbbrev = cells[RegisterProject.abbrev].toLowerCase();
+
+        ArrayList<Group> groups = new ArrayList<>();
+        ArrayList<String> errorLogged = new ArrayList<>();
+        for (AbbrevAllowedMaxPrio entry : RegisterProject.studyPrograms) {
+            if (cells[entry.allowed].contains("1")) {
+                int groupMax, groupPrio;
+                try {
+                    groupMax = Integer.parseInt(cells[entry.num]);
+                } catch (NumberFormatException e) {
+                    groupMax = projMax;
+                    if (errorLogged.contains(projAbbrev + "max")) continue;
+                    Calculation.appendToLog("Warning: Error parsing " + Config.ProjectAdministration.maxGroup + " in project " + projAbbrev);
+                    errorLogged.add(projAbbrev + "max");
+                }
+                try {
+                    groupPrio = Integer.parseInt(String.valueOf(cells[entry.prio].charAt(0)));
+                } catch (NumberFormatException e) {
+                    groupPrio = 3;
+                    if(errorLogged.contains(projAbbrev + "prio")) continue;
+                    Calculation.appendToLog("Warning: Error parsing " + Config.ProjectAdministration.prioGroup + " in project " + projAbbrev);
+                    errorLogged.add(projAbbrev + "prio");
+                }
+                groups.add(new Group(entry.abbrev, groupMax, groupPrio));
+            }
+        }
+        return groups.toArray(new Group[groups.size()]);
+    }
+
+    // obsolete
+    @NotNull
+    private static Group[] initGroups(String stMainStudProg, String mainMax, boolean oneStudent) {
         // TODO: get other/several groups
         StudyProgram mainP = StudyProgram.StrToStudy(stMainStudProg);
         if (oneStudent) {

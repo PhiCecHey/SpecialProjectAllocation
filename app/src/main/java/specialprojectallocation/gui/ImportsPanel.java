@@ -86,7 +86,7 @@ public class ImportsPanel extends JPanel {
                 Calculation.appendToLog("RegisterProject: Project duplicate! Will only take first entry." + e + "\n");
                 worked = 1;
             } catch (IndexOutOfBoundsException e) {
-                Calculation.appendToLog("Probably weird character in Moodle registration file. " + e + "\n");
+                Calculation.appendToLog("RegisterProject: Probably weird character in Moodle registration file. " + e + "\n");
                 worked = 2;
             } catch (Exception e) {
                 Calculation.appendToLog(e + "\n");

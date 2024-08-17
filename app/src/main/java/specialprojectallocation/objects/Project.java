@@ -21,7 +21,7 @@ public class Project {
      */
     public Project(String ab, int min, int max, Group[] gr, String fixed) throws AbbrevTakenException {
         ab = ab.strip();
-        for (String str : Calculation.allAbbrevs) {
+        for (String str : Calculation.abbrevs()) {
             if (str.equals(ab)) {
                 throw new AbbrevTakenException(
                         "Abbrev " + ab + " already taken by project "
@@ -36,7 +36,7 @@ public class Project {
         this.groups = gr;
         this.stringFixedStuds = fixed;
         Calculation.projects.add(this);
-        Calculation.allAbbrevs.add(this.abbrev);
+        Calculation.addAbbrev(this.abbrev);
     }
 
     public String abbrev() {
