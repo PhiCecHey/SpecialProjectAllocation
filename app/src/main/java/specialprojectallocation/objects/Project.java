@@ -1,5 +1,6 @@
 package specialprojectallocation.objects;
 
+import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
@@ -10,7 +11,7 @@ import java.util.Objects;
 public class Project {
     private final String abbrev;
     private final int maxNumStuds;
-    private int minNumStuds; // TODO
+    private final int minNumStuds; // TODO
     private final Group[] groups; // main group is first in array
     private Student[] fixedStuds;
     private final String stringFixedStuds;
@@ -21,7 +22,7 @@ public class Project {
      */
     public Project(String ab, int min, int max, Group[] gr, String fixed) throws AbbrevTakenException {
         ab = ab.strip();
-        for (String str : Calculation.abbrevs()) {
+        for (String str : Calculation.studyProgramAbbrev()) {
             if (str.equals(ab)) {
                 throw new AbbrevTakenException(
                         "Abbrev " + ab + " already taken by project "
@@ -29,14 +30,12 @@ public class Project {
             }
         }
 
-        // TODO: minNumStuds
         this.abbrev = ab;
         this.minNumStuds = min;
         this.maxNumStuds = max;
         this.groups = gr;
         this.stringFixedStuds = fixed;
         Calculation.projects.add(this);
-        Calculation.addAbbrev(this.abbrev);
     }
 
     public String abbrev() {
@@ -126,6 +125,7 @@ public class Project {
         }
     }
 
+    @Nullable
     public static Project findProject(String abbrev) {
         for (Project project : Calculation.projects) {
             if (project.abbrev().equals(abbrev)) {

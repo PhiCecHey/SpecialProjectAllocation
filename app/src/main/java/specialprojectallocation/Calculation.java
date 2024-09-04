@@ -3,7 +3,6 @@ package specialprojectallocation;
 import specialprojectallocation.algorithm.Gurobi;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
-import specialprojectallocation.objects.StudyProgram;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ public class Calculation {
     public static File projReg;
     public static String outPath;
     public static ArrayList<Project> projects = new ArrayList<>();
-    private static ArrayList<String> allAbbrevs = new ArrayList<>();
+    public static ArrayList<String> allStudyPrograms = new ArrayList<>();
     public static ArrayList<Student> students = new ArrayList<>();
     public static ArrayList<Student> studentsWithoutProject = new ArrayList<>();
     public static ArrayList<Student> studentsWithInvalidSelection = new ArrayList<>();
@@ -27,20 +26,20 @@ public class Calculation {
         Calculation.projReg = null;
         Calculation.projects = new ArrayList<>();
         Calculation.students = new ArrayList<>();
-        Calculation.allAbbrevs = new ArrayList<>();
+        Calculation.allStudyPrograms = new ArrayList<>();
         Calculation.studentsWithoutProject = new ArrayList<>();
         Calculation.gurobi = null;
         Calculation.gurobiResultsGui = "";
     }
 
-    public static void addAbbrev(String abbrev) {
-        if (!Calculation.allAbbrevs.contains(abbrev)) {
-            Calculation.allAbbrevs.add(abbrev);
+    public static void studyProgramAbbrev(String abbrev) {
+        if (!Calculation.allStudyPrograms.contains(abbrev)) {
+            Calculation.allStudyPrograms.add(abbrev);
         }
     }
 
-    public static ArrayList<String> abbrevs() {
-        return Calculation.allAbbrevs;
+    public static ArrayList<String> studyProgramAbbrev() {
+        return Calculation.allStudyPrograms;
     }
 
     public static void clearInputs() {
@@ -50,7 +49,7 @@ public class Calculation {
 
     public static void clearProjects() {
         Calculation.projects = new ArrayList<>();
-        Calculation.allAbbrevs = new ArrayList<>();
+        Calculation.allStudyPrograms = new ArrayList<>();
     }
 
     public static void clearStudents() {
