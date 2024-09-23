@@ -6,18 +6,25 @@ import specialprojectallocation.Calculation;
 
 import java.util.ArrayList;
 
+/**
+ * Students select projects they want to participate in. Each student can select four projects with different
+ * priorities. All students and their wishes are parsed from the SelectProject Moodle file.
+ */
 public class Student {
-    private final String immatNum;
-    private final String name;
-    private final StudyProgram study;
-    private StudWish selectedProjs;
-    private double totalScore;
+    private final String immatNum; // student's matriculation number
+    private final String name; // student's name
+    private final StudyProgram study; // student's StudyProgram
+    private StudWish selectedProjs; // student's selected projects read from SelectProject Moodle file
+    private double totalScore; // important for Gurobi class
 
     /**
-     * Generates new Student and adds student to list of all students. Do not add
-     * again after calling instructor!
+     * Generates new Student and adds student to list of all students.
+     *
+     * @param imma matriculation number of the student
+     * @param na   student's name
+     * @param stu  student's StudyProgram
      */
-    public Student(String imma, String na, String em, StudyProgram stu) {
+    public Student(String imma, String na, StudyProgram stu) {
         this.immatNum = imma;
         this.name = na;
         this.study = stu;
@@ -25,22 +32,47 @@ public class Student {
         Calculation.students.add(this);
     }
 
+    /**
+     * @return student's matriculation number
+     */
     public String immatNum() {
         return this.immatNum;
     }
 
+    /**
+     * @return student's name
+     */
     public String name() {
         return this.name;
     }
 
+    /**
+     * @return student's StudyProgram
+     */
     public StudyProgram study() {
         return this.study;
     }
 
-    public void selectProj(Project first, Project second, Project third, Project fourth) {
+    /**
+     * Sets student's first, second, third, fourth project wishes, based on the SelectProject Moodle file.
+     *
+     * @param first  project with the highes priority
+     * @param second project with the second.highes priority
+     * @param third  project with the third-highes priority
+     * @param fourth project with the lowest priority
+     */
+    private void selectProj(Project first, Project second, Project third, Project fourth) {
         this.selectedProjs = new StudWish(first, second, third, fourth);
     }
 
+    /**
+     * Sets student's first, second, third, fourth project wishes, based on the SelectProject Moodle file.
+     *
+     * @param firstStr  project abbrev with the highest priority
+     * @param secondStr project abbrev with the second-highest priority
+     * @param thirdStr  project abbrev with the third-highest priority
+     * @param fourthStr project abbrev with the lowest priority
+     */
     public void selectProjStr(String firstStr, String secondStr, String thirdStr, String fourthStr) {
         Project firstPr = null, secondPr = null, thirdPr = null, fourthPr = null;
         for (Project project : Calculation.projects) {
@@ -55,7 +87,7 @@ public class Student {
             }
         }
         if (firstPr == null || secondPr == null || thirdPr == null || fourthPr == null) {
-            // TODO: invalid project selection. punishment? 
+            // TODO: invalid project selection. punishment?
             boolean found = false;
             for (Student student : Calculation.studentsWithInvalidSelection) {
                 if (student.immatNum == this.immatNum) {
@@ -69,7 +101,10 @@ public class Student {
         this.selectProj(firstPr, secondPr, thirdPr, fourthPr);
     }
 
-    public String abbrevProj1() /* Project could not be found */ {
+    /**
+     * @return abbrev of the student's first wish project
+     */
+    public String abbrevProj1() /* Exception Project could not be found */ {
         if (this.selectedProjs == null || this.selectedProjs.proj1() == null) {
             return "";
             // throw new ProjectNotFoundException("Project could not be found");
@@ -77,7 +112,10 @@ public class Student {
         return this.selectedProjs.proj1().abbrev();
     }
 
-    public String abbrevProj2() /* Project could not be found */ {
+    /**
+     * @return abbrev of the student's second wish project
+     */
+    public String abbrevProj2() /* Exception Project could not be found */ {
         if (this.selectedProjs == null || this.selectedProjs.proj2() == null) {
             return "";
             // throw new ProjectNotFoundException("Project could not be found");
@@ -85,7 +123,10 @@ public class Student {
         return this.selectedProjs.proj2().abbrev();
     }
 
-    public String abbrevProj3() /* Project could not be found */ {
+    /**
+     * @return abbrev of the student's third wish project
+     */
+    public String abbrevProj3() /* Exception Project could not be found */ {
         if (this.selectedProjs == null || this.selectedProjs.proj3() == null) {
             return "";
             // throw new ProjectNotFoundException("Project could not be found");
@@ -93,7 +134,10 @@ public class Student {
         return this.selectedProjs.proj3().abbrev();
     }
 
-    public String abbrevProj4() /* Project could not be found */ {
+    /**
+     * @return abbrev of the student's fourth wish project
+     */
+    public String abbrevProj4() /* Exception Project could not be found */ {
         if (this.selectedProjs == null || this.selectedProjs.proj4() == null) {
             return "";
             // throw new ProjectNotFoundException("Project could not be found");
@@ -101,6 +145,13 @@ public class Student {
         return this.selectedProjs.proj4().abbrev();
     }
 
+    /**
+     * Checks with which priority (1-4) the student selected the project.
+     *
+     * @param project to be checked
+     * @return the priority with which the student selected the project (1-4). If project was not selected by the
+     * student, returns -1 instead.
+     */
     public int choiceOfProj(@NotNull Project project) {
         if (project.isFixed(this)) {
             return 0;
@@ -121,6 +172,11 @@ public class Student {
         }
     }
 
+    /**
+     * Checks all projects whether the student is fixed.
+     *
+     * @return list of projects where the student is one of the fixed students
+     */
     public ArrayList<Project> getAllFixed() {
         ArrayList<Project> fixed = new ArrayList<>();
         for (Project p : Calculation.projects) {
@@ -131,6 +187,12 @@ public class Student {
         return fixed;
     }
 
+    /**
+     * Checks all Student objects created and returns the one with the same matriculation number.
+     *
+     * @param immatNum of the student to be found
+     * @return Student object with respective matriculation number. Returns null if there is no such student.
+     */
     @Nullable
     public static Student findStudentByImma(String immatNum) {
         immatNum = immatNum.trim();
@@ -145,6 +207,12 @@ public class Student {
         return null;
     }
 
+    /**
+     * Checks whether a student is in the list of students with invalid project selections.
+     *
+     * @param immatNum matriculation number of the student to be checked
+     * @return true, if the student's project selection is invalid
+     */
     @Nullable
     public static boolean checkStudentInInvalid(String immatNum) {
         immatNum = immatNum.trim();
@@ -159,6 +227,14 @@ public class Student {
         return false;
     }
 
+    /**
+     * Finds Student object with respective name.
+     *
+     * @param name         of the student to be found
+     * @param experimental flag to enable more elaborate name comparisons by slicing the strings at the " " space
+     *                     character.
+     * @return Student object with respective name. Returns null if no such student exists.
+     */
     @Nullable
     public static Student findStudentByName(String name, boolean experimental) {
         for (Student s : Calculation.students) {
@@ -185,11 +261,20 @@ public class Student {
         return null;
     }
 
+    /**
+     * Checks whether a student selected a project in the Moodle SelectProject file.
+     *
+     * @param project to be checked
+     * @return true, if project is one of the selected ones
+     */
     public boolean wantsProject(@NotNull Project project) {
-        return (project.abbrev().equals(this.abbrevProj1()) || project.abbrev().equals(this.abbrevProj2()) ||
-                project.abbrev().equals(this.abbrevProj3()) || project.abbrev().equals(this.abbrevProj4()));
+        return (project.abbrev().equals(this.abbrevProj1()) || project.abbrev().equals(this.abbrevProj2())
+                || project.abbrev().equals(this.abbrevProj3()) || project.abbrev().equals(this.abbrevProj4()));
     }
 
+    /**
+     * @return number of projects where the student is one of the fixed students
+     */
     public int numFixedProject() {
         int numFixedProjs = 0;
         for (Project project : Calculation.projects) {
@@ -200,6 +285,9 @@ public class Student {
         return numFixedProjs;
     }
 
+    /**
+     * @return number of projects that the student selected where the student is one of the fixed students
+     */
     public int numFixedWantedProject() {
         int numFixedWantedProjs = 0;
         for (Project project : Calculation.projects) {
@@ -218,6 +306,9 @@ public class Student {
         return this.totalScore;
     }
 
+    /**
+     * @return true, if the student is one of the fixed students in that project
+     */
     public boolean isFixed() {
         for (Project project : Calculation.projects) {
             if (project.isFixed(this)) {

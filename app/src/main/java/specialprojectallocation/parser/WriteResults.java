@@ -11,6 +11,9 @@ import specialprojectallocation.algorithm.Allocations;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
 
+/**
+ * Writes the results of the gruobi calculation into a CSV file.
+ */
 public class WriteResults {
     public static void printForSupers(double[][] results, @NotNull Allocations allocs) {
         try {

@@ -7,6 +7,9 @@ import specialprojectallocation.Config;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Custom parser for parsing the two Moodle files.
+ */
 public class MyParser {
     @NotNull
     protected static String[] readLineInCsvWithQuotesAndDelim(String lineInCsv, char delim) {
