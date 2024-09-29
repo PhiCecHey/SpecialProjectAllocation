@@ -5,12 +5,8 @@ import com.formdev.flatlaf.FlatLightLaf;
 import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class Gui {
     static JFrame frame;

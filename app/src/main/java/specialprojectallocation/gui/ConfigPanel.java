@@ -86,7 +86,7 @@ public class ConfigPanel extends JPanel {
             this.lThird = new JLabel("Column 3. Project:");
             this.lFourth = new JLabel("Column 4. Project:");
             this.lStudProg = new JLabel("Column Study Program:");
-            this.lImmatNum = new JLabel("Column Immatriculation Number:");
+            this.lImmatNum = new JLabel("Column Matriculation Number:");
             this.lEmail = new JLabel("Column Email:");
 
             this.fCsvDelim = new MyTextFieldInConfig(Character.toString(Config.ProjectSelection.csvDelim));
@@ -541,12 +541,8 @@ public class ConfigPanel extends JPanel {
                         this.two.setEnabled(false);
                     }
                 });
-                this.one.addActionListener(ae -> {
-                    two.setSelected(!one.isSelected());
-                });
-                this.two.addActionListener(ae -> {
-                    one.setSelected(!two.isSelected());
-                });
+                this.one.addActionListener(ae -> two.setSelected(!one.isSelected()));
+                this.two.addActionListener(ae -> one.setSelected(!two.isSelected()));
             }
         }
 

@@ -20,7 +20,7 @@ public class Calculation {
     // list of all students that were not assigned any project
     public static ArrayList<Student> studentsWithoutProject = new ArrayList<>();
     // list of all students with invalid project selections
-    public static ArrayList<Student> studentsWithInvalidSelection = new ArrayList<>();
+    public static final ArrayList<Student> studentsWithInvalidSelection = new ArrayList<>();
     public static Gurobi gurobi; // gurobi instance needed for calculation
     public static String gurobiResultsGui = ""; // string to display in the results tab of the gui
 

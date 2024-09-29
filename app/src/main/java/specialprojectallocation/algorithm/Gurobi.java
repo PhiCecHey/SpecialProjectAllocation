@@ -1,6 +1,7 @@
 package specialprojectallocation.algorithm;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.decimal4j.util.DoubleRounder;
@@ -26,7 +27,6 @@ public class Gurobi {
     private final GRBEnv env;
     public double[][] results;
 
-    public static ArrayList<Project> projects;
     public static ArrayList<Student> students;
 
     public Gurobi() throws GRBException {
@@ -52,18 +52,18 @@ public class Gurobi {
                 this.studsWithoutProj();
                 StringBuilder namesImmas = new StringBuilder(" ");
                 for (Student student : Calculation.studentsWithoutProject) {
-                    namesImmas.append(student.name() + " " + student.immatNum() + ", ");
+                    namesImmas.append(student.name()).append(" ").append(student.immatNum()).append(", ");
                 }
                 Calculation.gurobiResultsGui = this.print(false, worked) + "\n\nStudents without project:" + namesImmas;
 
                 namesImmas = new StringBuilder(" ");
                 for (Student student : Calculation.studentsWithInvalidSelection) {
-                    namesImmas.append(student.name() + " " + student.immatNum() + ", ");
+                    namesImmas.append(student.name()).append(" ").append(student.immatNum()).append(", ");
                 }
                 Calculation.gurobiResultsGui += "\n\nStudents with invalid project selection:" + namesImmas;
 
 
-                if (!(Calculation.outPath == null || Calculation.outPath.equals(""))) {
+                if (!(Calculation.outPath == null || Calculation.outPath.isEmpty())) {
                     WriteResults.printForSupers(this.results, this.allocs);
                 }
             } else {
@@ -184,19 +184,25 @@ public class Gurobi {
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
                 if (this.allocs.get(p, s).score() >= 0) {
                     if (this.allocs.get(p, s).score() >= 100) {
-                        str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1))).append("\t");
+                        str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1)))
+                                .append("\t");
                     } else if (this.allocs.get(p, s).score() >= 10) {
-                        str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2))).append("\t");
+                        str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2)))
+                                .append("\t");
                     } else {
-                        str.append(String.format("%.03f", DoubleRounder.round(this.allocs.get(p, s).score(), 3))).append("\t");
+                        str.append(String.format("%.03f", DoubleRounder.round(this.allocs.get(p, s).score(), 3)))
+                                .append("\t");
                     }
                 } else {
                     if (this.allocs.get(p, s).score() >= 100) {
-                        str.append(String.format("%.00f", DoubleRounder.round(this.allocs.get(p, s).score(), 0))).append("\t");
+                        str.append(String.format("%.00f", DoubleRounder.round(this.allocs.get(p, s).score(), 0)))
+                                .append("\t");
                     } else if (this.allocs.get(p, s).score() >= 10) {
-                        str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1))).append("\t");
+                        str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1)))
+                                .append("\t");
                     } else {
-                        str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2))).append("\t");
+                        str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2)))
+                                .append("\t");
                     }
                 }
             }
@@ -223,11 +229,13 @@ public class Gurobi {
                     } else if (alloc.student().choiceOfProj(alloc.project()) == -1) {
                         allocated.append("\t[!]").append(indent);
                     } else {
-                        allocated.append("\t[").append(alloc.student().choiceOfProj(alloc.project())).append("]").append(indent);
+                        allocated.append("\t[").append(alloc.student().choiceOfProj(alloc.project())).append("]")
+                                .append(indent);
                     }
                 }
             }
-            if (allocated.toString().contains("#") || allocated.toString().contains("[") || allocated.toString().contains("F")) {
+            if (allocated.toString().contains("#") || allocated.toString().contains("[") || allocated.toString()
+                    .contains("F")) {
                 String formattedAbbrev = Gurobi.exactNumOfChars(this.allocs.get(p, 0).project().abbrev());
                 print.append("\n").append(formattedAbbrev).append(allocated).append(" ");
             }
@@ -346,10 +354,11 @@ public class Gurobi {
                 }
 
                 // ignore students with invalid selections
-                if ((Config.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum()) && Config.Constraints.ignoreInvalids) ||
-                        // ignore students with invalid selections that should only be added to the projects they are
-                        // fixed in but the fixed option is disabled
-                        (!Config.Constraints.fixedStuds && Config.Constraints.addInvalidsToFixed)) {
+                if ((Config.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())
+                     && Config.Constraints.ignoreInvalids) ||
+                    // ignore students with invalid selections that should only be added to the projects they are
+                    // fixed in but the fixed option is disabled
+                    (!Config.Constraints.fixedStuds && Config.Constraints.addInvalidsToFixed)) {
                     projPerStud = 0;
                 }
 
@@ -384,7 +393,6 @@ public class Gurobi {
                 zExpr.addTerm(1, z1);
                 zExpr.addTerm(1, z2);
                 this.model.addConstr(zExpr, GRB.EQUAL, 1, st);
-                var min = this.allocs.getProj(p).min();
                 this.model.addGenConstrIndicator(z1, 1, expr, GRB.GREATER_EQUAL, this.allocs.getProj(p).min(), st);
                 this.model.addGenConstrIndicator(z1, 1, expr, GRB.LESS_EQUAL, this.allocs.getProj(p).max(), st);
                 this.model.addGenConstrIndicator(z2, 1, expr, GRB.LESS_EQUAL, 0, st);
@@ -492,7 +500,8 @@ public class Gurobi {
                     zExpr.addTerm(1, z1);
                     zExpr.addTerm(1, z2);
                     this.model.addConstr(zExpr, GRB.EQUAL, 1, st);
-                    this.model.addGenConstrIndicator(z1, 1, expr, GRB.GREATER_EQUAL, Config.Constraints.minNumStudsPerGroupProj, st);
+                    this.model.addGenConstrIndicator(z1, 1, expr, GRB.GREATER_EQUAL,
+                                                     Config.Constraints.minNumStudsPerGroupProj, st);
                     this.model.addGenConstrIndicator(z2, 1, expr, GRB.LESS_EQUAL, 0, st);
                 }
             }
@@ -512,12 +521,15 @@ public class Gurobi {
                     Student student = this.allocs.getStud(s);
                     boolean constraint = false;
                     // ignore students with invalid selections
-                    if (!(Config.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())) && project.isFixed(student)) {
+                    if (!(Config.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum()))
+                        && project.isFixed(student)) {
                         if (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
                             constraint = true;
-                        } else if (Config.Constraints.addFixedStudsToAllSelectedProj && project.isFixedAndStudentsWish(student)) {
+                        } else if (Config.Constraints.addFixedStudsToAllSelectedProj && project.isFixedAndStudentsWish(
+                                student)) {
                             constraint = true;
-                        } else if (Config.Constraints.addFixedStudsToMostWantedProj && project.isFixedAndStudentsHighestWish(student)) {
+                        } else if (Config.Constraints.addFixedStudsToMostWantedProj
+                                   && project.isFixedAndStudentsHighestWish(student)) {
                             constraint = true;
                         }
                     }
@@ -592,7 +604,9 @@ public class Gurobi {
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
                 Allocation alloc = this.allocs.get(p, s);
                 Student student = this.allocs.getStud(s);
-                boolean studFixedForProj = project.isFixed(student) && (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj || project.isFixedAndStudentsWish(student));
+                boolean studFixedForProj = project.isFixed(student) && (
+                        Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj
+                        || project.isFixedAndStudentsWish(student));
                 if (studFixedForProj) {
                     alloc.setStudentFixed();
                 } else if (student.isFixed()) {
@@ -627,11 +641,12 @@ public class Gurobi {
                     alloc.addToScore(Config.Preferences.proj4);
                 }
             }
-            if (student.totalScore() < Config.Preferences.proj1 + Config.Preferences.proj2 + Config.Preferences.proj3 + Config.Preferences.proj4) {
-                // TODO: student invalid project selection, see Student.java 
+            if (student.totalScore() < Config.Preferences.proj1 + Config.Preferences.proj2 + Config.Preferences.proj3
+                                       + Config.Preferences.proj4) {
+                // TODO: student invalid project selection, see Student.java
                 boolean found = false;
                 for (Student st : Calculation.studentsWithInvalidSelection) {
-                    if (st.immatNum() == student.immatNum()) {
+                    if (Objects.equals(st.immatNum(), student.immatNum())) {
                         found = true;
                         break;
                     }

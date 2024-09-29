@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Calculation;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Students select projects they want to participate in. Each student can select four projects with different
@@ -90,8 +91,9 @@ public class Student {
             // TODO: invalid project selection. punishment?
             boolean found = false;
             for (Student student : Calculation.studentsWithInvalidSelection) {
-                if (student.immatNum == this.immatNum) {
+                if (Objects.equals(student.immatNum, this.immatNum)) {
                     found = true;
+                    break;
                 }
             }
             if (!found) {
@@ -213,7 +215,6 @@ public class Student {
      * @param immatNum matriculation number of the student to be checked
      * @return true, if the student's project selection is invalid
      */
-    @Nullable
     public static boolean checkStudentInInvalid(String immatNum) {
         immatNum = immatNum.trim();
         if (immatNum.isEmpty()) {

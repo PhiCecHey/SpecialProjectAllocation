@@ -27,8 +27,8 @@ public class SelectProject extends MyParser {
     /**
      * Parses SelectProject Moodle file.
      *
-     * @param csv
-     * @param delim
+     * @param csv SelectProject CSV Moodle file
+     * @param delim delimiter of SelectProject CSV Moodle file, e.g. ","
      * @return 0: no errors/warnings. 1: warning - student made several wishes/ filled out the Moodle form several
      * times. 2: error - problem parsing the first line of the file. 3: error - index out of bounds, wrong file
      * (version)?

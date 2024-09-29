@@ -69,13 +69,9 @@ public class ResultsPanel extends JPanel {
             WriteResults.printForSupers(Calculation.gurobi.results, Calculation.gurobi.allocs);
         });
 
-        this.bSearch.addActionListener(ae -> {
-            this.search();
-        });
+        this.bSearch.addActionListener(ae -> this.search());
 
-        this.bClearHighlight.addActionListener(ae -> {
-            this.area.getHighlighter().removeAllHighlights();
-        });
+        this.bClearHighlight.addActionListener(ae -> this.area.getHighlighter().removeAllHighlights());
     }
 
     private void search() {

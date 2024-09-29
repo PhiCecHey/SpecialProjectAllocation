@@ -76,7 +76,7 @@ public class ImportsPanel extends JPanel {
             Calculation.clearLog();
             Calculation.projReg = new File(fRegistration.getText());
             Calculation.projSel = new File(fSelection.getText());
-            int worked = 0;
+            int worked;
             try {
                 worked = RegisterProject.read(Calculation.projReg, Config.ProjectAdministration.csvDelim);
             } catch (IOException e) {
@@ -144,4 +144,3 @@ public class ImportsPanel extends JPanel {
         });
     }
 }
-

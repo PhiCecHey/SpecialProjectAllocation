@@ -27,7 +27,7 @@ public class Config {
         public static String var = "Q18_4.1";
         public static String varOneStudent = "one student";
 
-        public static String minNum = "Q21_4.3.2";
+        public static final String minNum = "Q21_4.3.2";
         public static String maxNum = "Q20_4.3.1";
 
         // TODO: disable following two
@@ -37,10 +37,10 @@ public class Config {
         public static String fixed = "Fest gesetzte Studierende";
 
         // TODO: include in config tab
-        public static String listOfPrograms = "Study Programs";
-        public static String delimProgramAbbrev = "--";
-        public static String maxGroup = "Num";
-        public static String prioGroup = "Priority";
+        public static final String listOfPrograms = "Study Programs";
+        public static final String delimProgramAbbrev = "--";
+        public static final String maxGroup = "Num";
+        public static final String prioGroup = "Priority";
     }
 
     public static class Constraints {
@@ -82,10 +82,10 @@ public class Config {
         public static double proj3 = 60.0;
         public static double proj4 = 40.0;
 
-        public static boolean studentAcceptedInProject = false;
+        public static final boolean studentAcceptedInProject = false;
         public static final double penStudsAcceptedInProj = -100;
 
-        public static boolean studentsPerStudy = false;
+        public static final boolean studentsPerStudy = false;
         public static double penStudsPerStudy = -100;
 
         public static double studyPrio1 = 50;
@@ -94,17 +94,17 @@ public class Config {
         public static double studyPrio4 = 20;
         public static double studyPrio5 = 10;
 
-        public static boolean minStudentsPerGroupProject = false;
+        public static final boolean minStudentsPerGroupProject = false;
         public static double penMinStudsPerGroupProj = -100;
 
-        public static boolean fixedStuds = false;
+        public static final boolean fixedStuds = false;
         public static final double penFixedStuds = -100;
 
-        public static boolean projectPerStudent = false;
+        public static final boolean projectPerStudent = false;
         public static boolean minProjectPerStudent = false;
         public static boolean maxProjectPerStudent = false;
 
-        public static boolean studentsPerProject = false;
+        public static final boolean studentsPerProject = false;
         public static double penStudsPerProj = -100;
         public static boolean minStudentsPerProject = false;
         public static boolean maxStudentsPerProject = false;

@@ -141,9 +141,9 @@ public class RegisterProject extends MyParser {
         }
         for (int i = RegisterProject.listOfPrograms; i < cells.length; i++) {
             String cell = cells[i];
-            String abbrev = "";
+            String abbrev;
             try {
-                abbrev = cell.split(" ")[1].replace("\"", "").replace("\'", "").toLowerCase();
+                abbrev = cell.split(" ")[1].replace("\"", "").replace("'", "").toLowerCase();
             } catch (IndexOutOfBoundsException e) {
                 continue;
             }
