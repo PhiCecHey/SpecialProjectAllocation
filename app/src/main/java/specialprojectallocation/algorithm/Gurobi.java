@@ -77,6 +77,13 @@ public class Gurobi {
         }
     }
 
+    /**
+     * This 2D array holds all combinations of assigning a student to a project. If a student is assigned to a
+     * project, the respective indicator variable in the array at [student][project] equals 1, else 0. The variables
+     * will be assigned a fixed value once the algorithm was run. Use this method to get the results.
+     *
+     * @return 2D array of all the gurobi variables [projects][students]
+     */
     @NotNull
     private GRBVar[][] getGRBVars() {
         int nProjs = this.allocs.numProjs();
@@ -90,6 +97,17 @@ public class Gurobi {
         return grbvars;
     }
 
+    /**
+     * Calculates the linear objective function of the linear problem based on previously set variables and bounds.
+     * This function is computed by taking the sum over every indicator variable multiplied by its respective score in
+     * [student][project]. The objective is to maximize that sum. Thus the Gurobi Solver will assign 1 to the indicator
+     * variables that will result in the greatest sum which is dependent on the scores.
+     *
+     * @param extraRandomness default: 1. Adds a random value between 0 and extraRandomness to every score
+     *                        [student][project]. Turns integer scores into double. Necessary to avoid an integer
+     *                        linear problem.
+     * @return linear objective function used by the Gurobi Solver
+     */
     @NotNull
     private GRBLinExpr calculateObjectiveLinExpr(double extraRandomness) {
         GRBLinExpr objective = new GRBLinExpr();
@@ -109,6 +127,13 @@ public class Gurobi {
         return objective;
     }
 
+    /**
+     * Returns the Gurobi Solver's result of the linear program: a 2D array of the indicator variables, stating the
+     * assignment of the students to their projects, if the model is not infeasible.
+     *
+     * @return a 2D array of indicator variables [students][projects], 1:=student assigned to project
+     * @throws GRBException
+     */
     private boolean extractResults() throws GRBException {
         GRBVar[][] grbVars = this.getGRBVars();
         int optimstatus = model.get(GRB.IntAttr.Status);
@@ -124,6 +149,14 @@ public class Gurobi {
         return true;
     }
 
+    /**
+     * Returns the result of the computation (score matrix and indicator variable matrix) as a string which can then
+     * be printed in the GUI.
+     *
+     * @param tui    set true, if the result should be printed in the terminal.
+     * @param worked if false, returns the log.
+     * @return results of computation: score matrix, indicator variable matrix
+     */
     @Nullable
     private String print(boolean tui, boolean worked) {
         StringBuilder print = new StringBuilder(Calculation.log() + "\n");
@@ -243,6 +276,14 @@ public class Gurobi {
         return print.toString();
     }
 
+    /**
+     * Formats the abbreviation to have the exact number of characters required. If it is shorter than the required
+     * length, adds spaces; if too long, only takes the first characters. Usually 6 characters long. Used to format
+     * textual results.
+     *
+     * @param abbrev project ID/ abbreviation
+     * @return formatted abbrev
+     */
     @NotNull
     private static String exactNumOfChars(@NotNull String abbrev) {
         if (abbrev.length() >= Config.ProjectAdministration.numCharsAbbrev) {
@@ -257,6 +298,10 @@ public class Gurobi {
      * ++=============++
      */
 
+    /**
+     * Adds constraints to the linear program model. The respective configs are set using the GUI. The defaults are set
+     * in the Config.java file.
+     */
     private void addConstraints() {
         if (Config.Constraints.projectPerStudent) {
             this.constrMinProjPerStud();
@@ -282,6 +327,10 @@ public class Gurobi {
         }
     }
 
+    /**
+     * Manipulates the weights of the indicator variables of the linear program. The respective configs are set using
+     * the GUI. The defaults are set in the Config.java file.
+     */
     private void addPreferences() { // TODO: implement missing pref methods, see configPanel
         if (Config.Preferences.studentsPerProject) {
             this.prefStudentsPerProj(); // TODO min max
@@ -302,10 +351,13 @@ public class Gurobi {
             this.prefSelectedProj();
         }
         if (Config.Preferences.fixedStuds) {
-            this.prefFixedStuds();
+            this.prefFixedStuds(); // TODO: not in use
         }
     }
 
+    /**
+     * Every student whose project selection is valid must get at least 1 project.
+     */
     private void constrMinProjPerStud() {
         try {
             GRBLinExpr expr;
@@ -329,6 +381,10 @@ public class Gurobi {
         }
     }
 
+    /**
+     * Every student whose project selection is valid must get a maximum of 1 project, unless they have several fixed
+     * projects, then the maximum is increased to that amount.
+     */
     private void constrMaxProjPerStud() { // TODO: test
         try {
             GRBLinExpr expr;
@@ -371,7 +427,9 @@ public class Gurobi {
     }
 
     /*
-     * how many students a project can have, ignores groups
+     * Sets the minimum and maximum amount of students a project can have. These values are project specific and
+     * dependent on the project's minimum and maximum amount of students required and allowed. If the project cannot
+     * get enough students, it will be unavailable and no students will be assigned to this project.
      */
     private void constrStudsPerProj() {
         try {
@@ -402,6 +460,10 @@ public class Gurobi {
         }
     }
 
+    /**
+     * Enabling this constraint causes students, who are in a projects fixed students list, to get assigned to that
+     * respective project.
+     */
     private void constrStudHasToGetASelProj() {
         try {
             GRBLinExpr expr;
@@ -432,8 +494,9 @@ public class Gurobi {
         }
     }
 
-    /*
-     * check if student has right study program
+    /**
+     * This constraint assures that only students who study one of the project's accepted study programs can be
+     * assigned to the project.
      */
     private void constrStudAcceptedInProj() {
         try {
@@ -458,8 +521,9 @@ public class Gurobi {
         }
     }
 
-    /*
-     * how many students per study program a project can have
+    /**
+     * This constraint assures that only the maximum amount of students from a per study program can be assigned to
+     * the project. This value is project and study program dependent.
      */
     private void constrStudsPerStudy() { // TODO: test
         try {
@@ -480,9 +544,10 @@ public class Gurobi {
         }
     }
 
-    /*
-     * min students per group project so that there are no projects with only 1
-     * student
+    /**
+     * Obsolete. Enabling this constraint causes every group project to have a minimum of a set number of students, e.g.
+     * 2, per group project. This is useful if group projects with too little students are not wanted.
+     * Obsolete: Every project already has a required amount of students.
      */
     private void constrMinStudsPerGroupProj() {
         try {
@@ -510,6 +575,13 @@ public class Gurobi {
         }
     }
 
+    /**
+     * Add students, who are in a project's fixed students list, to the respective project.
+     * If students were listed as fixed students in several projects, options are available in the GUI:
+     * a) Add fixed students to all those projects, even those they did not select.
+     * b) Add fixed students to only those projects that they also selected.
+     * c) Add fixed students only to that project that they selected with the highest priority.
+     */
     private void constrFixedStudents() {
         try {
             GRBLinExpr expr;
@@ -567,7 +639,8 @@ public class Gurobi {
     }
 
     /**
-     * alternative to constrStudsAcceptedInProj
+     * Alternative to constrStudsAcceptedInProj: only students who study one of the project's accepted study programs
+     * should be assigned to the project.
      */
     private void prefStudsAcceptedInProj() { // TODO: test
         for (int s = 0; s < this.allocs.numStuds(); ++s) {
@@ -596,7 +669,7 @@ public class Gurobi {
     }
 
     /**
-     * alternative to constrStuds
+     * Alternative to constrFixedStuds. TODO: not in use
      */
     private void prefFixedStuds() {
         for (int p = 0; p < this.allocs.numProjs(); ++p) {
@@ -621,10 +694,11 @@ public class Gurobi {
      * TODO
      */
 
-    /*
-     * prios
-     */
 
+    /**
+     * Prioritizes the students' selected projects according to their preferences: The project they selected first/
+     * second/ third/ fourth will have the highest/ second highest/ third highest/ lowest priority.
+     */
     private void prefSelectedProj() {
         for (int s = 0; s < this.allocs.numStuds(); s++) {
             Student student = this.allocs.getStud(s);
@@ -658,6 +732,9 @@ public class Gurobi {
         }
     }
 
+    /**
+     * Retrieves all the students that were not assigned a project and adds them to Calculation.studentsWithoutProject.
+     */
     private void studsWithoutProj() {
         for (int s = 0; s < this.allocs.numStuds(); s++) {
             Student student = this.allocs.getStud(s);
