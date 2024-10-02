@@ -54,31 +54,19 @@ public class RegisterProject extends MyParser {
             while ((line = bufferedReader.readLine()) != null) {
                 String[] cells = RegisterProject.readLineInCsvWithQuotesAndDelim(line, delim);
                 try {
-                    Project found = Project.findProject(cells[RegisterProject.abbrev]);
-
-                    if (found == null) {
-                        int maxNum = RegisterProject.getMaxNum(cells);
-                        int minNum = 0;
-                        if (cells.length > RegisterProject.minNum) {
-                            if (!cells[RegisterProject.minNum].isEmpty()) {
-                                minNum = Integer.parseInt(cells[RegisterProject.minNum]);
-                            }
+                    int maxNum = RegisterProject.getMaxNum(cells);
+                    int minNum = 0;
+                    if (cells.length > RegisterProject.minNum) {
+                        if (!cells[RegisterProject.minNum].isEmpty()) {
+                            minNum = Integer.parseInt(cells[RegisterProject.minNum]);
                         }
-
-                        Group[] groups = RegisterProject.createGroups(cells, maxNum);
-
-                        // generates new project and adds it to all projects
-                        new Project(cells[RegisterProject.abbrev], minNum, maxNum, groups,
-                                    cells[RegisterProject.fixed]);
-                    } else {
-                        Calculation.appendToLog(
-                                "RegisterProject: Found project twice. Skipping second entry. " + found.abbrev());
-
-                        // TODO: just take last entry?
-                        // throw new ProjectDuplicateException(
-                        // "Project " + found.abbrev() + " was registired more than once!");
-                        worked = 1;
                     }
+
+                    Group[] groups = RegisterProject.createGroups(cells, maxNum);
+
+                    // generates new project and adds it to all projects
+                    Project.findOrCreateProject(cells[RegisterProject.abbrev], minNum, maxNum, groups,
+                                                cells[RegisterProject.fixed]);
                 } catch (IndexOutOfBoundsException e) {
                     Calculation.appendToLog(
                             "RegisterProject: Possibly wrong file? Else maybe weird character in moodle file.");

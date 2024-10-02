@@ -78,13 +78,13 @@ public class ConfigPanel extends JPanel {
             this.add(new JLabel("Project Selection"), "cell 0 0, spanx, center");
 
             this.lCsvDelim = new JLabel("CSV Delimiter:");
-            this.lName = new JLabel("Column Name:");
-            this.lFirst = new JLabel("Column 1. Project:");
-            this.lSecond = new JLabel("Column 2. Project:");
-            this.lThird = new JLabel("Column 3. Project:");
-            this.lFourth = new JLabel("Column 4. Project:");
-            this.lStudProg = new JLabel("Column Study Program:");
-            this.lImmatNum = new JLabel("Column Matriculation Number:");
+            this.lName = new JLabel("Name:");
+            this.lFirst = new JLabel("1. Project:");
+            this.lSecond = new JLabel("2. Project:");
+            this.lThird = new JLabel("3. Project:");
+            this.lFourth = new JLabel("4. Project:");
+            this.lStudProg = new JLabel("Study Program:");
+            this.lImmatNum = new JLabel("Matricul Num:");
 
             this.fCsvDelim = new MyTextFieldInConfig(Character.toString(Config.ProjectSelection.csvDelim));
             this.fName = new MyTextFieldInConfig(Config.ProjectSelection.fullName);
@@ -158,17 +158,17 @@ public class ConfigPanel extends JPanel {
             this.add(new JLabel("Project Administration"), "cell 0 0, spanx, center");
 
             this.lCsvDelim = new JLabel("CSV Delimiter:");
-            this.lNumCharsAbbrev = new JLabel("Number of Characters in Project Abbreviation:");
-            this.lAbbrev = new JLabel("Column Abbreviation:");
-            this.lVar = new JLabel("Column Project Variation:");
-            this.lVarOneStudent = new JLabel("Column One Student Variation:");
-            this.lMinNum = new JLabel("Column Minimum Number of Participants:");
-            this.lMaxNum = new JLabel("Column Maximum Number of Participants:");
-            // this.lMainGroup = new JLabel("Column Main Group of Project:");
-            //this.lMainMaxNum = new JLabel("Column Maximum Number of Participants in Main Group:");
-            this.lFixed = new JLabel("Column Fixed Students:");
-            this.lDelimFixedStuds = new JLabel("Delimiter between Fixed Students:");
-            this.lDelimFixedStudsNameImma = new JLabel("Delimiter between Name and Immatriculation Number:");
+            this.lNumCharsAbbrev = new JLabel("Num of Chars in Project Abbrev:");
+            this.lAbbrev = new JLabel("Project Abbreviation:");
+            this.lVar = new JLabel("Project Variation:");
+            this.lVarOneStudent = new JLabel("One Student Variation:");
+            this.lMinNum = new JLabel("Min Number of Participants:");
+            this.lMaxNum = new JLabel("Max Number of Participants:");
+            // this.lMainGroup = new JLabel("Main Group of Project:");
+            //this.lMainMaxNum = new JLabel("Maximum Number of Participants in Main Group:");
+            this.lFixed = new JLabel("Fixed Students:");
+            this.lDelimFixedStuds = new JLabel("Delimiter btw. Fixed Students:");
+            this.lDelimFixedStudsNameImma = new JLabel("Delimiter Name & Matricul. Num:");
             this.lQuotes = new JLabel("Character for Quotes:");
 
             this.fCsvDelim = new MyTextFieldInConfig(Character.toString(Config.ProjectAdministration.csvDelim));

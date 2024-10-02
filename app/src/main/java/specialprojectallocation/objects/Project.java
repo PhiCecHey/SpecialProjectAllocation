@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Calculation;
 import specialprojectallocation.Config;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
+import specialprojectallocation.parser.RegisterProject;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -12,15 +13,15 @@ import java.util.Objects;
  * All projects are created upon parsing the RegisterProject Moodle file.
  */
 public class Project {
-    private final String abbrev; // abbreviation used as unique id
-    private final int maxNumStuds; // maximum number of students allowed
-    private final int minNumStuds; // TODO minimum number of students allowed
+    private String abbrev; // abbreviation used as unique id
+    private int maxNumStuds; // maximum number of students allowed
+    private int minNumStuds; // TODO minimum number of students allowed
     // array of groups: prioritize some StudyPrograms over others, max students per StudyProgram
-    private final Group[] groups;
+    private Group[] groups;
     // students who should be assigned to this project regardless of any priorities
     private Student[] fixedStuds;
     // the string containing the fixed students' names and matriculation number. to be converted to fixedStuds[]
-    private final String stringFixedStuds;
+    private String stringFixedStuds;
 
     /**
      * Creates a project and adds it to list of all projects.
@@ -33,7 +34,7 @@ public class Project {
      *              project regardless of any priorities or restrictions
      * @throws AbbrevTakenException throws exception if there exists a project with the same abbreviation already
      */
-    public Project(String ab, int min, int max, Group[] gr, String fixed) throws AbbrevTakenException {
+    private Project(String ab, int min, int max, Group[] gr, String fixed) throws AbbrevTakenException {
         ab = ab.strip();
         for (String str : Calculation.studyProgramID()) {
             if (str.equals(ab)) {
@@ -48,7 +49,49 @@ public class Project {
         this.maxNumStuds = max;
         this.groups = gr;
         this.stringFixedStuds = fixed;
-        Calculation.projects.add(this);
+
+        boolean found = false;
+        for (Project p : Calculation.projects) {
+            if (this.abbrev.equals(p.abbrev)) {
+                found = true;
+            }
+        }
+        if (!found) {
+            Calculation.projects.add(this);
+        }
+    }
+
+    // TODO: test
+
+    /**
+     * If there exists no project with this abbreviation/ ID, creates a project and adds it to list of all projects.
+     * Calls the constructor. Else return existing project with new values.
+     *
+     * @param ab    abbreviation/ identifier of project
+     * @param min   minimum number of students to make this project happen
+     * @param max   maximum number of students
+     * @param gr    array of groups with StudyProgram priorities and maximum number of students
+     * @param fixed string with names and matrictulation numbers of the students that are to be assigned to this
+     *              project regardless of any priorities or restrictions
+     * @return
+     */
+    public static Project findOrCreateProject(String ab, int min, int max, Group[] gr, String fixed) {
+        Project project = Project.findProject(ab);
+        if (project == null) {
+            try {
+                project = new Project(ab, min, max, gr, fixed);
+            } catch (AbbrevTakenException e) {
+                // shouldn't happen
+                e.printStackTrace();
+            }
+        } else {
+            project.abbrev = ab;
+            project.minNumStuds = min;
+            project.maxNumStuds = max;
+            project.groups = gr;
+            project.stringFixedStuds = fixed;
+        }
+        return project;
     }
 
     /**
