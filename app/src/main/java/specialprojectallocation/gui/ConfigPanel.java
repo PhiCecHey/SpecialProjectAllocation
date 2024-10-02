@@ -63,7 +63,6 @@ public class ConfigPanel extends JPanel {
         final JLabel lFourth;
         final JLabel lStudProg;
         final JLabel lImmatNum;
-        final JLabel lEmail;
         final MyTextFieldInConfig fCsvDelim;
         final MyTextFieldInConfig fName;
         final MyTextFieldInConfig fFirst;
@@ -72,7 +71,6 @@ public class ConfigPanel extends JPanel {
         final MyTextFieldInConfig fFourth;
         final MyTextFieldInConfig fStudProg;
         final MyTextFieldInConfig fIimmatNum;
-        final MyTextFieldInConfig fEmail;
 
         ProjectSelectionPanel() {
             this.setLayout(new MigLayout());
@@ -87,7 +85,6 @@ public class ConfigPanel extends JPanel {
             this.lFourth = new JLabel("Column 4. Project:");
             this.lStudProg = new JLabel("Column Study Program:");
             this.lImmatNum = new JLabel("Column Matriculation Number:");
-            this.lEmail = new JLabel("Column Email:");
 
             this.fCsvDelim = new MyTextFieldInConfig(Character.toString(Config.ProjectSelection.csvDelim));
             this.fName = new MyTextFieldInConfig(Config.ProjectSelection.fullName);
@@ -97,7 +94,6 @@ public class ConfigPanel extends JPanel {
             this.fFourth = new MyTextFieldInConfig(Config.ProjectSelection.fourth);
             this.fStudProg = new MyTextFieldInConfig(Config.ProjectSelection.studProg);
             this.fIimmatNum = new MyTextFieldInConfig(Config.ProjectSelection.immaNum);
-            this.fEmail = new MyTextFieldInConfig(Config.ProjectSelection.email);
 
             this.add(lCsvDelim, "cell 0 1, gapy 20");
             this.add(fCsvDelim, "cell 1 1, growx");
@@ -115,8 +111,6 @@ public class ConfigPanel extends JPanel {
             this.add(fFourth, "cell 1 7, growx");
             this.add(lStudProg, "cell 0 8");
             this.add(fStudProg, "cell 1 8, growx");
-            this.add(lEmail, "cell 0 9");
-            this.add(fEmail, "cell 1 9, growx");
         }
 
         void save() {
@@ -128,7 +122,6 @@ public class ConfigPanel extends JPanel {
             Config.ProjectSelection.fourth = this.fFourth.getText();
             Config.ProjectSelection.studProg = this.fStudProg.getText();
             Config.ProjectSelection.immaNum = this.fIimmatNum.getText();
-            Config.ProjectSelection.email = this.fEmail.getText();
         }
     }
 
@@ -140,8 +133,8 @@ public class ConfigPanel extends JPanel {
         final JLabel lVarOneStudent;
         final JLabel lMinNum;
         final JLabel lMaxNum;
-        final JLabel lMainGroup;
-        final JLabel lMainMaxNum;
+        //  final JLabel lMainGroup;
+        //final JLabel lMainMaxNum;
         final JLabel lFixed;
         final JLabel lDelimFixedStuds;
         final JLabel lDelimFixedStudsNameImma;
@@ -153,8 +146,8 @@ public class ConfigPanel extends JPanel {
         final MyTextFieldInConfig fVarOneStudent;
         final MyTextFieldInConfig fMinNum;
         final MyTextFieldInConfig fMaxNum;
-        final MyTextFieldInConfig fMainGroup;
-        final MyTextFieldInConfig fMainMaxNum;
+        // final MyTextFieldInConfig fMainGroup;
+        //final MyTextFieldInConfig fMainMaxNum;
         final MyTextFieldInConfig fFixed;
         final MyTextFieldInConfig fDelimFixedStuds;
         final MyTextFieldInConfig fDelimFixedStudsNameImma;
@@ -171,27 +164,27 @@ public class ConfigPanel extends JPanel {
             this.lVarOneStudent = new JLabel("Column One Student Variation:");
             this.lMinNum = new JLabel("Column Minimum Number of Participants:");
             this.lMaxNum = new JLabel("Column Maximum Number of Participants:");
-            this.lMainGroup = new JLabel("Column Main Group of Project:");
-            this.lMainMaxNum = new JLabel("Column Maximum Number of Participants in Main Group:");
+            // this.lMainGroup = new JLabel("Column Main Group of Project:");
+            //this.lMainMaxNum = new JLabel("Column Maximum Number of Participants in Main Group:");
             this.lFixed = new JLabel("Column Fixed Students:");
             this.lDelimFixedStuds = new JLabel("Delimiter between Fixed Students:");
             this.lDelimFixedStudsNameImma = new JLabel("Delimiter between Name and Immatriculation Number:");
             this.lQuotes = new JLabel("Character for Quotes:");
 
             this.fCsvDelim = new MyTextFieldInConfig(Character.toString(Config.ProjectAdministration.csvDelim));
-            this.fNumCharsAbbrev =
-                    new MyTextFieldInConfig(Integer.toString(Config.ProjectAdministration.numCharsAbbrev));
+            this.fNumCharsAbbrev = new MyTextFieldInConfig(
+                    Integer.toString(Config.ProjectAdministration.numCharsAbbrev));
             this.fAbbrev = new MyTextFieldInConfig(Config.ProjectAdministration.abbrev);
             this.fVar = new MyTextFieldInConfig(Config.ProjectAdministration.var);
             this.fVarOneStudent = new MyTextFieldInConfig(Config.ProjectAdministration.varOneStudent);
             this.fMinNum = new MyTextFieldInConfig(Config.ProjectAdministration.minNum);
             this.fMaxNum = new MyTextFieldInConfig(Config.ProjectAdministration.maxNum);
-            this.fMainGroup = new MyTextFieldInConfig(Config.ProjectAdministration.mainGroup);
-            this.fMainMaxNum = new MyTextFieldInConfig(Config.ProjectAdministration.mainMaxNum);
+            //this.fMainGroup = new MyTextFieldInConfig(Config.ProjectAdministration.mainGroup);
+            //this.fMainMaxNum = new MyTextFieldInConfig(Config.ProjectAdministration.mainMaxNum);
             this.fFixed = new MyTextFieldInConfig(Config.ProjectAdministration.fixed);
             this.fDelimFixedStuds = new MyTextFieldInConfig(Config.ProjectAdministration.delimFixedStuds);
-            this.fDelimFixedStudsNameImma =
-                    new MyTextFieldInConfig(Config.ProjectAdministration.delimFixedStudsNameImma);
+            this.fDelimFixedStudsNameImma = new MyTextFieldInConfig(
+                    Config.ProjectAdministration.delimFixedStudsNameImma);
             this.fQuotes = new MyTextFieldInConfig(Character.toString(Config.ProjectAdministration.quotes));
 
             this.add(lCsvDelim, "cell 0 1, gapy 20");
@@ -208,10 +201,10 @@ public class ConfigPanel extends JPanel {
             this.add(fMinNum, "cell 1 6, growx");
             this.add(lMaxNum, "cell 0 7");
             this.add(fMaxNum, "cell 1 7, growx");
-            this.add(lMainGroup, "cell 0 8");
-            this.add(fMainGroup, "cell 1 8, growx");
-            this.add(lMainMaxNum, "cell 0 9");
-            this.add(fMainMaxNum, "cell 1 9, growx");
+            //this.add(lMainGroup, "cell 0 8");
+            //this.add(fMainGroup, "cell 1 8, growx");
+            //this.add(lMainMaxNum, "cell 0 9");
+            //this.add(fMainMaxNum, "cell 1 9, growx");
             this.add(lFixed, "cell 0 10");
             this.add(fFixed, "cell 1 10, growx");
             this.add(lDelimFixedStuds, "cell 0 11");
@@ -234,8 +227,8 @@ public class ConfigPanel extends JPanel {
             Config.ProjectAdministration.var = this.fVar.getText();
             Config.ProjectAdministration.varOneStudent = this.fVarOneStudent.getText();
             Config.ProjectAdministration.maxNum = this.fMaxNum.getText();
-            Config.ProjectAdministration.mainGroup = this.fMainGroup.getText();
-            Config.ProjectAdministration.mainMaxNum = this.fMainMaxNum.getText();
+            // Config.ProjectAdministration.mainGroup = this.fMainGroup.getText();
+            // Config.ProjectAdministration.mainMaxNum = this.fMainMaxNum.getText();
             Config.ProjectAdministration.fixed = this.fFixed.getText();
             Config.ProjectAdministration.delimFixedStuds = this.fDelimFixedStuds.getText();
             Config.ProjectAdministration.delimFixedStudsNameImma = this.fDelimFixedStudsNameImma.getText();
@@ -246,7 +239,6 @@ public class ConfigPanel extends JPanel {
     static class ConstraintsPanel extends JPanel {
         // final ButtonGroup minNumProjPerStud; // TODO: feature required?
         // final ButtonGroup maxNumProjPerStud; // TODO: feature required?
-        final CheckField minNumStudsPerGroupProj;
         final CheckThreeRadios fixedStuds;
         final Check studWantsProj;
         final CheckTwoRadios invalids;
@@ -550,22 +542,9 @@ public class ConfigPanel extends JPanel {
             this.setLayout(new MigLayout("flowy"));
             this.add(new JLabel("Gurobi Configs"), "cell 0 0, spanx, center");
 
-            /*
-             * TODO: feature required?
-             * this.maxNumProjPerStud = new
-             * ButtonGroup(Integer.toString(Config.Constraints.maxNumProjectsPerStudent),
-             * "Maximum Number of Projects per Student:");
-             * this.minNumProjPerStud = new
-             * ButtonGroup(Integer.toString(Config.Constraints.minNumProjectsPerStudent),
-             * "Minimum Number of Projects per Student:");
-             */
-
-            this.minNumStudsPerGroupProj = new CheckField("Minimale Anzahl an Studierenden pro Gruppenprojekt:",
-                    Integer.toString(Config.Constraints.minNumStudsPerGroupProj));
-
             String text0 = "Falls Studierende in mehreren Projekten gesetzt sind, sollen sie hinzugefügt werden zu...";
-            String text1 =
-                    "allen Projekten, in denen sie gesetzt sind (überschreibt 'ausschließlich gewählte Projekte')";
+            String text1
+                    = "allen Projekten, in denen sie gesetzt sind (überschreibt 'ausschließlich gewählte Projekte')";
             String text2 = "allen Projekten, in denen sie gesetzt sind und die sie gewählt haben";
             String text3 = "dem Projekt, in dem sie gesetzt sind und das sie mit höchster Priorität gewählt haben";
             this.fixedStuds = new CheckThreeRadios(text0, text1, text2, text3);
@@ -577,10 +556,10 @@ public class ConfigPanel extends JPanel {
             text2 = "Gewicht Zweitwahl:";
             text3 = "Gewicht Drittwahl:";
             String text4 = "Gewicht Viertwahl:";
-            this.weightSelectedProj =
-                    new CheckFourFields(text0, text1, Double.toString(Config.Preferences.proj1), text2,
-                            Double.toString(Config.Preferences.proj2), text3, Double.toString(Config.Preferences.proj3),
-                            text4, Double.toString(Config.Preferences.proj4));
+            this.weightSelectedProj = new CheckFourFields(text0, text1, Double.toString(Config.Preferences.proj1),
+                                                          text2, Double.toString(Config.Preferences.proj2), text3,
+                                                          Double.toString(Config.Preferences.proj3), text4,
+                                                          Double.toString(Config.Preferences.proj4));
 
             text0 = "Gewichtung der Studiengänge innerhalb der Projekte";
             text1 = "Gewicht Priorität 1:";
@@ -588,30 +567,11 @@ public class ConfigPanel extends JPanel {
             text3 = "Gewicht Priorität 3:";
             text4 = "Gewicht Priorität 4:";
             String text5 = "Gewicht Priorität 5";
-            this.weightRegProj =
-                    new CheckFiveFields(text0, text1, Double.toString(Config.Preferences.studyPrio1), text2,
-                            Double.toString(Config.Preferences.studyPrio2), text3,
-                            Double.toString(Config.Preferences.studyPrio3), text4,
-                            Double.toString(Config.Preferences.studyPrio4), text5,
-                            Double.toString(Config.Preferences.studyPrio5));
-
-            /*
-             * TODO: feature required?
-             * this.add(this.maxNumProjPerStud);
-             * JSeparator sep1 = new JSeparator();
-             * sep1.setMinimumSize(new Dimension(2, 2));
-             * this.add(sep1, "spanx, growx");
-             * this.add(this.minNumProjPerStud);
-             * JSeparator sep2 = new JSeparator();
-             * sep2.setMinimumSize(new Dimension(2, 2));
-             * this.add(sep2, "spanx, growx");
-             */
-
-            this.add(minNumStudsPerGroupProj, "gapy 20");
-
-            JSeparator sep3 = new JSeparator();
-            sep3.setMinimumSize(new Dimension(2, 2));
-            this.add(sep3, "spanx, growx");
+            this.weightRegProj = new CheckFiveFields(text0, text1, Double.toString(Config.Preferences.studyPrio1),
+                                                     text2, Double.toString(Config.Preferences.studyPrio2), text3,
+                                                     Double.toString(Config.Preferences.studyPrio3), text4,
+                                                     Double.toString(Config.Preferences.studyPrio4), text5,
+                                                     Double.toString(Config.Preferences.studyPrio5));
 
             this.add(this.fixedStuds);
 
@@ -645,58 +605,6 @@ public class ConfigPanel extends JPanel {
         }
 
         void save() {
-            /*
-             * TODO: feature required?
-             * Config.Constraints.maxProjectPerStudent =
-             * this.maxNumProjPerStud.check.isSelected()
-             * && this.maxNumProjPerStud.rForce.isSelected();
-             * Config.Preferences.maxProjectPerStudent =
-             * this.maxNumProjPerStud.check.isSelected()
-             * && this.maxNumProjPerStud.rTry.isSelected();
-             * if (this.maxNumProjPerStud.check.isSelected()) {
-             * try {
-             * Config.Constraints.maxNumProjectsPerStudent = Integer.parseInt(
-             * this.maxNumProjPerStud.field.getText());
-             * } catch (NumberFormatException e) {
-             * this.maxNumProjPerStud.field.setBackground(Colors.redTransp);
-             * this.maxNumProjPerStud.field.setText(Integer.toString(Config.Constraints.
-             * maxNumProjectsPerStudent));
-             * }
-             * }
-             * Config.Constraints.minProjectPerStudent =
-             * this.minNumProjPerStud.check.isSelected()
-             * && this.minNumProjPerStud.rForce.isSelected();
-             * Config.Preferences.minProjectPerStudent =
-             * this.minNumProjPerStud.check.isSelected()
-             * && this.minNumProjPerStud.rTry.isSelected();
-             * if (this.minNumProjPerStud.check.isSelected()) {
-             * try {
-             * Config.Constraints.minNumProjectsPerStudent = Integer.parseInt(
-             * this.minNumProjPerStud.field.getText());
-             * } catch (NumberFormatException e) {
-             * this.minNumProjPerStud.field.setBackground(Colors.redTransp);
-             * this.minNumProjPerStud.field.setText(Integer.toString(Config.Constraints.
-             * minNumProjectsPerStudent));
-             * }
-             * }
-             */
-
-            /*
-             * doesn't make sense anymore
-             * Config.Preferences.minStudentsPerGroupProject =
-             * this.minNumStudsPerGroupProj.check.isSelected()
-             * && this.minNumStudsPerGroupProj.rTry.isSelected();
-             */
-            if (Config.Constraints.minStudentsPerGroupProject = this.minNumStudsPerGroupProj.check.isSelected()) {
-                try {
-                    Config.Constraints.minNumStudsPerGroupProj =
-                            Integer.parseInt(this.minNumStudsPerGroupProj.field.getText());
-                } catch (NumberFormatException e) {
-                    this.minNumStudsPerGroupProj.field.setBackground(Colors.redTransp);
-                    this.minNumStudsPerGroupProj.field.setText(
-                            Integer.toString(Config.Constraints.minNumStudsPerGroupProj));
-                }
-            }
             Config.Constraints.fixedStuds = this.fixedStuds.check.isSelected();
             Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj = this.fixedStuds.one.isSelected();
             Config.Constraints.addFixedStudsToAllSelectedProj = this.fixedStuds.two.isSelected();

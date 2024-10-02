@@ -310,14 +310,11 @@ public class Gurobi {
         if (Config.Constraints.studentsPerProject) {
             this.constrStudsPerProj();
         }
-        if (Config.Constraints.studentAcceptedInProject) {
-            this.constrStudAcceptedInProj();
+        if (Config.Constraints.studentHasRightStudyProgram) {
+            this.constrStudHasRightStudyProgram();
         }
         if (Config.Constraints.studentsPerStudy) {
             this.constrStudsPerStudy();
-        }
-        if (Config.Constraints.minStudentsPerGroupProject) {
-            this.constrMinStudsPerGroupProj();
         }
         if (Config.Constraints.fixedStuds) {
             this.constrFixedStudents(); // includes upper bound for projPerStud
@@ -338,21 +335,18 @@ public class Gurobi {
         if (Config.Preferences.projectPerStudent) {
             this.prefProjPerStud(); // TODO min max
         }
-        if (Config.Preferences.studentAcceptedInProject) {
-            this.prefStudsAcceptedInProj();
+        if (Config.Preferences.studentHasRightStudyProgram) {
+            this.prefStudsHasRightStudyProgram();
         }
         if (Config.Preferences.studentsPerStudy) {
             this.prefStudsPerStudy();
         }
-        if (Config.Preferences.minStudentsPerGroupProject) {
-            this.prefMinStudsPerGroupProj();
-        }
         if (Config.Preferences.selectedProjs) {
             this.prefSelectedProj();
         }
-        if (Config.Preferences.fixedStuds) {
+        /*if (Config.Preferences.fixedStuds) {
             this.prefFixedStuds(); // TODO: not in use
-        }
+        }*/
     }
 
     /**
@@ -405,7 +399,7 @@ public class Gurobi {
                         projPerStud = Math.max(1, student.numFixedWantedProject());
                     } else if (Config.Constraints.addFixedStudsToMostWantedProj) {
                         // only one proj allowed. only add stud to most wanted fixed proj
-                        projPerStud = 1;
+                        projPerStud = 1; // redundant, here for better readability
                     }
                 }
 
@@ -461,7 +455,7 @@ public class Gurobi {
     }
 
     /**
-     * Enabling this constraint causes students, who are in a projects fixed students list, to get assigned to that
+     * Enabling this constraint causes students who are in a projects fixed students list to get assigned to that
      * respective project.
      */
     private void constrStudHasToGetASelProj() {
@@ -495,10 +489,10 @@ public class Gurobi {
     }
 
     /**
-     * This constraint assures that only students who study one of the project's accepted study programs can be
+     * This constraint ensures that only students who study one of the project's accepted study programs can be
      * assigned to the project.
      */
-    private void constrStudAcceptedInProj() {
+    private void constrStudHasRightStudyProgram() {
         try {
             GRBLinExpr expr;
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
@@ -522,7 +516,7 @@ public class Gurobi {
     }
 
     /**
-     * This constraint assures that only the maximum amount of students from a per study program can be assigned to
+     * This constraint ensures that only the maximum amount of students from a per study program can be assigned to
      * the project. This value is project and study program dependent.
      */
     private void constrStudsPerStudy() { // TODO: test
@@ -549,7 +543,7 @@ public class Gurobi {
      * 2, per group project. This is useful if group projects with too little students are not wanted.
      * Obsolete: Every project already has a required amount of students.
      */
-    private void constrMinStudsPerGroupProj() {
+    /*private void constrMinStudsPerGroupProj() {
         try {
             GRBLinExpr expr;
             for (int p = 0; p < this.allocs.numProjs(); ++p) {
@@ -573,7 +567,7 @@ public class Gurobi {
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
         }
-    }
+    }*/
 
     /**
      * Add students, who are in a project's fixed students list, to the respective project.
@@ -625,53 +619,47 @@ public class Gurobi {
      */
 
     /**
-     * alternative to constrStudsPerProj
+     * alternative to constrStudsPerProj TODO
      */
     private void prefStudentsPerProj() {
 
     }
 
     /**
-     * alternative to constrProjPerStud
+     * alternative to constrProjPerStud TODO
      */
     private void prefProjPerStud() {
 
     }
 
     /**
-     * Alternative to constrStudsAcceptedInProj: only students who study one of the project's accepted study programs
+     * Alternative to constrStudHasRightStudyProgram: only students who study one of the project's accepted study
+     * programs
      * should be assigned to the project.
      */
-    private void prefStudsAcceptedInProj() { // TODO: test
+    private void prefStudsHasRightStudyProgram() { // TODO: test
         for (int s = 0; s < this.allocs.numStuds(); ++s) {
             for (int p = 0; p < this.allocs.numProjs(); ++p) {
                 Allocation alloc = this.allocs.get(p, s);
                 boolean accepted = alloc.project().checkStudyProgram(alloc.student());
                 if (!accepted) {
-                    alloc.addToScore(Config.Preferences.penStudsAcceptedInProj);
+                    alloc.addToScore(Config.Preferences.penStudentHasRightStudyProgram); // TODO not in gui
                 }
             }
         }
     }
 
     /**
-     * alternative to constrStudsPerStudy
+     * alternative to constrStudsPerStudy TODO
      */
     private void prefStudsPerStudy() {
 
     }
 
     /**
-     * alternative to constrMinStudsPerGroupProj
-     */
-    private void prefMinStudsPerGroupProj() {
-
-    }
-
-    /**
      * Alternative to constrFixedStuds. TODO: not in use
      */
-    private void prefFixedStuds() {
+    /*private void prefFixedStuds() {
         for (int p = 0; p < this.allocs.numProjs(); ++p) {
             Project project = this.allocs.getProj(p);
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
@@ -683,20 +671,14 @@ public class Gurobi {
                 if (studFixedForProj) {
                     alloc.setStudentFixed();
                 } else if (student.isFixed()) {
-                    alloc.addToScore(Config.Preferences.penFixedStuds);
+                    alloc.addToScore(Config.Preferences.penFixedStuds); // TODO not in gui
                 }
             }
         }
-    }
-
-    /*
-     * student made mistakes when filling out the form
-     * TODO
-     */
-
+    }*/
 
     /**
-     * Prioritizes the students' selected projects according to their preferences: The project they selected first/
+     * Prioritizes the students' selected projects according to their choices: The project they selected first/
      * second/ third/ fourth will have the highest/ second highest/ third highest/ lowest priority.
      */
     private void prefSelectedProj() {
