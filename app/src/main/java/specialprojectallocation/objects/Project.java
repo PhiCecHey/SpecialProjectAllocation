@@ -2,9 +2,8 @@ package specialprojectallocation.objects;
 
 import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Calculation;
-import specialprojectallocation.Config;
+import specialprojectallocation.GurobiConfig;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
-import specialprojectallocation.parser.RegisterProject;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -192,11 +191,11 @@ public class Project {
         if (this.stringFixedStuds.isEmpty()) {
             return;
         }
-        String[] nameImmas = this.stringFixedStuds.split(Config.ProjectAdministration.delimFixedStuds);
+        String[] nameImmas = this.stringFixedStuds.split(GurobiConfig.ProjectAdministration.delimFixedStuds);
         this.fixedStuds = new Student[nameImmas.length];
         int i = 0;
         for (String naIm : nameImmas) {
-            String[] split = naIm.split(Config.ProjectAdministration.delimFixedStudsNameImma);
+            String[] split = naIm.split(GurobiConfig.ProjectAdministration.delimFixedStudsNameImma);
             String name = "", imma = "";
             if (split.length > 0) {
                 name = split[0].trim();

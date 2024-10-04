@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import specialprojectallocation.Calculation;
-import specialprojectallocation.Config;
+import specialprojectallocation.GurobiConfig;
 import specialprojectallocation.algorithm.Allocations;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
@@ -27,16 +27,16 @@ public class WriteResults {
                     if (results[p][s] == 1) {
                         Student student = allocs.getStud(s);
                         if (line.isEmpty()) {
-                            line.append(project.abbrev()).append(Config.Output.csvDelim);
+                            line.append(project.abbrev()).append(GurobiConfig.Output.csvDelim);
                         }
                         line.append(student.name()).append(" (").append(student.immatNum()).append(") ");
                         int choice = student.choiceOfProj(project);
                         if (choice == 0) {
-                            line.append("[F]" + Config.Output.csvDelim);
+                            line.append("[F]" + GurobiConfig.Output.csvDelim);
                         } else if (choice == -1) {
-                            line.append("[-]" + Config.Output.csvDelim);
+                            line.append("[-]" + GurobiConfig.Output.csvDelim);
                         } else {
-                            line.append("[").append(choice).append(".]").append(Config.Output.csvDelim);
+                            line.append("[").append(choice).append(".]").append(GurobiConfig.Output.csvDelim);
                         }
                     }
                 }
@@ -47,9 +47,9 @@ public class WriteResults {
             }
 
             if (!Calculation.studentsWithoutProject.isEmpty()) {
-                bw.write("\n + Students without a project:" + Config.Output.csvDelim);
+                bw.write("\n + Students without a project:" + GurobiConfig.Output.csvDelim);
                 for (Student student : Calculation.studentsWithoutProject) {
-                    bw.write(student.name() + " (" + student.immatNum() + ")" + Config.Output.csvDelim);
+                    bw.write(student.name() + " (" + student.immatNum() + ")" + GurobiConfig.Output.csvDelim);
                 }
                 bw.write("\n");
             }

@@ -2,7 +2,7 @@ package specialprojectallocation.gui;
 
 import net.miginfocom.swing.MigLayout;
 import specialprojectallocation.Calculation;
-import specialprojectallocation.Config;
+import specialprojectallocation.GurobiConfig;
 
 import javax.swing.*;
 import java.awt.*;
@@ -86,14 +86,14 @@ public class ConfigPanel extends JPanel {
             this.lStudProg = new JLabel("Study Program:");
             this.lImmatNum = new JLabel("Matricul Num:");
 
-            this.fCsvDelim = new MyTextFieldInConfig(Character.toString(Config.ProjectSelection.csvDelim));
-            this.fName = new MyTextFieldInConfig(Config.ProjectSelection.fullName);
-            this.fFirst = new MyTextFieldInConfig(Config.ProjectSelection.first);
-            this.fSecond = new MyTextFieldInConfig(Config.ProjectSelection.second);
-            this.fThird = new MyTextFieldInConfig(Config.ProjectSelection.third);
-            this.fFourth = new MyTextFieldInConfig(Config.ProjectSelection.fourth);
-            this.fStudProg = new MyTextFieldInConfig(Config.ProjectSelection.studProg);
-            this.fIimmatNum = new MyTextFieldInConfig(Config.ProjectSelection.immaNum);
+            this.fCsvDelim = new MyTextFieldInConfig(Character.toString(GurobiConfig.ProjectSelection.csvDelim));
+            this.fName = new MyTextFieldInConfig(GurobiConfig.ProjectSelection.fullName);
+            this.fFirst = new MyTextFieldInConfig(GurobiConfig.ProjectSelection.first);
+            this.fSecond = new MyTextFieldInConfig(GurobiConfig.ProjectSelection.second);
+            this.fThird = new MyTextFieldInConfig(GurobiConfig.ProjectSelection.third);
+            this.fFourth = new MyTextFieldInConfig(GurobiConfig.ProjectSelection.fourth);
+            this.fStudProg = new MyTextFieldInConfig(GurobiConfig.ProjectSelection.studProg);
+            this.fIimmatNum = new MyTextFieldInConfig(GurobiConfig.ProjectSelection.immaNum);
 
             this.add(lCsvDelim, "cell 0 1, gapy 20");
             this.add(fCsvDelim, "cell 1 1, growx");
@@ -114,14 +114,14 @@ public class ConfigPanel extends JPanel {
         }
 
         void save() {
-            Config.ProjectSelection.csvDelim = this.fCsvDelim.getText().toCharArray()[0];
-            Config.ProjectSelection.fullName = this.fName.getText();
-            Config.ProjectSelection.first = this.fFirst.getText();
-            Config.ProjectSelection.second = this.fSecond.getText();
-            Config.ProjectSelection.third = this.fThird.getText();
-            Config.ProjectSelection.fourth = this.fFourth.getText();
-            Config.ProjectSelection.studProg = this.fStudProg.getText();
-            Config.ProjectSelection.immaNum = this.fIimmatNum.getText();
+            GurobiConfig.ProjectSelection.csvDelim = this.fCsvDelim.getText().toCharArray()[0];
+            GurobiConfig.ProjectSelection.fullName = this.fName.getText();
+            GurobiConfig.ProjectSelection.first = this.fFirst.getText();
+            GurobiConfig.ProjectSelection.second = this.fSecond.getText();
+            GurobiConfig.ProjectSelection.third = this.fThird.getText();
+            GurobiConfig.ProjectSelection.fourth = this.fFourth.getText();
+            GurobiConfig.ProjectSelection.studProg = this.fStudProg.getText();
+            GurobiConfig.ProjectSelection.immaNum = this.fIimmatNum.getText();
         }
     }
 
@@ -171,21 +171,21 @@ public class ConfigPanel extends JPanel {
             this.lDelimFixedStudsNameImma = new JLabel("Delimiter Name & Matricul. Num:");
             this.lQuotes = new JLabel("Character for Quotes:");
 
-            this.fCsvDelim = new MyTextFieldInConfig(Character.toString(Config.ProjectAdministration.csvDelim));
+            this.fCsvDelim = new MyTextFieldInConfig(Character.toString(GurobiConfig.ProjectAdministration.csvDelim));
             this.fNumCharsAbbrev = new MyTextFieldInConfig(
-                    Integer.toString(Config.ProjectAdministration.numCharsAbbrev));
-            this.fAbbrev = new MyTextFieldInConfig(Config.ProjectAdministration.abbrev);
-            this.fVar = new MyTextFieldInConfig(Config.ProjectAdministration.var);
-            this.fVarOneStudent = new MyTextFieldInConfig(Config.ProjectAdministration.varOneStudent);
-            this.fMinNum = new MyTextFieldInConfig(Config.ProjectAdministration.minNum);
-            this.fMaxNum = new MyTextFieldInConfig(Config.ProjectAdministration.maxNum);
+                    Integer.toString(GurobiConfig.ProjectAdministration.numCharsAbbrev));
+            this.fAbbrev = new MyTextFieldInConfig(GurobiConfig.ProjectAdministration.abbrev);
+            this.fVar = new MyTextFieldInConfig(GurobiConfig.ProjectAdministration.var);
+            this.fVarOneStudent = new MyTextFieldInConfig(GurobiConfig.ProjectAdministration.varOneStudent);
+            this.fMinNum = new MyTextFieldInConfig(GurobiConfig.ProjectAdministration.minNum);
+            this.fMaxNum = new MyTextFieldInConfig(GurobiConfig.ProjectAdministration.maxNum);
             //this.fMainGroup = new MyTextFieldInConfig(Config.ProjectAdministration.mainGroup);
             //this.fMainMaxNum = new MyTextFieldInConfig(Config.ProjectAdministration.mainMaxNum);
-            this.fFixed = new MyTextFieldInConfig(Config.ProjectAdministration.fixed);
-            this.fDelimFixedStuds = new MyTextFieldInConfig(Config.ProjectAdministration.delimFixedStuds);
+            this.fFixed = new MyTextFieldInConfig(GurobiConfig.ProjectAdministration.fixed);
+            this.fDelimFixedStuds = new MyTextFieldInConfig(GurobiConfig.ProjectAdministration.delimFixedStuds);
             this.fDelimFixedStudsNameImma = new MyTextFieldInConfig(
-                    Config.ProjectAdministration.delimFixedStudsNameImma);
-            this.fQuotes = new MyTextFieldInConfig(Character.toString(Config.ProjectAdministration.quotes));
+                    GurobiConfig.ProjectAdministration.delimFixedStudsNameImma);
+            this.fQuotes = new MyTextFieldInConfig(Character.toString(GurobiConfig.ProjectAdministration.quotes));
 
             this.add(lCsvDelim, "cell 0 1, gapy 20");
             this.add(fCsvDelim, "cell 1 1, growx");
@@ -216,23 +216,23 @@ public class ConfigPanel extends JPanel {
         }
 
         void save() {
-            Config.ProjectAdministration.csvDelim = this.fCsvDelim.getText().toCharArray()[0];
+            GurobiConfig.ProjectAdministration.csvDelim = this.fCsvDelim.getText().toCharArray()[0];
             try {
-                Config.ProjectAdministration.numCharsAbbrev = Integer.parseInt(this.fNumCharsAbbrev.getText());
+                GurobiConfig.ProjectAdministration.numCharsAbbrev = Integer.parseInt(this.fNumCharsAbbrev.getText());
             } catch (NumberFormatException e) {
                 this.fNumCharsAbbrev.setBackground(Colors.redTransp);
-                this.fNumCharsAbbrev.setText(Integer.toString(Config.ProjectAdministration.numCharsAbbrev));
+                this.fNumCharsAbbrev.setText(Integer.toString(GurobiConfig.ProjectAdministration.numCharsAbbrev));
             }
-            Config.ProjectAdministration.abbrev = this.fAbbrev.getText();
-            Config.ProjectAdministration.var = this.fVar.getText();
-            Config.ProjectAdministration.varOneStudent = this.fVarOneStudent.getText();
-            Config.ProjectAdministration.maxNum = this.fMaxNum.getText();
+            GurobiConfig.ProjectAdministration.abbrev = this.fAbbrev.getText();
+            GurobiConfig.ProjectAdministration.var = this.fVar.getText();
+            GurobiConfig.ProjectAdministration.varOneStudent = this.fVarOneStudent.getText();
+            GurobiConfig.ProjectAdministration.maxNum = this.fMaxNum.getText();
             // Config.ProjectAdministration.mainGroup = this.fMainGroup.getText();
             // Config.ProjectAdministration.mainMaxNum = this.fMainMaxNum.getText();
-            Config.ProjectAdministration.fixed = this.fFixed.getText();
-            Config.ProjectAdministration.delimFixedStuds = this.fDelimFixedStuds.getText();
-            Config.ProjectAdministration.delimFixedStudsNameImma = this.fDelimFixedStudsNameImma.getText();
-            Config.ProjectAdministration.quotes = this.fQuotes.getText().toCharArray()[0];
+            GurobiConfig.ProjectAdministration.fixed = this.fFixed.getText();
+            GurobiConfig.ProjectAdministration.delimFixedStuds = this.fDelimFixedStuds.getText();
+            GurobiConfig.ProjectAdministration.delimFixedStudsNameImma = this.fDelimFixedStudsNameImma.getText();
+            GurobiConfig.ProjectAdministration.quotes = this.fQuotes.getText().toCharArray()[0];
         }
     }
 
@@ -556,10 +556,10 @@ public class ConfigPanel extends JPanel {
             text2 = "Gewicht Zweitwahl:";
             text3 = "Gewicht Drittwahl:";
             String text4 = "Gewicht Viertwahl:";
-            this.weightSelectedProj = new CheckFourFields(text0, text1, Double.toString(Config.Preferences.proj1),
-                                                          text2, Double.toString(Config.Preferences.proj2), text3,
-                                                          Double.toString(Config.Preferences.proj3), text4,
-                                                          Double.toString(Config.Preferences.proj4));
+            this.weightSelectedProj = new CheckFourFields(text0, text1, Double.toString(GurobiConfig.Preferences.proj1),
+                                                          text2, Double.toString(GurobiConfig.Preferences.proj2), text3,
+                                                          Double.toString(GurobiConfig.Preferences.proj3), text4,
+                                                          Double.toString(GurobiConfig.Preferences.proj4));
 
             text0 = "Gewichtung der Studiengänge innerhalb der Projekte";
             text1 = "Gewicht Priorität 1:";
@@ -567,11 +567,11 @@ public class ConfigPanel extends JPanel {
             text3 = "Gewicht Priorität 3:";
             text4 = "Gewicht Priorität 4:";
             String text5 = "Gewicht Priorität 5";
-            this.weightRegProj = new CheckFiveFields(text0, text1, Double.toString(Config.Preferences.studyPrio1),
-                                                     text2, Double.toString(Config.Preferences.studyPrio2), text3,
-                                                     Double.toString(Config.Preferences.studyPrio3), text4,
-                                                     Double.toString(Config.Preferences.studyPrio4), text5,
-                                                     Double.toString(Config.Preferences.studyPrio5));
+            this.weightRegProj = new CheckFiveFields(text0, text1, Double.toString(GurobiConfig.Preferences.studyPrio1),
+                                                     text2, Double.toString(GurobiConfig.Preferences.studyPrio2), text3,
+                                                     Double.toString(GurobiConfig.Preferences.studyPrio3), text4,
+                                                     Double.toString(GurobiConfig.Preferences.studyPrio4), text5,
+                                                     Double.toString(GurobiConfig.Preferences.studyPrio5));
 
             this.add(this.fixedStuds);
 
@@ -605,75 +605,75 @@ public class ConfigPanel extends JPanel {
         }
 
         void save() {
-            Config.Constraints.fixedStuds = this.fixedStuds.check.isSelected();
-            Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj = this.fixedStuds.one.isSelected();
-            Config.Constraints.addFixedStudsToAllSelectedProj = this.fixedStuds.two.isSelected();
-            Config.Constraints.addFixedStudsToMostWantedProj = this.fixedStuds.three.isSelected();
+            GurobiConfig.Constraints.fixedStuds = this.fixedStuds.check.isSelected();
+            GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj = this.fixedStuds.one.isSelected();
+            GurobiConfig.Constraints.addFixedStudsToAllSelectedProj = this.fixedStuds.two.isSelected();
+            GurobiConfig.Constraints.addFixedStudsToMostWantedProj = this.fixedStuds.three.isSelected();
 
-            Config.Constraints.studWantsProj = this.studWantsProj.check.isSelected();
+            GurobiConfig.Constraints.studWantsProj = this.studWantsProj.check.isSelected();
 
-            Config.Constraints.invalids = this.invalids.check.isSelected();
-            Config.Constraints.ignoreInvalids = this.invalids.one.isSelected();
-            Config.Constraints.addInvalidsToFixed = this.invalids.two.isSelected();
+            GurobiConfig.Constraints.invalids = this.invalids.check.isSelected();
+            GurobiConfig.Constraints.ignoreInvalids = this.invalids.one.isSelected();
+            GurobiConfig.Constraints.addInvalidsToFixed = this.invalids.two.isSelected();
 
-            Config.Preferences.selectedProjs = this.weightSelectedProj.check.isSelected();
+            GurobiConfig.Preferences.selectedProjs = this.weightSelectedProj.check.isSelected();
             if (this.weightSelectedProj.check.isSelected()) {
                 try {
-                    Config.Preferences.proj1 = Double.parseDouble(this.weightSelectedProj.field1.getText());
+                    GurobiConfig.Preferences.proj1 = Double.parseDouble(this.weightSelectedProj.field1.getText());
                 } catch (NumberFormatException e) {
                     this.weightSelectedProj.field1.setBackground(Colors.redTransp);
-                    this.weightSelectedProj.field1.setText(Double.toString(Config.Preferences.proj1));
+                    this.weightSelectedProj.field1.setText(Double.toString(GurobiConfig.Preferences.proj1));
                 }
                 try {
-                    Config.Preferences.proj2 = Double.parseDouble(this.weightSelectedProj.field2.getText());
+                    GurobiConfig.Preferences.proj2 = Double.parseDouble(this.weightSelectedProj.field2.getText());
                 } catch (NumberFormatException e) {
                     this.weightSelectedProj.field2.setBackground(Colors.redTransp);
-                    this.weightSelectedProj.field2.setText(Double.toString(Config.Preferences.proj2));
+                    this.weightSelectedProj.field2.setText(Double.toString(GurobiConfig.Preferences.proj2));
                 }
                 try {
-                    Config.Preferences.proj3 = Double.parseDouble(this.weightSelectedProj.field3.getText());
+                    GurobiConfig.Preferences.proj3 = Double.parseDouble(this.weightSelectedProj.field3.getText());
                 } catch (NumberFormatException e) {
                     this.weightSelectedProj.field3.setBackground(Colors.redTransp);
-                    this.weightSelectedProj.field3.setText(Double.toString(Config.Preferences.proj3));
+                    this.weightSelectedProj.field3.setText(Double.toString(GurobiConfig.Preferences.proj3));
                 }
                 try {
-                    Config.Preferences.proj4 = Double.parseDouble(this.weightSelectedProj.field4.getText());
+                    GurobiConfig.Preferences.proj4 = Double.parseDouble(this.weightSelectedProj.field4.getText());
                 } catch (NumberFormatException e) {
                     this.weightSelectedProj.field4.setBackground(Colors.redTransp);
-                    this.weightSelectedProj.field4.setText(Double.toString(Config.Preferences.proj4));
+                    this.weightSelectedProj.field4.setText(Double.toString(GurobiConfig.Preferences.proj4));
                 }
             }
 
             if (this.weightRegProj.check.isSelected()) {
                 try {
-                    Config.Preferences.studyPrio1 = Double.parseDouble(this.weightRegProj.field1.getText());
+                    GurobiConfig.Preferences.studyPrio1 = Double.parseDouble(this.weightRegProj.field1.getText());
                 } catch (NumberFormatException e) {
                     this.weightRegProj.field1.setBackground(Colors.redTransp);
-                    this.weightRegProj.field1.setText(Double.toString(Config.Preferences.studyPrio1));
+                    this.weightRegProj.field1.setText(Double.toString(GurobiConfig.Preferences.studyPrio1));
                 }
                 try {
-                    Config.Preferences.studyPrio2 = Double.parseDouble(this.weightRegProj.field2.getText());
+                    GurobiConfig.Preferences.studyPrio2 = Double.parseDouble(this.weightRegProj.field2.getText());
                 } catch (NumberFormatException e) {
                     this.weightRegProj.field2.setBackground(Colors.redTransp);
-                    this.weightRegProj.field2.setText(Double.toString(Config.Preferences.studyPrio2));
+                    this.weightRegProj.field2.setText(Double.toString(GurobiConfig.Preferences.studyPrio2));
                 }
                 try {
-                    Config.Preferences.studyPrio3 = Double.parseDouble(this.weightRegProj.field3.getText());
+                    GurobiConfig.Preferences.studyPrio3 = Double.parseDouble(this.weightRegProj.field3.getText());
                 } catch (NumberFormatException e) {
                     this.weightRegProj.field3.setBackground(Colors.redTransp);
-                    this.weightRegProj.field3.setText(Double.toString(Config.Preferences.studyPrio3));
+                    this.weightRegProj.field3.setText(Double.toString(GurobiConfig.Preferences.studyPrio3));
                 }
                 try {
-                    Config.Preferences.studyPrio4 = Double.parseDouble(this.weightRegProj.field4.getText());
+                    GurobiConfig.Preferences.studyPrio4 = Double.parseDouble(this.weightRegProj.field4.getText());
                 } catch (NumberFormatException e) {
                     this.weightRegProj.field4.setBackground(Colors.redTransp);
-                    this.weightRegProj.field4.setText(Double.toString(Config.Preferences.studyPrio4));
+                    this.weightRegProj.field4.setText(Double.toString(GurobiConfig.Preferences.studyPrio4));
                 }
                 try {
-                    Config.Preferences.studyPrio5 = Double.parseDouble(this.weightRegProj.field5.getText());
+                    GurobiConfig.Preferences.studyPrio5 = Double.parseDouble(this.weightRegProj.field5.getText());
                 } catch (NumberFormatException e) {
                     this.weightRegProj.field5.setBackground(Colors.redTransp);
-                    this.weightRegProj.field5.setText(Double.toString(Config.Preferences.studyPrio5));
+                    this.weightRegProj.field5.setText(Double.toString(GurobiConfig.Preferences.studyPrio5));
                 }
             }
         }

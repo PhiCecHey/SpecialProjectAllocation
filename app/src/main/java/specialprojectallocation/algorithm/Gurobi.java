@@ -15,7 +15,7 @@ import gurobi.GRBVar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Calculation;
-import specialprojectallocation.Config;
+import specialprojectallocation.GurobiConfig;
 import specialprojectallocation.objects.Group;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
@@ -286,10 +286,10 @@ public class Gurobi {
      */
     @NotNull
     private static String exactNumOfChars(@NotNull String abbrev) {
-        if (abbrev.length() >= Config.ProjectAdministration.numCharsAbbrev) {
-            return abbrev.substring(0, Config.ProjectAdministration.numCharsAbbrev);
+        if (abbrev.length() >= GurobiConfig.ProjectAdministration.numCharsAbbrev) {
+            return abbrev.substring(0, GurobiConfig.ProjectAdministration.numCharsAbbrev);
         }
-        return abbrev + " ".repeat(Config.ProjectAdministration.numCharsAbbrev - abbrev.length());
+        return abbrev + " ".repeat(GurobiConfig.ProjectAdministration.numCharsAbbrev - abbrev.length());
     }
 
     /*
@@ -303,23 +303,23 @@ public class Gurobi {
      * in the Config.java file.
      */
     private void addConstraints() {
-        if (Config.Constraints.projectPerStudent) {
+        if (GurobiConfig.Constraints.projectPerStudent) {
             this.constrMinProjPerStud();
             this.constrMaxProjPerStud();
         }
-        if (Config.Constraints.studentsPerProject) {
+        if (GurobiConfig.Constraints.studentsPerProject) {
             this.constrStudsPerProj();
         }
-        if (Config.Constraints.studentHasRightStudyProgram) {
+        if (GurobiConfig.Constraints.studentHasRightStudyProgram) {
             this.constrStudHasRightStudyProgram();
         }
-        if (Config.Constraints.studentsPerStudy) {
+        if (GurobiConfig.Constraints.studentsPerStudy) {
             this.constrStudsPerStudy();
         }
-        if (Config.Constraints.fixedStuds) {
+        if (GurobiConfig.Constraints.fixedStuds) {
             this.constrFixedStudents(); // includes upper bound for projPerStud
         }
-        if (Config.Constraints.studWantsProj) {
+        if (GurobiConfig.Constraints.studWantsProj) {
             this.constrStudHasToGetASelProj();
         }
     }
@@ -329,19 +329,19 @@ public class Gurobi {
      * the GUI. The defaults are set in the Config.java file.
      */
     private void addPreferences() { // TODO: implement missing pref methods, see configPanel
-        if (Config.Preferences.studentsPerProject) {
+        if (GurobiConfig.Preferences.studentsPerProject) {
             this.prefStudentsPerProj(); // TODO min max
         }
-        if (Config.Preferences.projectPerStudent) {
+        if (GurobiConfig.Preferences.projectPerStudent) {
             this.prefProjPerStud(); // TODO min max
         }
-        if (Config.Preferences.studentHasRightStudyProgram) {
+        if (GurobiConfig.Preferences.studentHasRightStudyProgram) {
             this.prefStudsHasRightStudyProgram();
         }
-        if (Config.Preferences.studentsPerStudy) {
+        if (GurobiConfig.Preferences.studentsPerStudy) {
             this.prefStudsPerStudy();
         }
-        if (Config.Preferences.selectedProjs) {
+        if (GurobiConfig.Preferences.selectedProjs) {
             this.prefSelectedProj();
         }
         /*if (Config.Preferences.fixedStuds) {
@@ -359,7 +359,7 @@ public class Gurobi {
                 // ignore student if invalid selections should be ignored and student has invalid selection
                 Student student = this.allocs.getStud(s);
                 int min = 1;
-                if (Config.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())) {
+                if (GurobiConfig.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())) {
                     min = 0;
                 }
                 expr = new GRBLinExpr();
@@ -390,25 +390,25 @@ public class Gurobi {
                 Student student = this.allocs.getStud(s);
                 int projPerStud = 1;
 
-                if (Config.Constraints.fixedStuds) {
-                    if (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
+                if (GurobiConfig.Constraints.fixedStuds) {
+                    if (GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
                         // several projects allowed. only add stud to fixed projs
                         projPerStud = Math.max(1, student.numFixedProject());
-                    } else if (Config.Constraints.addFixedStudsToAllSelectedProj) {
+                    } else if (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj) {
                         // several projects allowed. only add stud to fixed projs that stud selected
                         projPerStud = Math.max(1, student.numFixedWantedProject());
-                    } else if (Config.Constraints.addFixedStudsToMostWantedProj) {
+                    } else if (GurobiConfig.Constraints.addFixedStudsToMostWantedProj) {
                         // only one proj allowed. only add stud to most wanted fixed proj
                         projPerStud = 1; // redundant, here for better readability
                     }
                 }
 
                 // ignore students with invalid selections
-                if ((Config.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())
-                     && Config.Constraints.ignoreInvalids) ||
+                if ((GurobiConfig.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())
+                     && GurobiConfig.Constraints.ignoreInvalids) ||
                     // ignore students with invalid selections that should only be added to the projects they are
                     // fixed in but the fixed option is disabled
-                    (!Config.Constraints.fixedStuds && Config.Constraints.addInvalidsToFixed)) {
+                    (!GurobiConfig.Constraints.fixedStuds && GurobiConfig.Constraints.addInvalidsToFixed)) {
                     projPerStud = 0;
                 }
 
@@ -463,7 +463,7 @@ public class Gurobi {
             GRBLinExpr expr;
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
                 Student student = this.allocs.getStud(s);
-                if (Config.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())) {
+                if (GurobiConfig.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())) {
                     continue;
                 }
                 expr = new GRBLinExpr();
@@ -587,14 +587,14 @@ public class Gurobi {
                     Student student = this.allocs.getStud(s);
                     boolean constraint = false;
                     // ignore students with invalid selections
-                    if (!(Config.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum()))
+                    if (!(GurobiConfig.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum()))
                         && project.isFixed(student)) {
-                        if (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
+                        if (GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
                             constraint = true;
-                        } else if (Config.Constraints.addFixedStudsToAllSelectedProj && project.isFixedAndStudentsWish(
+                        } else if (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj && project.isFixedAndStudentsWish(
                                 student)) {
                             constraint = true;
-                        } else if (Config.Constraints.addFixedStudsToMostWantedProj
+                        } else if (GurobiConfig.Constraints.addFixedStudsToMostWantedProj
                                    && project.isFixedAndStudentsHighestWish(student)) {
                             constraint = true;
                         }
@@ -643,7 +643,7 @@ public class Gurobi {
                 Allocation alloc = this.allocs.get(p, s);
                 boolean accepted = alloc.project().checkStudyProgram(alloc.student());
                 if (!accepted) {
-                    alloc.addToScore(Config.Preferences.penStudentHasRightStudyProgram); // TODO not in gui
+                    alloc.addToScore(GurobiConfig.Preferences.penStudentHasRightStudyProgram); // TODO not in gui
                 }
             }
         }
@@ -688,17 +688,17 @@ public class Gurobi {
                 Allocation alloc = this.allocs.get(p, s);
                 Project project = alloc.project();
                 if (project.abbrev().equals(student.abbrevProj1())) {
-                    alloc.addToScore(Config.Preferences.proj1);
+                    alloc.addToScore(GurobiConfig.Preferences.proj1);
                 } else if (project.abbrev().equals(student.abbrevProj2())) {
-                    alloc.addToScore(Config.Preferences.proj2);
+                    alloc.addToScore(GurobiConfig.Preferences.proj2);
                 } else if (project.abbrev().equals(student.abbrevProj3())) {
-                    alloc.addToScore(Config.Preferences.proj3);
+                    alloc.addToScore(GurobiConfig.Preferences.proj3);
                 } else if (project.abbrev().equals(student.abbrevProj4())) {
-                    alloc.addToScore(Config.Preferences.proj4);
+                    alloc.addToScore(GurobiConfig.Preferences.proj4);
                 }
             }
-            if (student.totalScore() < Config.Preferences.proj1 + Config.Preferences.proj2 + Config.Preferences.proj3
-                                       + Config.Preferences.proj4) {
+            if (student.totalScore() < GurobiConfig.Preferences.proj1 + GurobiConfig.Preferences.proj2 + GurobiConfig.Preferences.proj3
+                                       + GurobiConfig.Preferences.proj4) {
                 // TODO: student invalid project selection, see Student.java
                 boolean found = false;
                 for (Student st : Calculation.studentsWithInvalidSelection) {

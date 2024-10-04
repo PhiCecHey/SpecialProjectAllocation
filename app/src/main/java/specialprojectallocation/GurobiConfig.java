@@ -3,7 +3,7 @@ package specialprojectallocation;
 /**
  * Config file containing sensible defaults.
  */
-public class Config {
+public class GurobiConfig {
     /**
      * configs regarding ProjectSelection Moodle CSV file
      */

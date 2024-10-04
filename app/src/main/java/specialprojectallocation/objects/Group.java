@@ -21,7 +21,7 @@ public class Group {
      * @param prio        priority (1-5, 1: high, 5: low) of a study program within a project
      */
     public Group(String program, int maxNumStuds, int prio) {
-        this.studyProgram = StudyProgram.createOrGetProgram(program);
+        this.studyProgram = StudyProgram.findOrCreate(program);
         Calculation.studyProgramID(program);
         this.maxNumStuds = maxNumStuds;
         this.prio = prio;

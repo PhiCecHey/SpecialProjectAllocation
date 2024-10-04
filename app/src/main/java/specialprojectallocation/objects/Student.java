@@ -12,9 +12,9 @@ import java.util.Objects;
  * priorities. All students and their wishes are parsed from the SelectProject Moodle file.
  */
 public class Student {
-    private final String immatNum; // student's matriculation number
-    private final String name; // student's name
-    private final StudyProgram study; // student's StudyProgram
+    private String immatNum; // student's matriculation number
+    private String name; // student's name
+    private StudyProgram study; // student's StudyProgram
     private StudWish selectedProjs; // student's selected projects read from SelectProject Moodle file
     private double totalScore; // important for Gurobi class
 
@@ -25,12 +25,35 @@ public class Student {
      * @param na   student's name
      * @param stu  student's StudyProgram
      */
-    public Student(String imma, String na, StudyProgram stu) {
+    private Student(String imma, String na, StudyProgram stu) {
         this.immatNum = imma;
         this.name = na;
         this.study = stu;
         this.totalScore = 0;
         Calculation.students.add(this);
+    }
+
+    /**
+     * Finds and returns student with given matriculation number or else generates new Student and adds student to
+     * list of all students by calling the constructor.
+     *
+     * @param imma matriculation number of the student
+     * @param na   student's name
+     * @param stu  student's StudyProgram
+     * @return found or generated student
+     */
+    @NotNull
+    public static Student findOrCreate(String imma, String na, StudyProgram stu) {
+        Student student = Student.findStudentByImma(imma);
+        if (student != null) {
+            student.immatNum = imma;
+
+        } else {
+            student = new Student(imma, na, stu);
+            student.name = na;
+            student.study = stu;
+        }
+        return student;
     }
 
     /**
@@ -109,7 +132,7 @@ public class Student {
     public String abbrevProj1() /* Exception Project could not be found */ {
         if (this.selectedProjs == null || this.selectedProjs.proj1() == null) {
             return "";
-            // throw new ProjectNotFoundException("Project could not be found");
+            // throw new ProjectNotFoundException("Project could not be found"); TODO
         }
         return this.selectedProjs.proj1().abbrev();
     }

@@ -3,7 +3,7 @@ package specialprojectallocation.gui;
 import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
 import specialprojectallocation.Calculation;
-import specialprojectallocation.Config;
+import specialprojectallocation.GurobiConfig;
 import specialprojectallocation.Exceptions;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.parser.RegisterProject;
@@ -78,7 +78,7 @@ public class ImportsPanel extends JPanel {
             Calculation.projSel = new File(fSelection.getText());
             int worked;
             try {
-                worked = RegisterProject.read(Calculation.projReg, Config.ProjectAdministration.csvDelim);
+                worked = RegisterProject.read(Calculation.projReg, GurobiConfig.ProjectAdministration.csvDelim);
             } catch (IOException e) {
                 Calculation.appendToLog("RegisterProject: File could not be found! " + e + "\n");
                 worked = 2;
@@ -106,7 +106,7 @@ public class ImportsPanel extends JPanel {
 
             try {
                 Calculation.clearLog();
-                worked = SelectProject.read(Calculation.projSel, Config.ProjectSelection.csvDelim);
+                worked = SelectProject.read(Calculation.projSel, GurobiConfig.ProjectSelection.csvDelim);
             } catch (IOException e) {
                 this.fSelection.setBackground(Colors.redTransp);
                 Calculation.appendToLog("SelectProject: File not found! " + e + "\n");

@@ -33,8 +33,8 @@ public class App {
                 two = new File("files/Special_project_selection.csv");
             }
 
-            RegisterProject.read(one, Config.ProjectAdministration.csvDelim);
-            SelectProject.read(two, Config.ProjectSelection.csvDelim);
+            RegisterProject.read(one, GurobiConfig.ProjectAdministration.csvDelim);
+            SelectProject.read(two, GurobiConfig.ProjectSelection.csvDelim);
             Project.setAllFixed();
 
             Calculation.outPath = one.getPath().replace(one.getName(), "") + "results.csv";

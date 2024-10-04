@@ -35,7 +35,7 @@ public class StudyProgram {
      * @return created or found StudyProgram with respective id
      */
     @NotNull
-    public static StudyProgram createOrGetProgram(String id) {
+    public static StudyProgram findOrCreate(String id) {
         for (StudyProgram studyProgram : StudyProgram.allPrograms) {
             if (studyProgram.id.equals(id)) {
                 return studyProgram;

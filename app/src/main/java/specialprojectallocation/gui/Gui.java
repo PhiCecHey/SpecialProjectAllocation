@@ -4,9 +4,12 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
+import specialprojectallocation.parser.SaveUserConfigs;
+import specialprojectallocation.parser.ThemeFont;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Gui {
     static JFrame frame;
@@ -16,6 +19,7 @@ public class Gui {
     static JPanel results;
     static JTabbedPane pane;
     static boolean lightTheme = true;
+    static int fontSize = 22;
     static JButton theme, plus, minus, zero, maximize;
     private static ImageIcon moon = new ImageIcon(), plusDark = new ImageIcon(), circleDark = new ImageIcon(), minusDark
             = new ImageIcon(), maximizeDark = new ImageIcon(), sun = new ImageIcon(), plusLight = new ImageIcon(),
@@ -64,7 +68,9 @@ public class Gui {
 
         Gui.theme = new JButton(moon);
         Gui.frame.add(Gui.theme, "cell 2 0");
-        Gui.addThemeSwitcher();
+        Gui.theme.addActionListener(ae -> {
+            Gui.changeTheme(!Gui.lightTheme);
+        });
         Gui.plus = new JButton(plusDark);
         Gui.zero = new JButton(circleDark);
         Gui.minus = new JButton(minusDark);
@@ -81,17 +87,18 @@ public class Gui {
     }
 
     static void changeFontSize(@NotNull Component component, int size) {
+        Gui.fontSize = size;
         Font font = Gui.frame.getFont();
         font = new Font(font.getName(), font.getStyle(), size);
         component.setFont(font);
         if (component instanceof Container) {
             for (Component child : ((Container) component).getComponents()) {
-                changeFontSize(child, size);
+                Gui.changeFontSize(child, size);
             }
         }
     }
 
-    static void addFontSizeSwitcher() {
+    private static void addFontSizeSwitcher() {
         Gui.plus.addActionListener(ae -> Gui.changeFontSize(Gui.frame, Gui.frame.getFont().getSize() + 1));
         Gui.minus.addActionListener(ae -> Gui.changeFontSize(Gui.frame, Gui.frame.getFont().getSize() - 1));
         Gui.zero.addActionListener(ae -> Gui.changeFontSize(Gui.frame, 22));
@@ -102,25 +109,39 @@ public class Gui {
         });
     }
 
-    static void addThemeSwitcher() {
-        Gui.theme.addActionListener(ae -> {
-            if (Gui.lightTheme) {
-                FlatDarkLaf.setup();
-                theme.setIcon(Gui.sun);
-                plus.setIcon(Gui.plusLight);
-                zero.setIcon(Gui.circleLight);
-                minus.setIcon(Gui.minusLight);
-                maximize.setIcon(Gui.maximizeLight);
-            } else {
-                FlatLightLaf.setup();
-                theme.setIcon(Gui.moon);
-                plus.setIcon(Gui.plusDark);
-                zero.setIcon(Gui.circleDark);
-                minus.setIcon(Gui.minusDark);
-                maximize.setIcon(Gui.maximizeDark);
-            }
-            Gui.lightTheme = !Gui.lightTheme;
-            SwingUtilities.updateComponentTreeUI(Gui.frame);
+    private static void changeTheme(boolean lightTheme) {
+        Gui.lightTheme = lightTheme;
+        if (!lightTheme) {
+            FlatDarkLaf.setup();
+            theme.setIcon(Gui.sun);
+            plus.setIcon(Gui.plusLight);
+            zero.setIcon(Gui.circleLight);
+            minus.setIcon(Gui.minusLight);
+            maximize.setIcon(Gui.maximizeLight);
+        } else {
+            FlatLightLaf.setup();
+            theme.setIcon(Gui.moon);
+            plus.setIcon(Gui.plusDark);
+            zero.setIcon(Gui.circleDark);
+            minus.setIcon(Gui.minusDark);
+            maximize.setIcon(Gui.maximizeDark);
+        }
+        SwingUtilities.updateComponentTreeUI(Gui.frame);
+    }
+
+    public static void main(String[] args) {
+        Gui.init();
+        JButton load = new JButton("load");
+        JButton save = new JButton("save");
+        Gui.frame.add(save);
+        Gui.frame.add(load);
+        load.addActionListener(ae -> {
+            ThemeFont themeFont = SaveUserConfigs.loadConfigs(Gui.frame);
+            Gui.changeTheme(themeFont.lightTheme);
+            changeFontSize(Gui.frame, themeFont.fontSize);
+        }); save.addActionListener(ae -> {
+            SaveUserConfigs.saveConfigs(Gui.frame, Gui.lightTheme, Gui.fontSize);
         });
+
     }
 }

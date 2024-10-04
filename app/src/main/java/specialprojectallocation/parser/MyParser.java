@@ -2,7 +2,7 @@ package specialprojectallocation.parser;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import specialprojectallocation.Config;
+import specialprojectallocation.GurobiConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class MyParser {
         boolean inQuotes = false;
         StringBuilder cellInLine = new StringBuilder();
         for (char charInLine : lineInCsv.toCharArray()) {
-            if (charInLine == Config.ProjectAdministration.quotes) {
+            if (charInLine == GurobiConfig.ProjectAdministration.quotes) {
                 inQuotes = !inQuotes;
             } else if (!inQuotes && charInLine == delim) {
                 cells.add(cellInLine.toString());

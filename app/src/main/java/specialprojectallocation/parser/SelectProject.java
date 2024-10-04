@@ -27,7 +27,7 @@ public class SelectProject extends MyParser {
     /**
      * Parses SelectProject Moodle file.
      *
-     * @param csv SelectProject CSV Moodle file
+     * @param csv   SelectProject CSV Moodle file
      * @param delim delimiter of SelectProject CSV Moodle file, e.g. ","
      * @return 0: no errors/warnings. 1: warning - student made several wishes/ filled out the Moodle form several
      * times. 2: error - problem parsing the first line of the file. 3: error - index out of bounds, wrong file
@@ -42,30 +42,27 @@ public class SelectProject extends MyParser {
         if (!SelectProject.evalHeading(line, delim)) {
             Calculation.appendToLog("SelectProject: Could not evaluate first row of SelectProjectFile! Wrong file or "
                                     + "wrong delim in config tab?");
+            bufferedReader.close();
             return 2;
         }
         while ((line = bufferedReader.readLine()) != null) {
-            String[] cells = SelectProject.readLineInCsvWithQuotesAndDelim(line, Config.ProjectSelection.csvDelim);
+            String[] cells = SelectProject.readLineInCsvWithQuotesAndDelim(line, GurobiConfig.ProjectSelection.csvDelim);
             try {
-                Student found = Student.findStudentByImma(cells[SelectProject.immaNum]);
-                if (found == null) {
-                    Student student = new Student(cells[SelectProject.immaNum], cells[SelectProject.name],
-                                                  StudyProgram.createOrGetProgram(cells[SelectProject.studProg]));
-                    student.selectProjStr(cells[SelectProject.first], cells[SelectProject.second],
-                                          cells[SelectProject.third], cells[SelectProject.fourth]);
-                } else {
-                    // TODO: what to do with duplicate? only take newest?
-                    Calculation.appendToLog("SelectProject: Student " + found.name()
-                                            + " applied for a project more than once! Will only take first entry.");
-                    return 1;
-                    //throw new StudentDuplicateException("Student " + found.name() + " applied for a project more
-                    // than once!");
-                }
+                String imma = cells[SelectProject.immaNum];
+                String name = cells[SelectProject.name];
+                String studProg = cells[SelectProject.studProg];
+
+                // also adds student to list of all students
+                Student student = Student.findOrCreate(imma, name, StudyProgram.findOrCreate(studProg));
+                student.selectProjStr(cells[SelectProject.first], cells[SelectProject.second],
+                                      cells[SelectProject.third], cells[SelectProject.fourth]);
             } catch (IndexOutOfBoundsException e) {
                 Calculation.appendToLog("SelectProject: Possibly wrong file?");
+                bufferedReader.close();
                 return 2;
             }
         }
+        bufferedReader.close();
         return 0;
     }
 
@@ -83,19 +80,19 @@ public class SelectProject extends MyParser {
         String[] cells = line.split(String.valueOf(delim));
         for (int i = 0; i < cells.length; ++i) {
             String cell = cells[i];
-            if (cell.contains(Config.ProjectSelection.fullName)) {
+            if (cell.contains(GurobiConfig.ProjectSelection.fullName)) {
                 SelectProject.name = i;
-            } else if (cell.contains(Config.ProjectSelection.immaNum)) {
+            } else if (cell.contains(GurobiConfig.ProjectSelection.immaNum)) {
                 SelectProject.immaNum = i;
-            } else if (cell.contains(Config.ProjectSelection.studProg)) {
+            } else if (cell.contains(GurobiConfig.ProjectSelection.studProg)) {
                 SelectProject.studProg = i;
-            } else if (cell.contains(Config.ProjectSelection.first)) {
+            } else if (cell.contains(GurobiConfig.ProjectSelection.first)) {
                 SelectProject.first = i;
-            } else if (cell.contains(Config.ProjectSelection.second)) {
+            } else if (cell.contains(GurobiConfig.ProjectSelection.second)) {
                 SelectProject.second = i;
-            } else if (cell.contains(Config.ProjectSelection.third)) {
+            } else if (cell.contains(GurobiConfig.ProjectSelection.third)) {
                 SelectProject.third = i;
-            } else if (cell.contains(Config.ProjectSelection.fourth)) {
+            } else if (cell.contains(GurobiConfig.ProjectSelection.fourth)) {
                 SelectProject.fourth = i;
             }
         }
