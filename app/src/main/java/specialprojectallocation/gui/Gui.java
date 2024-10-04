@@ -11,6 +11,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * Vectors and icons by <a href="https://www.svgrepo.com" target="_blank">SVG Repo</a>
+ */
 public class Gui {
     static JFrame frame;
     static JPanel help;
@@ -52,16 +55,16 @@ public class Gui {
         Gui.frame.add(sep, "cell 1 0, growy, spany, wrap");
 
         try {
-            Gui.moon = new ImageIcon(ClassLoader.getSystemResource("icons/moon.png"));
-            Gui.plusDark = new ImageIcon(ClassLoader.getSystemResource("icons/plus-dark.png"));
-            Gui.circleDark = new ImageIcon(ClassLoader.getSystemResource("icons/circle-dark.png"));
-            Gui.minusDark = new ImageIcon(ClassLoader.getSystemResource("icons/minus-dark.png"));
-            Gui.maximizeDark = new ImageIcon(ClassLoader.getSystemResource("icons/maximize-dark.png"));
-            Gui.sun = new ImageIcon(ClassLoader.getSystemResource("icons/sun.png"));
-            Gui.plusLight = new ImageIcon(ClassLoader.getSystemResource("icons/plus-light.png"));
-            Gui.circleLight = new ImageIcon(ClassLoader.getSystemResource("icons/circle-light.png"));
-            Gui.minusLight = new ImageIcon(ClassLoader.getSystemResource("icons/minus-light.png"));
-            Gui.maximizeLight = new ImageIcon(ClassLoader.getSystemResource("icons/maximize-light.png"));
+            Gui.moon = new ImageIcon(ClassLoader.getSystemResource("icons/moon-light.png"));
+            Gui.plusDark = new ImageIcon(ClassLoader.getSystemResource("icons/plus-light.png"));
+            Gui.circleDark = new ImageIcon(ClassLoader.getSystemResource("icons/o-light.png"));
+            Gui.minusDark = new ImageIcon(ClassLoader.getSystemResource("icons/minus-light.png"));
+            Gui.maximizeDark = new ImageIcon(ClassLoader.getSystemResource("icons/maximize-light.png"));
+            Gui.sun = new ImageIcon(ClassLoader.getSystemResource("icons/sun-dark.png"));
+            Gui.plusLight = new ImageIcon(ClassLoader.getSystemResource("icons/plus-dark.png"));
+            Gui.circleLight = new ImageIcon(ClassLoader.getSystemResource("icons/o-dark.png"));
+            Gui.minusLight = new ImageIcon(ClassLoader.getSystemResource("icons/minus-dark.png"));
+            Gui.maximizeLight = new ImageIcon(ClassLoader.getSystemResource("icons/maximize-dark.png"));
         } catch (Exception e) {
             System.out.println("Icons could not be found in resource folder.");
         }
@@ -139,7 +142,8 @@ public class Gui {
             ThemeFont themeFont = SaveUserConfigs.loadConfigs(Gui.frame);
             Gui.changeTheme(themeFont.lightTheme);
             changeFontSize(Gui.frame, themeFont.fontSize);
-        }); save.addActionListener(ae -> {
+        });
+        save.addActionListener(ae -> {
             SaveUserConfigs.saveConfigs(Gui.frame, Gui.lightTheme, Gui.fontSize);
         });
 
