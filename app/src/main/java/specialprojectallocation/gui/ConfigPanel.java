@@ -35,7 +35,7 @@ public class ConfigPanel extends JPanel {
         JSeparator sepH = new JSeparator();
         sepH.setMinimumSize(new Dimension(2, 2));
         this.add(sepH, "cell 0 1, growx, spanx, wrap");
-        this.save = new JButton("Speichern");
+        this.save = new JButton("Save");
         this.add(this.save, "cell 0 2, spanx, center");
 
         this.save();
@@ -77,14 +77,14 @@ public class ConfigPanel extends JPanel {
 
             this.add(new JLabel("Project Selection"), "cell 0 0, spanx, center");
 
-            this.lCsvDelim = new JLabel("CSV Delimiter:");
+            this.lCsvDelim = new JLabel("CSV delimiter:");
             this.lName = new JLabel("Name:");
-            this.lFirst = new JLabel("1. Project:");
-            this.lSecond = new JLabel("2. Project:");
-            this.lThird = new JLabel("3. Project:");
-            this.lFourth = new JLabel("4. Project:");
-            this.lStudProg = new JLabel("Study Program:");
-            this.lImmatNum = new JLabel("Matricul Num:");
+            this.lFirst = new JLabel("1. project:");
+            this.lSecond = new JLabel("2. project:");
+            this.lThird = new JLabel("3. project:");
+            this.lFourth = new JLabel("4. project:");
+            this.lStudProg = new JLabel("Study program:");
+            this.lImmatNum = new JLabel("Matricul num:");
 
             this.fCsvDelim = new MyTextFieldInConfig(Character.toString(GurobiConfig.ProjectSelection.csvDelim));
             this.fName = new MyTextFieldInConfig(GurobiConfig.ProjectSelection.fullName);
@@ -157,19 +157,19 @@ public class ConfigPanel extends JPanel {
             this.setLayout(new MigLayout());
             this.add(new JLabel("Project Administration"), "cell 0 0, spanx, center");
 
-            this.lCsvDelim = new JLabel("CSV Delimiter:");
-            this.lNumCharsAbbrev = new JLabel("Num of Chars in Project Abbrev:");
-            this.lAbbrev = new JLabel("Project Abbreviation:");
-            this.lVar = new JLabel("Project Variation:");
-            this.lVarOneStudent = new JLabel("One Student Variation:");
-            this.lMinNum = new JLabel("Min Number of Participants:");
-            this.lMaxNum = new JLabel("Max Number of Participants:");
+            this.lCsvDelim = new JLabel("CSV delimiter:");
+            this.lNumCharsAbbrev = new JLabel("Num of chars in project abbrev:");
+            this.lAbbrev = new JLabel("Project abbreviation:");
+            this.lVar = new JLabel("Project variant:");
+            this.lVarOneStudent = new JLabel("One student variant:");
+            this.lMinNum = new JLabel("Min number of participants:");
+            this.lMaxNum = new JLabel("Max number of participants:");
             // this.lMainGroup = new JLabel("Main Group of Project:");
             //this.lMainMaxNum = new JLabel("Maximum Number of Participants in Main Group:");
-            this.lFixed = new JLabel("Fixed Students:");
-            this.lDelimFixedStuds = new JLabel("Delimiter btw. Fixed Students:");
-            this.lDelimFixedStudsNameImma = new JLabel("Delimiter Name & Matricul. Num:");
-            this.lQuotes = new JLabel("Character for Quotes:");
+            this.lFixed = new JLabel("Pre-assigned students:");
+            this.lDelimFixedStuds = new JLabel("Delimiter btw. pre-assigned students:");
+            this.lDelimFixedStudsNameImma = new JLabel("Delimiter name & matricul. num:");
+            this.lQuotes = new JLabel("Character for quotes:");
 
             this.fCsvDelim = new MyTextFieldInConfig(Character.toString(GurobiConfig.ProjectAdministration.csvDelim));
             this.fNumCharsAbbrev = new MyTextFieldInConfig(
@@ -542,31 +542,38 @@ public class ConfigPanel extends JPanel {
             this.setLayout(new MigLayout("flowy"));
             this.add(new JLabel("Gurobi Configs"), "cell 0 0, spanx, center");
 
-            String text0 = "Falls Studierende in mehreren Projekten gesetzt sind, sollen sie hinzugefügt werden zu...";
-            String text1
-                    = "allen Projekten, in denen sie gesetzt sind (überschreibt 'ausschließlich gewählte Projekte')";
-            String text2 = "allen Projekten, in denen sie gesetzt sind und die sie gewählt haben";
-            String text3 = "dem Projekt, in dem sie gesetzt sind und das sie mit höchster Priorität gewählt haben";
+            //String text0 = "Falls Studierende in mehreren Projekten gesetzt sind, sollen sie hinzugefügt werden zu.
+            // ..";
+            String text0 = "[1] If a student has been pre-assigned to multiple projects, they will be allocated to";
+            //String text1
+            //        = "allen Projekten, in denen sie gesetzt sind (überschreibt 'ausschließlich gewählte Projekte')";
+            String text1 = "[a] all projects, that they have been pre-assigned to (ignores [2])";
+            //String text2 = "allen Projekten, in denen sie gesetzt sind und die sie gewählt haben";
+            String text2 = "[b] all projects, that they have been pre-assigned to and that they have chosen";
+            //String text3 = "dem Projekt, in dem sie gesetzt sind und das sie mit höchster Priorität gewählt haben";
+            String text3 = "[c] the project, that they have been pre-assigned to and that they prefer most";
+
             this.fixedStuds = new CheckThreeRadios(text0, text1, text2, text3);
 
-            this.studWantsProj = new Check("Studierende bekommen ausschließlich gewählte Projekte");
+            //this.studWantsProj = new Check("Studierende bekommen ausschließlich gewählte Projekte");
+            this.studWantsProj = new Check("[2] Students are solely allocated to projects they have chosen");
 
-            text0 = "Gewichtung der von Studierenden gewählten Projekte";
-            text1 = "Gewicht Erstwahl:";
-            text2 = "Gewicht Zweitwahl:";
-            text3 = "Gewicht Drittwahl:";
-            String text4 = "Gewicht Viertwahl:";
+            text0 = "[3] Students' project priorities";
+            text1 = "[a] Weight first choice:";
+            text2 = "[b] Weight second choice:";
+            text3 = "[c] Weight third choice:";
+            String text4 = "[d] Weight fourth choice:";
             this.weightSelectedProj = new CheckFourFields(text0, text1, Double.toString(GurobiConfig.Preferences.proj1),
                                                           text2, Double.toString(GurobiConfig.Preferences.proj2), text3,
                                                           Double.toString(GurobiConfig.Preferences.proj3), text4,
                                                           Double.toString(GurobiConfig.Preferences.proj4));
 
-            text0 = "Gewichtung der Studiengänge innerhalb der Projekte";
-            text1 = "Gewicht Priorität 1:";
-            text2 = "Gewicht Priorität 2:";
-            text3 = "Gewicht Priorität 3:";
-            text4 = "Gewicht Priorität 4:";
-            String text5 = "Gewicht Priorität 5";
+            text0 = "[4] Teachers' priorities of study programs within a project";
+            text1 = "[a] Weight first study program:";
+            text2 = "[b] Weight second study program:";
+            text3 = "[c] Weight third study program:";
+            text4 = "[d] Weight fourth study program:";
+            String text5 = "[e] Weight fifth study program:";
             this.weightRegProj = new CheckFiveFields(text0, text1, Double.toString(GurobiConfig.Preferences.studyPrio1),
                                                      text2, Double.toString(GurobiConfig.Preferences.studyPrio2), text3,
                                                      Double.toString(GurobiConfig.Preferences.studyPrio3), text4,
@@ -597,9 +604,10 @@ public class ConfigPanel extends JPanel {
             sep6.setMinimumSize(new Dimension(2, 2));
             this.add(sep6, "spanx, growx");
 
-            text0 = "Studierende mit invaliden Wahlen...";
-            text1 = "werden keinem Projekt zugewiesen";
-            text2 = "werden nur Projekten zugewiesen, in denen sie auch gesetzt sind";
+            text0 = "[5] Students with invalid project choices...";
+            text1 = "[a] will not participate in any projects";
+            text2 = "[b] will be allocated to their pre-assigned projects";
+
             this.invalids = new CheckTwoRadios(text0, text1, text2, false);
             this.add(this.invalids);
         }

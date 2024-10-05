@@ -32,6 +32,8 @@ public class SaveUserConfigs {
         if (clear) {
             SaveUserConfigs.fields.clear();
             SaveUserConfigs.buttons.clear();
+            SaveUserConfigs.contentsOfFields.clear();
+            SaveUserConfigs.buttonsChecked.clear();
         }
         SaveUserConfigs.harvestComponents(frame);
         for (JTextField field : SaveUserConfigs.fields) {
@@ -42,47 +44,41 @@ public class SaveUserConfigs {
         }
     }
 
-    public static void saveConfigs(JFrame frame, boolean lightTheme, int fontSize) {
+    public static void saveConfigs(JFrame frame, boolean lightTheme, int fontSize) throws IOException {
         SaveUserConfigs.init(frame, true);
-
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(SaveUserConfigs.userConfigs))) {
-            for (String text : SaveUserConfigs.contentsOfFields) {
-                bw.write(text + "\n");
-            }
-            for (Boolean checked : SaveUserConfigs.buttonsChecked) {
-                bw.write((checked ? "1" : "0") + "\n");
-            }
-            bw.write(lightTheme ? "Theme: light" : "Theme: dark\n");
-            bw.write("Font size: " + fontSize);
-        } catch (IOException e) {
-            // load standard configs TODO
+        BufferedWriter bw = new BufferedWriter(new FileWriter(SaveUserConfigs.userConfigs));
+        for (String text : SaveUserConfigs.contentsOfFields) {
+            bw.write(text + "\n");
         }
+        for (Boolean checked : SaveUserConfigs.buttonsChecked) {
+            bw.write((checked ? "1" : "0") + "\n");
+        }
+        bw.write(lightTheme ? "Theme: light\n" : "Theme: dark\n");
+        bw.write("Font size: " + fontSize);
+        bw.close();
     }
 
     @NotNull
     @Contract("_ -> new")
-    public static ThemeFont loadConfigs(JFrame frame) {
+    public static ThemeFont applyConfigs(JFrame frame) throws IOException {
         SaveUserConfigs.init(frame, false);
-        boolean lightTheme = true;
-        int fontSize = 22;
-        try (BufferedReader br = new BufferedReader(new FileReader(SaveUserConfigs.userConfigs))) {
-            for (JTextField field : SaveUserConfigs.fields) {
-                field.setText(br.readLine());
-            }
-            for (JToggleButton button : SaveUserConfigs.buttons) {
-                button.setSelected(br.readLine().equals("1"));
-            }
-            lightTheme = br.readLine().equals("Theme: light");
-            try {
-                String s = br.readLine().replace("Font size: ", "");
-                fontSize = Integer.parseInt(s);
-            } catch (NumberFormatException e) {
-                fontSize = 22;
-            }
-        } catch (IOException e) {
-            // load standard configs TODO
-            e.printStackTrace();
+        boolean lightTheme;
+        int fontSize;
+        BufferedReader br = new BufferedReader(new FileReader(SaveUserConfigs.userConfigs));
+        for (JTextField field : SaveUserConfigs.fields) {
+            field.setText(br.readLine());
         }
+        for (JToggleButton button : SaveUserConfigs.buttons) {
+            button.setSelected(br.readLine().equals("1"));
+        }
+        String line = br.readLine();
+        lightTheme = line.toLowerCase().contains("light");
+        try {
+            fontSize = Integer.parseInt(br.readLine().replace("Font size: ", ""));
+        } catch (NumberFormatException e) {
+            fontSize = 22;
+        }
+        br.close();
         return new ThemeFont(lightTheme, fontSize);
     }
 }

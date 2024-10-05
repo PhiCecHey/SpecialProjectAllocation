@@ -27,13 +27,13 @@ public class ImportsPanel extends JPanel {
     ImportsPanel() {
         this.setLayout(new MigLayout());
 
-        this.lRegistration = new JLabel("Project Registration Datei (CSV):");
-        this.lSelection = new JLabel("Project Selection Datei (CSV):");
+        this.lRegistration = new JLabel("Project Registration File (CSV):");
+        this.lSelection = new JLabel("Project Selection File (CSV):");
         this.fRegistration = new MyTextFieldInImport();
         this.fSelection = new MyTextFieldInImport();
         this.bRegistration = new JButton("...");
         this.bSelection = new JButton("...");
-        this.read = new JButton("Dateien Einlesen");
+        this.read = new JButton("Parse Files");
         MyTextFieldInImport.anyFieldChanged(this.read);
         this.logs = new JTextArea();
         this.logs.setLineWrap(false);
@@ -45,7 +45,7 @@ public class ImportsPanel extends JPanel {
         this.add(fSelection, "grow, width 100%");
         this.add(bSelection, "wrap");
         this.add(this.read, "gapy 20pt, spanx, center");
-        this.add(new JLabel("Fehlerausgabe:"), "wrap, gapy 20pt");
+        this.add(new JLabel("Error messages:"), "wrap, gapy 20pt");
         JScrollPane scroll = new JScrollPane(this.logs);
         this.add(scroll, "spanx, width 100%, height 100%");
 

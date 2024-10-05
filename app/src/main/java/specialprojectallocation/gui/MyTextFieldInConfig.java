@@ -35,6 +35,7 @@ public class MyTextFieldInConfig extends JTextField {
 
                 public void warn() {
                     button.setBackground(Colors.yellowTransp);
+                    Gui.saveConfigs.setBackground(Colors.blueTransp);
                 }
             });
         }

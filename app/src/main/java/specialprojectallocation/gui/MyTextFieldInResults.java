@@ -5,16 +5,16 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.util.ArrayList;
 
-public class MyTextFieldInImport extends JTextField {
-    static final ArrayList<MyTextFieldInImport> all = new ArrayList<>();
+public class MyTextFieldInResults extends JTextField {
+    static final ArrayList<MyTextFieldInResults> all = new ArrayList<>();
 
-    MyTextFieldInImport() {
+    MyTextFieldInResults() {
         super();
-        MyTextFieldInImport.all.add(this);
+        MyTextFieldInResults.all.add(this);
     }
 
-    static void anyFieldChanged(JButton button) {
-        for (MyTextFieldInImport field : MyTextFieldInImport.all) {
+    static void anyFieldChanged() {
+        for (MyTextFieldInResults field : MyTextFieldInResults.all) {
             field.getDocument().addDocumentListener(new DocumentListener() {
                 public void changedUpdate(DocumentEvent e) {
                     warn();
@@ -29,7 +29,6 @@ public class MyTextFieldInImport extends JTextField {
                 }
 
                 public void warn() {
-                    button.setBackground(Colors.blueTransp);
                     Gui.saveConfigs.setBackground(Colors.blueTransp);
                 }
             });

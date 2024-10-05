@@ -15,13 +15,13 @@ import java.awt.*;
 
 public class ResultsPanel extends JPanel {
     final JTextArea area;
-    final JTextField fExport;
+    final MyTextFieldInResults fExport;
     final JButton bExport, bcalc;
     final JButton bFileChooser;
     final JLabel lExport;
     final JScrollPane pane;
     final JButton bSearch;
-    final JTextField fSearch;
+    final MyTextFieldInResults fSearch;
     final JButton bClearHighlight;
     Highlighter.HighlightPainter painter;
     byte numHighlights;
@@ -31,20 +31,20 @@ public class ResultsPanel extends JPanel {
 
         this.area = new JTextArea();
         this.pane = new JScrollPane(this.area);
-        this.lExport = new JLabel("Ergebnisse als CSV exportieren:");
-        this.fExport = new JTextField();
-        this.bExport = new JButton("Exportieren");
-        this.bcalc = new JButton("Berechnen");
+        this.lExport = new JLabel("Export Results as CSV:");
+        this.fExport = new MyTextFieldInResults();
+        this.bExport = new JButton("Export");
+        this.bcalc = new JButton("Calculate Project Assignment");
         this.bFileChooser = new JButton("...");
         this.bSearch = new JButton("Highlight");
-        this.fSearch = new JTextField();
+        this.fSearch = new MyTextFieldInResults();
         this.bClearHighlight = new JButton("Clear");
         this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.cyan);
         this.numHighlights = 0;
 
         this.add(this.bcalc, "spanx, center");
         this.add(pane, "cell 0 1, span 4, grow, width 100%, height 100%, wrap");
-        this.add(new JLabel("Im Text suchen nach: "), "cell 0 2, right");
+        this.add(new JLabel("Search for: "), "cell 0 2, right");
         this.add(this.fSearch, "cell 1 2, grow");
         this.add(this.bSearch, "cell 2 2, grow");
         this.add(this.bClearHighlight, "cell 3 2");
@@ -52,6 +52,8 @@ public class ResultsPanel extends JPanel {
         this.add(this.fExport, "cell 1 3, grow, width 100%");
         this.add(this.bFileChooser, "cell 2 3");
         this.add(this.bExport, "cell 2 3");
+
+        MyTextFieldInResults.anyFieldChanged();
 
         ResultsPanel.chooseFolder(this.bFileChooser, this.fExport);
 
