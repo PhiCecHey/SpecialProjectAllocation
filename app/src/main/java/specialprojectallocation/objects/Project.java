@@ -87,8 +87,8 @@ public class Project {
             project.abbrev = ab;
             project.minNumStuds = min;
             project.maxNumStuds = max;
-            project.groups = gr;
             project.stringFixedStuds = fixed;
+            project.groups = gr;
         }
         return project;
     }

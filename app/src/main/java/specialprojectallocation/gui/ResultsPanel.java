@@ -34,11 +34,16 @@ public class ResultsPanel extends JPanel {
         this.lExport = new JLabel("Export Results as CSV:");
         this.fExport = new MyTextFieldInResults();
         this.bExport = new JButton("Export");
-        this.bcalc = new JButton("Calculate Project Assignment");
+        this.bExport.setToolTipText("Export results as CSV");
+        this.bcalc = new JButton("Calculate Project Assignments");
+        this.bcalc.setToolTipText("Results are calculated using the Gurobi solver based on the set configs");
         this.bFileChooser = new JButton("...");
+        this.bFileChooser.setToolTipText("Select a file to export results as CSV");
         this.bSearch = new JButton("Highlight");
+        this.bSearch.setToolTipText("Highlights text using different colors for every entry");
         this.fSearch = new MyTextFieldInResults();
         this.bClearHighlight = new JButton("Clear");
+        this.bClearHighlight.setToolTipText("Clear all highlights");
         this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.cyan);
         this.numHighlights = 0;
 

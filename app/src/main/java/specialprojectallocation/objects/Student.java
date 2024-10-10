@@ -73,7 +73,7 @@ public class Student {
     /**
      * @return student's StudyProgram
      */
-    public StudyProgram study() {
+    public StudyProgram studyProgram() {
         return this.study;
     }
 

@@ -37,7 +37,7 @@ public class Group {
     /**
      * @return the group's study program
      */
-    public StudyProgram program() {
+    public StudyProgram StudyProgram() {
         return this.studyProgram;
     }
 
@@ -48,6 +48,6 @@ public class Group {
      * @return true, if the student's study program is the same as the group's
      */
     public boolean checkStudy(@NotNull Student student) {
-        return this.studyProgram.equals(student.study());
+        return this.studyProgram.equals(student.studyProgram());
     }
 }

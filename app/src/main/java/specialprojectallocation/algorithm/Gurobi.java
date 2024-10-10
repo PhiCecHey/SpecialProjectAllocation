@@ -338,15 +338,18 @@ public class Gurobi {
         if (GurobiConfig.Preferences.studentHasRightStudyProgram) {
             this.prefStudsHasRightStudyProgram();
         }
-        if (GurobiConfig.Preferences.studentsPerStudy) {
+        /*if (GurobiConfig.Preferences.studentsPerStudy) {
             this.prefStudsPerStudy();
-        }
+        }*/ // TODO: not in use
         if (GurobiConfig.Preferences.selectedProjs) {
             this.prefSelectedProj();
         }
         /*if (Config.Preferences.fixedStuds) {
             this.prefFixedStuds(); // TODO: not in use
         }*/
+        if (GurobiConfig.Preferences.studyPrio) {
+            this.prefStudyPrio();
+        }
     }
 
     /**
@@ -516,7 +519,7 @@ public class Gurobi {
     }
 
     /**
-     * This constraint ensures that only the maximum amount of students from a per study program can be assigned to
+     * This constraint ensures that only the maximum amount of students from a study program can be assigned to
      * the project. This value is project and study program dependent.
      */
     private void constrStudsPerStudy() { // TODO: test
@@ -529,7 +532,7 @@ public class Gurobi {
                     for (int s = 0; s < this.allocs.numStuds(); ++s) {
                         expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
                     }
-                    String st = "studPerStudy" + p + group.program();
+                    String st = "studPerStudy" + p + group.StudyProgram();
                     this.model.addConstr(expr, GRB.LESS_EQUAL, group.max(), st);
                 }
             }
@@ -591,8 +594,8 @@ public class Gurobi {
                         && project.isFixed(student)) {
                         if (GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
                             constraint = true;
-                        } else if (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj && project.isFixedAndStudentsWish(
-                                student)) {
+                        } else if (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj
+                                   && project.isFixedAndStudentsWish(student)) {
                             constraint = true;
                         } else if (GurobiConfig.Constraints.addFixedStudsToMostWantedProj
                                    && project.isFixedAndStudentsHighestWish(student)) {
@@ -697,8 +700,9 @@ public class Gurobi {
                     alloc.addToScore(GurobiConfig.Preferences.proj4);
                 }
             }
-            if (student.totalScore() < GurobiConfig.Preferences.proj1 + GurobiConfig.Preferences.proj2 + GurobiConfig.Preferences.proj3
-                                       + GurobiConfig.Preferences.proj4) {
+            if (student.totalScore()
+                < GurobiConfig.Preferences.proj1 + GurobiConfig.Preferences.proj2 + GurobiConfig.Preferences.proj3
+                  + GurobiConfig.Preferences.proj4) {
                 // TODO: student invalid project selection, see Student.java
                 boolean found = false;
                 for (Student st : Calculation.studentsWithInvalidSelection) {
@@ -715,7 +719,39 @@ public class Gurobi {
     }
 
     /**
-     * Retrieves all the students that were not assigned a project and adds them to Calculation.studentsWithoutProject.
+     * Theachers' study program prio TODO
+     */
+    private void prefStudyPrio() {
+        for (int p = 0; p < this.allocs.numProjs(); p++) {
+            Project project = this.allocs.getProj(p);
+            for (int s = 0; s < this.allocs.numStuds(); s++) {
+                Allocation alloc = this.allocs.get(p, s);
+                Student student = alloc.student();
+                try {
+                    if (student.studyProgram().equals(project.groups()[0].StudyProgram())) {
+                        alloc.addToScore(GurobiConfig.Preferences.studyPrio1);
+                    } else if (student.studyProgram().equals(project.groups()[1].StudyProgram())) {
+                        alloc.addToScore(GurobiConfig.Preferences.studyPrio2);
+                    } else if (student.studyProgram().equals(project.groups()[2].StudyProgram())) {
+                        alloc.addToScore(GurobiConfig.Preferences.studyPrio3);
+                    } else if (student.studyProgram().equals(project.groups()[3].StudyProgram())) {
+                        alloc.addToScore(GurobiConfig.Preferences.studyPrio4);
+                    } else if (student.studyProgram().equals(project.groups()[4].StudyProgram())) {
+                        alloc.addToScore(GurobiConfig.Preferences.studyPrio5);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    /*
+                     * do nothing. project has less than 5 groups. that is ok.
+                     */
+                }
+                var debug = 4; // TODO: test
+            }
+        }
+    }
+
+    /**
+     * Retrieves all the students that were not assigned a project and adds them to Calculation
+     * .studentsWithoutProject.
      */
     private void studsWithoutProj() {
         for (int s = 0; s < this.allocs.numStuds(); s++) {

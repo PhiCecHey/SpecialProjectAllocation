@@ -76,23 +76,30 @@ public class Gui {
         }
 
         Gui.theme = new JButton(moon);
+        Gui.theme.setToolTipText("Toggle light/ dark mode");
         Gui.frame.add(Gui.theme, "cell 2 0, top");
         Gui.theme.addActionListener(ae -> {
             Gui.changeTheme(!Gui.lightTheme);
             Gui.saveConfigs.setBackground(Colors.blueTransp);
         });
         Gui.plus = new JButton(plusDark);
+        Gui.plus.setToolTipText("Increase font size");
         Gui.zero = new JButton(circleDark);
+        Gui.zero.setToolTipText("Reset font size");
         Gui.minus = new JButton(minusDark);
+        Gui.minus.setToolTipText("Decrease font size");
         Gui.maximize = new JButton(maximizeDark);
+        Gui.maximize.setToolTipText("Resize graphical elements");
         Gui.saveConfigs = new JButton(saveConfigsDark);
+        Gui.saveConfigs.setToolTipText("Save user configs");
         Gui.applyConfigs = new JButton(applyConfigsDark);
+        Gui.applyConfigs.setToolTipText("Apply user configs");
         Gui.frame.add(Gui.plus, "cell 2 0, top");
         Gui.frame.add(Gui.zero, "cell 2 0, top");
         Gui.frame.add(Gui.minus, "cell 2 0, top");
         Gui.frame.add(Gui.maximize, "cell 2 0, top");
-        Gui.frame.add(Gui.saveConfigs, "cell 2 0, top");
         Gui.frame.add(Gui.applyConfigs, "cell 2 0, top");
+        Gui.frame.add(Gui.saveConfigs, "cell 2 1");
         Gui.addFontSizeSwitcher();
         Gui.addSaveConfigs();
 

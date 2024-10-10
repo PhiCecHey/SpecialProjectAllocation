@@ -67,11 +67,11 @@ public class GurobiConfig {
          */
         public static int numCharsAbbrev = 6;
         /**
-         * string contained in column header of the column holding the projects' abbreviation/ ID
+         * string contained in column header of the column composed of the projects' abbreviation/ ID
          */
         public static String abbrev = "Q02_1.2";
         /**
-         * string contained in column header of the column holding the projects' variant
+         * string contained in column header of the column composed of the projects' variant
          */
         public static String var = "Q18_4.1";
         /**
@@ -80,11 +80,11 @@ public class GurobiConfig {
          */
         public static String varOneStudent = "one student";
         /**
-         * string contained in column header of the column holding the projects' minimum number of participants
+         * string contained in column header of the column composed of the projects' minimum number of participants
          */
         public static final String minNum = "Q21_4.3.2";
         /**
-         * string contained in column header of the column holding the projects' maximum number of participants
+         * string contained in column header of the column composed of the projects' maximum number of participants
          */
         public static String maxNum = "Q20_4.3.1";
 
@@ -92,7 +92,7 @@ public class GurobiConfig {
         //public static String mainMaxNum = "Q20_4.3.1"; // obsolete
 
         /**
-         * string contained in column header of the column holding the projects' fixed students
+         * string contained in column header of the column composed of the projects' fixed students
          */
         public static String fixed = "Fest gesetzte Studierende";
 
@@ -255,7 +255,13 @@ public class GurobiConfig {
 
         /**
          * A study program's priority in a project. If a study program is assigned the highest priority (priority 1),
-         * then
+         * then studyPrio1 will be multiplied by the respective indicator variable regarding all the students that
+         * have that study program.
+         */
+        public static boolean studyPrio = true;
+
+        /**
+         * Alternative to
          */
         public static final boolean studentsPerStudy = false;
 
@@ -297,8 +303,6 @@ public class GurobiConfig {
         // public static final double penFixedStuds = -100; // TODO: not in use
 
         public static final boolean projectPerStudent = false;
-        // public static boolean minProjectPerStudent = false;
-        // public static boolean maxProjectPerStudent = false;
 
         public static double penStudsPerProj = -100; // TODO: see gurobi prefStudentsPerProj() not in use
         public static boolean studentsPerProject;
