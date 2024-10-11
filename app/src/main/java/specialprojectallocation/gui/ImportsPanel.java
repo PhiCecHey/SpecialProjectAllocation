@@ -17,11 +17,17 @@ import java.io.IOException;
 public class ImportsPanel extends JPanel {
     final JLabel lRegistration;
     final JLabel lSelection;
+    final JLabel lConfigIn;
+    final JLabel lConfigOut;
     final MyTextFieldInImport fRegistration;
     final MyTextFieldInImport fSelection;
+    final MyTextFieldInImport fConfigIn;
+    final MyTextFieldInImport fConfigOut;
     final JButton read;
     final JButton bRegistration;
     final JButton bSelection;
+    final JButton bConfigIn;
+    final JButton bConfigOut;
     final JTextArea logs;
 
     ImportsPanel() {
@@ -29,21 +35,33 @@ public class ImportsPanel extends JPanel {
 
         this.lRegistration = new JLabel("Project Registration File (CSV):");
         this.lSelection = new JLabel("Project Selection File (CSV):");
+        this.lConfigIn = new JLabel("Config File - Input (not required):");
+        this.lConfigOut = new JLabel("Config File - Output (not required):");
         this.fRegistration = new MyTextFieldInImport();
         this.fSelection = new MyTextFieldInImport();
+        this.fConfigIn = new MyTextFieldInImport();
+        this.fConfigOut = new MyTextFieldInImport();
         this.bRegistration = new JButton("...");
         this.bSelection = new JButton("...");
+        this.bConfigIn = new JButton("...");
+        this.bConfigOut = new JButton("...");
         this.read = new JButton("Parse Files");
         MyTextFieldInImport.anyFieldChanged(this.read);
         this.logs = new JTextArea();
         this.logs.setLineWrap(false);
 
         this.add(this.lRegistration);
-        this.add(fRegistration, "grow, width 100%");
-        this.add(bRegistration, "wrap");
+        this.add(this.fRegistration, "grow, width 100%");
+        this.add(this.bRegistration, "wrap");
         this.add(this.lSelection);
-        this.add(fSelection, "grow, width 100%");
-        this.add(bSelection, "wrap");
+        this.add(this.fSelection, "grow, width 100%");
+        this.add(this.bSelection, "wrap");
+        this.add(this.lConfigIn);
+        this.add(this.fConfigIn, "grow, width 100%");
+        this.add(this.bConfigIn, "wrap");
+        this.add(this.lConfigOut);
+        this.add(this.fConfigOut, "grow, width 100%");
+        this.add(this.bConfigOut, "wrap");
         this.add(this.read, "gapy 20pt, spanx, center");
         this.add(new JLabel("Error messages:"), "wrap, gapy 20pt");
         JScrollPane scroll = new JScrollPane(this.logs);
@@ -74,8 +92,10 @@ public class ImportsPanel extends JPanel {
         this.read.addActionListener(ae -> {
             this.logs.setText("");
             Calculation.clearLog();
-            Calculation.projReg = new File(fRegistration.getText());
-            Calculation.projSel = new File(fSelection.getText());
+            Calculation.userConfIn = this.fConfigIn.getText();
+            Calculation.userConfOut = this.fConfigOut.getText();
+            Calculation.projReg = new File(this.fRegistration.getText());
+            Calculation.projSel = new File(this.fSelection.getText());
             int worked;
             try {
                 worked = RegisterProject.read(Calculation.projReg, GurobiConfig.ProjectAdministration.csvDelim);

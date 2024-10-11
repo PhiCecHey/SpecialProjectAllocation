@@ -161,7 +161,7 @@ public class Gui {
             boolean worked = true;
             try {
                 themeFont = SaveUserConfigs.applyConfigs(Gui.frame);
-            } catch (IOException e) {
+            } catch (NullPointerException | IOException e) {
                 worked = false;
                 Gui.applyConfigs.setBackground(Colors.redTransp);
             }
@@ -176,7 +176,7 @@ public class Gui {
             boolean worked = true;
             try {
                 SaveUserConfigs.saveConfigs(Gui.frame, Gui.lightTheme, Gui.fontSize);
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 Gui.saveConfigs.setBackground(Colors.redTransp);
                 worked = false;
             }

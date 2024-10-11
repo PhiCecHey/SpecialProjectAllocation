@@ -11,6 +11,8 @@ import java.util.ArrayList;
  * DTO, holding information about the current calculation. Will be cleared upon restarting the calculation.
  */
 public class Calculation {
+    public static String userConfIn;
+    public static String userConfOut;
     public static File projSel; // SelectProject Moodle file
     public static File projReg; // RegisterProject Moodle file
     public static String outPath; // path where to store result of calculation

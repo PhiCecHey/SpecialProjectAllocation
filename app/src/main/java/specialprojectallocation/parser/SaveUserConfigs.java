@@ -2,6 +2,7 @@ package specialprojectallocation.parser;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import specialprojectallocation.Calculation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +10,6 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class SaveUserConfigs {
-    private static final String userConfigs = "ProgramConfigs.txt";
     private static final ArrayList<JTextField> fields = new ArrayList<>();
     private static final ArrayList<JToggleButton> buttons = new ArrayList<>();
     private static final ArrayList<String> contentsOfFields = new ArrayList<>();
@@ -28,7 +28,8 @@ public class SaveUserConfigs {
         }
     }
 
-    private static void init(JFrame frame, boolean clear) {
+    private static boolean init(JFrame frame, boolean clear) {
+        boolean fileExists = true;
         if (clear) {
             SaveUserConfigs.fields.clear();
             SaveUserConfigs.buttons.clear();
@@ -42,11 +43,12 @@ public class SaveUserConfigs {
         for (JToggleButton button : buttons) {
             SaveUserConfigs.buttonsChecked.add(button.isSelected());
         }
+        return fileExists;
     }
 
-    public static void saveConfigs(JFrame frame, boolean lightTheme, int fontSize) throws IOException {
+    public static void saveConfigs(JFrame frame, boolean lightTheme, int fontSize) throws IOException, NullPointerException {
         SaveUserConfigs.init(frame, true);
-        BufferedWriter bw = new BufferedWriter(new FileWriter(SaveUserConfigs.userConfigs));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(Calculation.userConfOut)));
         for (String text : SaveUserConfigs.contentsOfFields) {
             bw.write(text + "\n");
         }
@@ -60,11 +62,11 @@ public class SaveUserConfigs {
 
     @NotNull
     @Contract("_ -> new")
-    public static ThemeFont applyConfigs(JFrame frame) throws IOException {
+    public static ThemeFont applyConfigs(JFrame frame) throws IOException, NullPointerException {
         SaveUserConfigs.init(frame, false);
         boolean lightTheme;
         int fontSize;
-        BufferedReader br = new BufferedReader(new FileReader(SaveUserConfigs.userConfigs));
+        BufferedReader br = new BufferedReader(new FileReader(Calculation.userConfIn));
         for (JTextField field : SaveUserConfigs.fields) {
             field.setText(br.readLine());
         }
