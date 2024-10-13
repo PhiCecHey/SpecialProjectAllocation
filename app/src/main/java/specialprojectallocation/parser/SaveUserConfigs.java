@@ -46,9 +46,9 @@ public class SaveUserConfigs {
         return fileExists;
     }
 
-    public static void saveConfigs(JFrame frame, boolean lightTheme, int fontSize) throws IOException, NullPointerException {
+    public static void saveConfigs(JFrame frame, boolean lightTheme, int fontSize) throws IOException{
         SaveUserConfigs.init(frame, true);
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(Calculation.userConfOut)));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(Calculation.userConfOut));
         for (String text : SaveUserConfigs.contentsOfFields) {
             bw.write(text + "\n");
         }

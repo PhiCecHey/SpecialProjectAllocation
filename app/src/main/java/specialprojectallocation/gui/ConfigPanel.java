@@ -81,28 +81,21 @@ public class ConfigPanel extends JPanel {
             this.add(this.projSel, "cell 0 0, spanx, center");
 
             this.lCsvDelim = new JLabel("CSV delimiter:");
-            this.lCsvDelim.setToolTipText(
-                    "Delimiter used in the project selection CSV Moodle file. Moodle uses a comma by default");
+            this.lCsvDelim.setToolTipText("Delimiter used in the project selection CSV Moodle file. Moodle uses a comma by default");
             this.lName = new JLabel("Name:");
             this.lName.setToolTipText("String contained in header of the column composed of the students' full names");
             this.lFirst = new JLabel("1. project:");
-            this.lFirst.setToolTipText(
-                    "String contained in header of the column composed of the students' first choice projects");
+            this.lFirst.setToolTipText("String contained in header of the column composed of the students' first choice projects");
             this.lSecond = new JLabel("2. project:");
-            this.lSecond.setToolTipText(
-                    "String contained in header of the column composed of the students' second choice projects");
+            this.lSecond.setToolTipText("String contained in header of the column composed of the students' second choice projects");
             this.lThird = new JLabel("3. project:");
-            this.lThird.setToolTipText(
-                    "String contained in header of the column composed of the students' third choice projects");
+            this.lThird.setToolTipText("String contained in header of the column composed of the students' third choice projects");
             this.lFourth = new JLabel("4. project:");
-            this.lFourth.setToolTipText(
-                    "String contained in header of the column composed of the students' fourth choice projects");
+            this.lFourth.setToolTipText("String contained in header of the column composed of the students' fourth choice projects");
             this.lStudProg = new JLabel("Study program:");
-            this.lStudProg.setToolTipText(
-                    "String contained in header of the column composed of the students' study programs");
+            this.lStudProg.setToolTipText("String contained in header of the column composed of the students' study programs");
             this.lImmatNum = new JLabel("Matricul num:");
-            this.lImmatNum.setToolTipText(
-                    "String contained in header of the column composed of the students' matriculation numbers");
+            this.lImmatNum.setToolTipText("String contained in header of the column composed of the students' matriculation numbers");
 
             this.fCsvDelim = new MyTextFieldInConfig(Character.toString(GurobiConfig.ProjectSelection.csvDelim));
             this.fName = new MyTextFieldInConfig(GurobiConfig.ProjectSelection.fullName);
@@ -173,51 +166,34 @@ public class ConfigPanel extends JPanel {
         ProjectAdminPanel() {
             this.setLayout(new MigLayout());
             this.projAdmin = new JLabel("Project Administration");
-            this.projAdmin.setToolTipText(
-                    "Settings regarding the project registration/ administration Moodle CSV file");
+            this.projAdmin.setToolTipText("Settings regarding the project registration/ administration Moodle CSV file");
             this.add(this.projAdmin, "cell 0 0, spanx, center");
 
             this.lCsvDelim = new JLabel("CSV delimiter:");
-            this.lCsvDelim.setToolTipText(
-                    "Delimiter used in project registration/ administration CSV Moodle file. Moodle uses a comma by "
-                    + "default"); // TODO
+            this.lCsvDelim.setToolTipText("Delimiter used in project registration/ administration CSV Moodle file. Moodle uses a comma by " + "default");
             this.lNumCharsAbbrev = new JLabel("Num of chars in project abbrev:");
             this.lNumCharsAbbrev.setToolTipText("Length of every project's abbreviation/ ID, e.g. 6");
             this.lAbbrev = new JLabel("Project abbreviation:");
-            this.lAbbrev.setToolTipText(
-                    "String contained in header of the column composed of the projects' abbreviations/ IDs");
+            this.lAbbrev.setToolTipText("String contained in header of the column composed of the projects' abbreviations/ IDs");
             this.lVar = new JLabel("Project variant:");
             this.lVar.setToolTipText("String contained in header of the column composed of the projects' variants");
             this.lVarOneStudent = new JLabel("One student variant:");
-            this.lVarOneStudent.setToolTipText(
-                    "String contained in the name of the project's variant for one student only, e.g. \"5 : Variant V:"
-                    + " Project (12 ECTS), one student\" contains \"one student\"");
+            this.lVarOneStudent.setToolTipText("String contained in the name of the project's variant for one student only, e.g. \"5 : Variant V:" + " Project (12 ECTS), one student\" contains \"one student\"");
             this.lMinNum = new JLabel("Min number of participants:");
-            this.lMinNum.setToolTipText(
-                    "String contained in header of the column composed of the projects' minimum numbers of "
-                    + "participants");
+            this.lMinNum.setToolTipText("String contained in header of the column composed of the projects' minimum numbers of " + "participants");
             this.lMaxNum = new JLabel("Max number of participants:");
-            this.lMaxNum.setToolTipText(
-                    "String contained in header of the column composed of the projects' maximum numbers of "
-                    + "participants");
+            this.lMaxNum.setToolTipText("String contained in header of the column composed of the projects' maximum numbers of " + "participants");
             this.lFixed = new JLabel("Pre-assigned students:");
-            this.lFixed.setToolTipText(
-                    "String contained in header of the column composed of the projects' pre-assigned students");
+            this.lFixed.setToolTipText("String contained in header of the column composed of the projects' pre-assigned students");
             this.lDelimFixedStuds = new JLabel("Delimiter btw. pre-assigned students:");
-            this.lDelimFixedStuds.setToolTipText(
-                    "Delimiter separating pre-assigned students, e.g. \"Max Mustermann, 123456; Anna Müller, 234567\""
-                    + " separated by a semicolon");
+            this.lDelimFixedStuds.setToolTipText("Delimiter separating pre-assigned students, e.g. \"Max Mustermann, 123456; Anna Müller, 234567\"" + " separated by a semicolon");
             this.lDelimFixedStudsNameImma = new JLabel("Delimiter name & matricul. num:");
-            this.lDelimFixedStudsNameImma.setToolTipText(
-                    "Delimiter separating a student's name from their matriculation number, e.g. \"Max Mustermann, "
-                    + "123456\" is separated by a comma");
+            this.lDelimFixedStudsNameImma.setToolTipText("Delimiter separating a student's name from their matriculation number, e.g. \"Max Mustermann, " + "123456\" is separated by a comma");
             this.lQuotes = new JLabel("Character for quotes:");
-            this.lQuotes.setToolTipText(
-                    "Character used for quotes in texts in the Moodle CSV files, usually a quotation mark");
+            this.lQuotes.setToolTipText("Character used for quotes in texts in the Moodle CSV files, usually a quotation mark");
 
             this.fCsvDelim = new MyTextFieldInConfig(Character.toString(GurobiConfig.ProjectAdministration.csvDelim));
-            this.fNumCharsAbbrev = new MyTextFieldInConfig(
-                    Integer.toString(GurobiConfig.ProjectAdministration.numCharsAbbrev));
+            this.fNumCharsAbbrev = new MyTextFieldInConfig(Integer.toString(GurobiConfig.ProjectAdministration.numCharsAbbrev));
             this.fAbbrev = new MyTextFieldInConfig(GurobiConfig.ProjectAdministration.abbrev);
             this.fVar = new MyTextFieldInConfig(GurobiConfig.ProjectAdministration.var);
             this.fVarOneStudent = new MyTextFieldInConfig(GurobiConfig.ProjectAdministration.varOneStudent);
@@ -227,8 +203,7 @@ public class ConfigPanel extends JPanel {
             //this.fMainMaxNum = new MyTextFieldInConfig(Config.ProjectAdministration.mainMaxNum);
             this.fFixed = new MyTextFieldInConfig(GurobiConfig.ProjectAdministration.fixed);
             this.fDelimFixedStuds = new MyTextFieldInConfig(GurobiConfig.ProjectAdministration.delimFixedStuds);
-            this.fDelimFixedStudsNameImma = new MyTextFieldInConfig(
-                    GurobiConfig.ProjectAdministration.delimFixedStudsNameImma);
+            this.fDelimFixedStudsNameImma = new MyTextFieldInConfig(GurobiConfig.ProjectAdministration.delimFixedStudsNameImma);
             this.fQuotes = new MyTextFieldInConfig(Character.toString(GurobiConfig.ProjectAdministration.quotes));
 
             this.add(lCsvDelim, "cell 0 1, gapy 20");
@@ -346,8 +321,7 @@ public class ConfigPanel extends JPanel {
             final MyTextFieldInConfig field1, field2, field3, field4;
             final MyCheckboxInConfig check;
 
-            CheckFourFields(String l0, String l1, String f1, String l2, String f2, String l3, String f3, String l4,
-                            String f4) {
+            CheckFourFields(String l0, String l1, String f1, String l2, String f2, String l3, String f3, String l4, String f4) {
                 this.setLayout(new MigLayout());
                 this.check = new MyCheckboxInConfig();
                 this.check.setSelected(true);
@@ -403,8 +377,7 @@ public class ConfigPanel extends JPanel {
             final MyTextFieldInConfig field1, field2, field3, field4, field5;
             final MyCheckboxInConfig check;
 
-            CheckFiveFields(String l0, String l1, String f1, String l2, String f2, String l3, String f3, String l4,
-                            String f4, String l5, String f5) {
+            CheckFiveFields(String l0, String l1, String f1, String l2, String f2, String l3, String f3, String l4, String f4, String l5, String f5) {
                 this.setLayout(new MigLayout());
                 this.check = new MyCheckboxInConfig();
                 this.check.setSelected(true);
@@ -601,14 +574,8 @@ public class ConfigPanel extends JPanel {
             text2 = "[b] Weight second choice:";
             text3 = "[c] Weight third choice:";
             String text4 = "[d] Weight fourth choice:";
-            this.weightSelectedProj = new CheckFourFields(text0, text1, Double.toString(GurobiConfig.Preferences.proj1),
-                                                          text2, Double.toString(GurobiConfig.Preferences.proj2), text3,
-                                                          Double.toString(GurobiConfig.Preferences.proj3), text4,
-                                                          Double.toString(GurobiConfig.Preferences.proj4));
-            this.weightSelectedProj.setToolTipText(
-                    "These weights will be multiplied with the corresponding student-project indicator variables.\n"
-                    + "A higher weight results in a greater chance of the respective indicator variable to be \n"
-                    + "1 and thus the allocation of the student to the project.");
+            this.weightSelectedProj = new CheckFourFields(text0, text1, Double.toString(GurobiConfig.Preferences.proj1), text2, Double.toString(GurobiConfig.Preferences.proj2), text3, Double.toString(GurobiConfig.Preferences.proj3), text4, Double.toString(GurobiConfig.Preferences.proj4));
+            this.weightSelectedProj.setToolTipText("These weights will be multiplied with the corresponding student-project indicator variables.\n" + "A higher weight results in a greater chance of the respective indicator variable to be \n" + "1 and thus the allocation of the student to the project.");
 
             text0 = "[4] Teachers' priorities of study programs within a project";
             text1 = "[a] Weight first study program:";
@@ -616,14 +583,8 @@ public class ConfigPanel extends JPanel {
             text3 = "[c] Weight third study program:";
             text4 = "[d] Weight fourth study program:";
             String text5 = "[e] Weight fifth study program:";
-            this.weightRegProj = new CheckFiveFields(text0, text1, Double.toString(GurobiConfig.Preferences.studyPrio1),
-                                                     text2, Double.toString(GurobiConfig.Preferences.studyPrio2), text3,
-                                                     Double.toString(GurobiConfig.Preferences.studyPrio3), text4,
-                                                     Double.toString(GurobiConfig.Preferences.studyPrio4), text5,
-                                                     Double.toString(GurobiConfig.Preferences.studyPrio5));
-            this.weightRegProj.setToolTipText("These weights will be multiplied with the corresponding student-project indicator variables.\n"
-                                              + "A higher weight results in a greater chance of the respective indicator variable to be \n"
-                                              + "1 and thus the allocation of the student to the project.");
+            this.weightRegProj = new CheckFiveFields(text0, text1, Double.toString(GurobiConfig.Preferences.studyPrio1), text2, Double.toString(GurobiConfig.Preferences.studyPrio2), text3, Double.toString(GurobiConfig.Preferences.studyPrio3), text4, Double.toString(GurobiConfig.Preferences.studyPrio4), text5, Double.toString(GurobiConfig.Preferences.studyPrio5));
+            this.weightRegProj.setToolTipText("These weights will be multiplied with the corresponding student-project indicator variables.\n" + "A higher weight results in a greater chance of the respective indicator variable to be \n" + "1 and thus the allocation of the student to the project.");
 
             this.add(this.fixedStuds);
 

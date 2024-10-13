@@ -202,13 +202,13 @@ public class GurobiConfig {
          * This constraint ensures that only students who study one of the project's accepted study programs can be
          * assigned to the project.
          */
-        public static final boolean studentHasRightStudyProgram = false; // TODO
+        public static final boolean studentHasRightStudyProgram = true;
 
         /**
          * This constraint ensures that only the maximum amount of students from a per study program can be assigned to
          * the project. This value is project and study program dependent.
          */
-        public static final boolean studentsPerStudy = false; // TODO
+        public static final boolean studentsPerStudy = true;
     }
 
     public static class Preferences {
@@ -261,11 +261,10 @@ public class GurobiConfig {
         public static boolean studyPrio = true;
 
         /**
-         * Alternative to
+         * Alternative to TODO
          */
-        public static final boolean studentsPerStudy = false;
-
-        // TODO? penalizes a student participating in a project if not right study program. used for alternative to
+        public static final boolean studentsPerStudy = true; // TODO add to gui
+        // TODO penalizes a student participating in a project if not right study program. used for alternative to above
         //  constraint
         public static double penStudsPerStudy = -100;
 

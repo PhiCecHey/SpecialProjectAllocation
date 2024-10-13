@@ -1,11 +1,14 @@
 package specialprojectallocation.objects;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Calculation;
 import specialprojectallocation.GurobiConfig;
 import specialprojectallocation.Exceptions.AbbrevTakenException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -14,7 +17,7 @@ import java.util.Objects;
 public class Project {
     private String abbrev; // abbreviation used as unique id
     private int maxNumStuds; // maximum number of students allowed
-    private int minNumStuds; // TODO minimum number of students allowed
+    private int minNumStuds;
     // array of groups: prioritize some StudyPrograms over others, max students per StudyProgram
     private Group[] groups;
     // students who should be assigned to this project regardless of any priorities
@@ -33,20 +36,12 @@ public class Project {
      *              project regardless of any priorities or restrictions
      * @throws AbbrevTakenException throws exception if there exists a project with the same abbreviation already
      */
-    private Project(String ab, int min, int max, Group[] gr, String fixed) throws AbbrevTakenException {
-        ab = ab.strip();
-        for (String str : Calculation.studyProgramID()) {
-            if (str.equals(ab)) {
-                throw new AbbrevTakenException(
-                        "Abbrev " + ab + " already taken by project " + Objects.requireNonNull(Project.findProject(ab))
-                                .abbrev());
-            }
-        }
-
-        this.abbrev = ab;
+    private Project(@NotNull String ab, int min, int max, Group[] gr, String fixed) {
+        this.abbrev = ab.strip();
         this.minNumStuds = min;
         this.maxNumStuds = max;
         this.groups = gr;
+        this.normalizeGroupPrios();
         this.stringFixedStuds = fixed;
 
         boolean found = false;
@@ -60,8 +55,6 @@ public class Project {
         }
     }
 
-    // TODO: test
-
     /**
      * If there exists no project with this abbreviation/ ID, creates a project and adds it to list of all projects.
      * Calls the constructor. Else return existing project with new values.
@@ -74,21 +67,18 @@ public class Project {
      *              project regardless of any priorities or restrictions
      * @return
      */
+    @NotNull
     public static Project findOrCreateProject(String ab, int min, int max, Group[] gr, String fixed) {
         Project project = Project.findProject(ab);
         if (project == null) {
-            try {
-                project = new Project(ab, min, max, gr, fixed);
-            } catch (AbbrevTakenException e) {
-                // shouldn't happen
-                e.printStackTrace();
-            }
+            project = new Project(ab, min, max, gr, fixed);
         } else {
             project.abbrev = ab;
             project.minNumStuds = min;
             project.maxNumStuds = max;
             project.stringFixedStuds = fixed;
             project.groups = gr;
+            project.normalizeGroupPrios();
         }
         return project;
     }
@@ -237,6 +227,31 @@ public class Project {
     public static void setAllFixed() {
         for (Project project : Calculation.projects) {
             project.setFixed();
+        }
+    }
+
+    /**
+     * Not all teachers might give their highest-priority group the highest priority which causes the Gurobi Solver to
+     * prefer allocations where teachers did so. This normalization will give all highest-priority projects the highest priority, all second-highest prioriy projects
+     * the second-highest priority etc. so that the Gurobi Solver is not biased towards teachers who filled out the servey the way they were supposed to.
+     */
+    private void normalizeGroupPrios() {
+        Arrays.sort(this.groups);
+        ArrayList<Integer> prioChangedAtIndex = new ArrayList<>(); // e.g. {0, 3, 4} means group0 should get prio1, groups1-3 should get prio2, group4 should get prio3
+        for (int i = 0; i < this.groups.length - 1; i++) {
+            if (this.groups[i].compareTo(this.groups[i + 1]) > 0) {
+                prioChangedAtIndex.add(i);
+            }
+        }
+
+        int prio = 1;
+        int lastChange = 0;
+        for (Integer nextChange : prioChangedAtIndex) {
+            while (lastChange <= nextChange) {
+                this.groups[lastChange].prio(prio);
+                lastChange++;
+            }
+            prio++;
         }
     }
 }

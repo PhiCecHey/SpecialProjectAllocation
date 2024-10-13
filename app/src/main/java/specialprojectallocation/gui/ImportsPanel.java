@@ -11,6 +11,7 @@ import specialprojectallocation.parser.SelectProject;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -102,9 +103,6 @@ public class ImportsPanel extends JPanel {
             } catch (IOException e) {
                 Calculation.appendToLog("RegisterProject: File could not be found! " + e + "\n");
                 worked = 2;
-            } catch (Exceptions.AbbrevTakenException e) {
-                Calculation.appendToLog("RegisterProject: Project duplicate! Will only take first entry." + e + "\n");
-                worked = 1;
             } catch (IndexOutOfBoundsException e) {
                 Calculation.appendToLog("RegisterProject: Probably weird character in Moodle registration file. " + e + "\n");
                 worked = 2;
@@ -152,14 +150,7 @@ public class ImportsPanel extends JPanel {
                 this.fSelection.setBackground(Colors.redTransp);
             }
             this.logs.append(Calculation.log());
-            if (this.fRegistration.getBackground().equals(Colors.redTransp) || this.fSelection.getBackground().equals(Colors.redTransp)) {
-                this.read.setBackground(Colors.redTransp);
-            } else if (this.fRegistration.getBackground().equals(Colors.yellowTransp) || this.fSelection.getBackground().equals(Colors.yellowTransp)) {
-                this.read.setBackground(Colors.yellowTransp);
-            } else {
-                this.read.setBackground(Colors.greenTransp);
-            }
-
+            this.read.setBackground(Colors.transp);
             Project.setAllFixed();
         });
     }

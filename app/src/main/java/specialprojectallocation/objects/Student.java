@@ -111,7 +111,7 @@ public class Student {
             }
         }
         if (firstPr == null || secondPr == null || thirdPr == null || fourthPr == null) {
-            // TODO: invalid project selection. punishment?
+            // invalid project selection. punishment?
             boolean found = false;
             for (Student student : Calculation.studentsWithInvalidSelection) {
                 if (Objects.equals(student.immatNum, this.immatNum)) {

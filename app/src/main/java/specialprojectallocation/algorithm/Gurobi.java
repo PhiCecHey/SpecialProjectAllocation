@@ -64,7 +64,7 @@ public class Gurobi {
 
 
                 if (!(Calculation.outPath == null || Calculation.outPath.isEmpty())) {
-                    WriteResults.printForSupers(this.results, this.allocs);
+                    WriteResults.printForTeachers(this.results, this.allocs);
                 }
             } else {
                 Calculation.gurobiResultsGui = this.print(false, worked);
@@ -73,6 +73,7 @@ public class Gurobi {
             env.dispose();
         } catch (GRBException e) {
             System.err.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
+            Calculation.appendToLog("Error code: " + e.getErrorCode() + ". " + e.getMessage());
             throw e;
         }
     }
@@ -138,9 +139,8 @@ public class Gurobi {
         GRBVar[][] grbVars = this.getGRBVars();
         int optimstatus = model.get(GRB.IntAttr.Status);
         if (optimstatus != GRB.OPTIMAL) {
-            Calculation.gurobiResultsGui = "Model infeasible.";
-            System.out.println("Model infeasible.");
-            Calculation.appendToLog("\n\n\nEs konnte keine Zuteilung gefunden werden.");
+            Calculation.appendToLog("\n\n\nModel infeasible.");
+            Calculation.appendToLog("Es konnte keine Zuteilung gefunden werden.");
             model.dispose();
             env.dispose();
             return false;
@@ -217,25 +217,19 @@ public class Gurobi {
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
                 if (this.allocs.get(p, s).score() >= 0) {
                     if (this.allocs.get(p, s).score() >= 100) {
-                        str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1)))
-                                .append("\t");
+                        str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1))).append("\t");
                     } else if (this.allocs.get(p, s).score() >= 10) {
-                        str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2)))
-                                .append("\t");
+                        str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2))).append("\t");
                     } else {
-                        str.append(String.format("%.03f", DoubleRounder.round(this.allocs.get(p, s).score(), 3)))
-                                .append("\t");
+                        str.append(String.format("%.03f", DoubleRounder.round(this.allocs.get(p, s).score(), 3))).append("\t");
                     }
                 } else {
                     if (this.allocs.get(p, s).score() >= 100) {
-                        str.append(String.format("%.00f", DoubleRounder.round(this.allocs.get(p, s).score(), 0)))
-                                .append("\t");
+                        str.append(String.format("%.00f", DoubleRounder.round(this.allocs.get(p, s).score(), 0))).append("\t");
                     } else if (this.allocs.get(p, s).score() >= 10) {
-                        str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1)))
-                                .append("\t");
+                        str.append(String.format("%.01f", DoubleRounder.round(this.allocs.get(p, s).score(), 1))).append("\t");
                     } else {
-                        str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2)))
-                                .append("\t");
+                        str.append(String.format("%.02f", DoubleRounder.round(this.allocs.get(p, s).score(), 2))).append("\t");
                     }
                 }
             }
@@ -262,13 +256,11 @@ public class Gurobi {
                     } else if (alloc.student().choiceOfProj(alloc.project()) == -1) {
                         allocated.append("\t[!]").append(indent);
                     } else {
-                        allocated.append("\t[").append(alloc.student().choiceOfProj(alloc.project())).append("]")
-                                .append(indent);
+                        allocated.append("\t[").append(alloc.student().choiceOfProj(alloc.project())).append("]").append(indent);
                     }
                 }
             }
-            if (allocated.toString().contains("#") || allocated.toString().contains("[") || allocated.toString()
-                    .contains("F")) {
+            if (allocated.toString().contains("#") || allocated.toString().contains("[") || allocated.toString().contains("F")) {
                 String formattedAbbrev = Gurobi.exactNumOfChars(this.allocs.get(p, 0).project().abbrev());
                 print.append("\n").append(formattedAbbrev).append(allocated).append(" ");
             }
@@ -407,11 +399,10 @@ public class Gurobi {
                 }
 
                 // ignore students with invalid selections
-                if ((GurobiConfig.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())
-                     && GurobiConfig.Constraints.ignoreInvalids) ||
-                    // ignore students with invalid selections that should only be added to the projects they are
-                    // fixed in but the fixed option is disabled
-                    (!GurobiConfig.Constraints.fixedStuds && GurobiConfig.Constraints.addInvalidsToFixed)) {
+                if ((GurobiConfig.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum()) && GurobiConfig.Constraints.ignoreInvalids) ||
+                        // ignore students with invalid selections that should only be added to the projects they are
+                        // fixed in but the fixed option is disabled
+                        (!GurobiConfig.Constraints.fixedStuds && GurobiConfig.Constraints.addInvalidsToFixed)) {
                     projPerStud = 0;
                 }
 
@@ -532,7 +523,7 @@ public class Gurobi {
                     for (int s = 0; s < this.allocs.numStuds(); ++s) {
                         expr.addTerm(1.0, this.allocs.get(p, s).grbVar());
                     }
-                    String st = "studPerStudy" + p + group.StudyProgram();
+                    String st = "studPerStudy" + p + group.studyProgram();
                     this.model.addConstr(expr, GRB.LESS_EQUAL, group.max(), st);
                 }
             }
@@ -590,15 +581,12 @@ public class Gurobi {
                     Student student = this.allocs.getStud(s);
                     boolean constraint = false;
                     // ignore students with invalid selections
-                    if (!(GurobiConfig.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum()))
-                        && project.isFixed(student)) {
+                    if (!(GurobiConfig.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())) && project.isFixed(student)) {
                         if (GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
                             constraint = true;
-                        } else if (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj
-                                   && project.isFixedAndStudentsWish(student)) {
+                        } else if (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj && project.isFixedAndStudentsWish(student)) {
                             constraint = true;
-                        } else if (GurobiConfig.Constraints.addFixedStudsToMostWantedProj
-                                   && project.isFixedAndStudentsHighestWish(student)) {
+                        } else if (GurobiConfig.Constraints.addFixedStudsToMostWantedProj && project.isFixedAndStudentsHighestWish(student)) {
                             constraint = true;
                         }
                     }
@@ -700,9 +688,7 @@ public class Gurobi {
                     alloc.addToScore(GurobiConfig.Preferences.proj4);
                 }
             }
-            if (student.totalScore()
-                < GurobiConfig.Preferences.proj1 + GurobiConfig.Preferences.proj2 + GurobiConfig.Preferences.proj3
-                  + GurobiConfig.Preferences.proj4) {
+            if (student.totalScore() < GurobiConfig.Preferences.proj1 + GurobiConfig.Preferences.proj2 + GurobiConfig.Preferences.proj3 + GurobiConfig.Preferences.proj4) {
                 // TODO: student invalid project selection, see Student.java
                 boolean found = false;
                 for (Student st : Calculation.studentsWithInvalidSelection) {
@@ -719,7 +705,8 @@ public class Gurobi {
     }
 
     /**
-     * Theachers' study program prio TODO
+     * Applies the projects' study program priorities. If a student studies a study program with priority1, priority1
+     * will be added to the allocation's score etc.
      */
     private void prefStudyPrio() {
         for (int p = 0; p < this.allocs.numProjs(); p++) {
@@ -727,22 +714,20 @@ public class Gurobi {
             for (int s = 0; s < this.allocs.numStuds(); s++) {
                 Allocation alloc = this.allocs.get(p, s);
                 Student student = alloc.student();
-                try {
-                    if (student.studyProgram().equals(project.groups()[0].StudyProgram())) {
-                        alloc.addToScore(GurobiConfig.Preferences.studyPrio1);
-                    } else if (student.studyProgram().equals(project.groups()[1].StudyProgram())) {
-                        alloc.addToScore(GurobiConfig.Preferences.studyPrio2);
-                    } else if (student.studyProgram().equals(project.groups()[2].StudyProgram())) {
-                        alloc.addToScore(GurobiConfig.Preferences.studyPrio3);
-                    } else if (student.studyProgram().equals(project.groups()[3].StudyProgram())) {
-                        alloc.addToScore(GurobiConfig.Preferences.studyPrio4);
-                    } else if (student.studyProgram().equals(project.groups()[4].StudyProgram())) {
-                        alloc.addToScore(GurobiConfig.Preferences.studyPrio5);
+                for (Group group : project.groups()) {
+                    if (student.studyProgram().equals(group.studyProgram())) {
+                        if (group.prio() == 1) {
+                            alloc.addToScore(GurobiConfig.Preferences.studyPrio1);
+                        } else if (group.prio() == 2) {
+                            alloc.addToScore(GurobiConfig.Preferences.studyPrio2);
+                        } else if (group.prio() == 3) {
+                            alloc.addToScore(GurobiConfig.Preferences.studyPrio3);
+                        } else if (group.prio() == 4) {
+                            alloc.addToScore(GurobiConfig.Preferences.studyPrio4);
+                        } else if (group.prio() == 5) {
+                            alloc.addToScore(GurobiConfig.Preferences.studyPrio5);
+                        }
                     }
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    /*
-                     * do nothing. project has less than 5 groups. that is ok.
-                     */
                 }
                 var debug = 4; // TODO: test
             }

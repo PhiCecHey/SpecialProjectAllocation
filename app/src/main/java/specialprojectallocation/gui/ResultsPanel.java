@@ -73,7 +73,7 @@ public class ResultsPanel extends JPanel {
 
         this.bExport.addActionListener(ae -> {
             Calculation.outPath = fExport.getText();
-            WriteResults.printForSupers(Calculation.gurobi.results, Calculation.gurobi.allocs);
+            WriteResults.printForTeachers(Calculation.gurobi.results, Calculation.gurobi.allocs);
         });
 
         this.bSearch.addActionListener(ae -> this.search());

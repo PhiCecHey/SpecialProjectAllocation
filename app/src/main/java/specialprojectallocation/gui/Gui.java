@@ -91,15 +91,15 @@ public class Gui {
         Gui.maximize = new JButton(maximizeDark);
         Gui.maximize.setToolTipText("Resize graphical elements");
         Gui.saveConfigs = new JButton(saveConfigsDark);
-        Gui.saveConfigs.setToolTipText("Save user configs");
+        Gui.saveConfigs.setToolTipText("Save user configs.\nRequires \"Config File - Output\" and \"Parse Files\" to be pressed.");
         Gui.applyConfigs = new JButton(applyConfigsDark);
-        Gui.applyConfigs.setToolTipText("Apply user configs");
+        Gui.applyConfigs.setToolTipText("Apply user configs.\nRequires \"Config File - Input\" and \"Parse Files\" to be pressed.");
         Gui.frame.add(Gui.plus, "cell 2 0, top");
         Gui.frame.add(Gui.zero, "cell 2 0, top");
         Gui.frame.add(Gui.minus, "cell 2 0, top");
         Gui.frame.add(Gui.maximize, "cell 2 0, top");
         Gui.frame.add(Gui.applyConfigs, "cell 2 0, top");
-        Gui.frame.add(Gui.saveConfigs, "cell 2 1");
+        Gui.frame.add(Gui.saveConfigs, "cell 2 0, top");
         Gui.addFontSizeSwitcher();
         Gui.addSaveConfigs();
 

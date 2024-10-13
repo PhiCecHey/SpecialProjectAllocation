@@ -25,8 +25,6 @@ public class RegisterProject extends MyParser {
     private static int listOfPrograms = -1;
     private static final ArrayList<AbbrevAllowedMaxPrio> studyPrograms = new ArrayList<>();
 
-    // TODO: how to handle exceptions?
-
     /**
      * Parse the CSV RegisterProject Moodle file, retrieving and creating all projects and study programs.
      *
@@ -38,16 +36,13 @@ public class RegisterProject extends MyParser {
      * @throws AbbrevTakenException  Attempted to create another project with the same abbrev/ ID.
      * @throws IOException           Possibly wrong file?
      */
-    public static int read(@NotNull File csv, char delim)
-    throws NumberFormatException, AbbrevTakenException, IOException {
+    public static int read(@NotNull File csv, char delim) throws IOException {
         int worked = 0;
         Calculation.clearProjects();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
             String line = bufferedReader.readLine();
             if (!RegisterProject.evalHeading(line)) {
-                Calculation.appendToLog(
-                        "RegisterProject: Could not evaluate first row of RegisterProjectFile! Wrong file or wrong "
-                        + "delim in config tab?");
+                Calculation.appendToLog("RegisterProject: Could not evaluate first row of RegisterProjectFile! Wrong file or wrong " + "delim in config tab?");
                 return 2;
             }
 
@@ -65,11 +60,9 @@ public class RegisterProject extends MyParser {
                     Group[] groups = RegisterProject.createGroups(cells, maxNum);
 
                     // generates new project and adds it to all projects
-                    Project.findOrCreateProject(cells[RegisterProject.abbrev], minNum, maxNum, groups,
-                                                cells[RegisterProject.fixed]);
+                    Project.findOrCreateProject(cells[RegisterProject.abbrev], minNum, maxNum, groups, cells[RegisterProject.fixed]);
                 } catch (IndexOutOfBoundsException e) {
-                    Calculation.appendToLog(
-                            "RegisterProject: Possibly wrong file? Else maybe weird character in moodle file.");
+                    Calculation.appendToLog("RegisterProject: Possibly wrong file? Else maybe weird character in moodle file.");
                     return 2;
                 }
             }
@@ -84,8 +77,7 @@ public class RegisterProject extends MyParser {
      * @return maximum number of students in the respective project
      */
     private static int getMaxNum(@NotNull String[] cells) {
-        boolean oneStudent = cells[RegisterProject.var].toLowerCase()
-                .contains(GurobiConfig.ProjectAdministration.varOneStudent);
+        boolean oneStudent = cells[RegisterProject.var].toLowerCase().contains(GurobiConfig.ProjectAdministration.varOneStudent);
 
         int maxNum = oneStudent ? 1 : Integer.MAX_VALUE;
         if (cells.length > RegisterProject.maxNum) {
@@ -149,8 +141,7 @@ public class RegisterProject extends MyParser {
                 }
             }
         }
-        return (RegisterProject.abbrev != -1 && RegisterProject.minNum != -1 && RegisterProject.maxNum != -1
-                && RegisterProject.var != -1 && RegisterProject.fixed != -1);
+        return (RegisterProject.abbrev != -1 && RegisterProject.minNum != -1 && RegisterProject.maxNum != -1 && RegisterProject.var != -1 && RegisterProject.fixed != -1);
     }
 
     /**
@@ -175,9 +166,7 @@ public class RegisterProject extends MyParser {
                 } catch (NumberFormatException e) {
                     groupMax = projMax;
                     if (errorLogged.contains(projAbbrev + "max")) continue;
-                    Calculation.appendToLog(
-                            "Warning: Error parsing " + GurobiConfig.ProjectAdministration.maxGroup + " in project "
-                            + projAbbrev);
+                    Calculation.appendToLog("Warning: Error parsing " + GurobiConfig.ProjectAdministration.maxGroup + " in project " + projAbbrev);
                     errorLogged.add(projAbbrev + "max");
                 }
                 try {
@@ -185,9 +174,7 @@ public class RegisterProject extends MyParser {
                 } catch (NumberFormatException e) {
                     groupPrio = 3;
                     if (errorLogged.contains(projAbbrev + "prio")) continue;
-                    Calculation.appendToLog(
-                            "Warning: Error parsing " + GurobiConfig.ProjectAdministration.prioGroup + " in project "
-                            + projAbbrev);
+                    Calculation.appendToLog("Warning: Error parsing " + GurobiConfig.ProjectAdministration.prioGroup + " in project " + projAbbrev);
                     errorLogged.add(projAbbrev + "prio");
                 }
                 groups.add(new Group(entry.abbrev, groupMax, groupPrio));
