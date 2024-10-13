@@ -259,6 +259,7 @@ public class ConfigPanel extends JPanel {
         final JLabel gurobiConf;
         final CheckThreeRadios fixedStuds;
         final Check studWantsProj;
+        final Check teacherWantsStudent;
         final CheckTwoRadios invalids;
         final CheckFourFields weightSelectedProj;
         final CheckFiveFields weightRegProj;
@@ -567,7 +568,8 @@ public class ConfigPanel extends JPanel {
 
             this.fixedStuds = new CheckThreeRadios(text0, text1, text2, text3);
 
-            this.studWantsProj = new Check("[2] Students are solely allocated to projects they have chosen");
+            this.studWantsProj = new Check("[2] Students are exclusively allocated to projects they have chosen");
+            this.studWantsProj.setToolTipText(""); // TODO
 
             text0 = "[3] Students' project priorities";
             text1 = "[a] Weight first choice:";
@@ -577,7 +579,10 @@ public class ConfigPanel extends JPanel {
             this.weightSelectedProj = new CheckFourFields(text0, text1, Double.toString(GurobiConfig.Preferences.proj1), text2, Double.toString(GurobiConfig.Preferences.proj2), text3, Double.toString(GurobiConfig.Preferences.proj3), text4, Double.toString(GurobiConfig.Preferences.proj4));
             this.weightSelectedProj.setToolTipText("These weights will be multiplied with the corresponding student-project indicator variables.\n" + "A higher weight results in a greater chance of the respective indicator variable to be \n" + "1 and thus the allocation of the student to the project.");
 
-            text0 = "[4] Teachers' priorities of study programs within a project";
+            this.teacherWantsStudent = new Check("[4] Only students enrolled in one of the project's desired study programs are allocated to that respective project.");
+            this.teacherWantsStudent.setToolTipText(""); // TODO
+
+            text0 = "[5] Teachers' priorities of study programs within a project";
             text1 = "[a] Weight first study program:";
             text2 = "[b] Weight second study program:";
             text3 = "[c] Weight third study program:";
@@ -604,13 +609,19 @@ public class ConfigPanel extends JPanel {
             sep6.setMinimumSize(new Dimension(2, 2));
             this.add(sep6, "spanx, growx");
 
-            this.add(this.weightRegProj);
+            this.add(this.teacherWantsStudent);
 
             JSeparator sep7 = new JSeparator();
             sep6.setMinimumSize(new Dimension(2, 2));
-            this.add(sep6, "spanx, growx");
+            this.add(sep7, "spanx, growx");
 
-            text0 = "[5] Students with invalid project choices...";
+            this.add(this.weightRegProj);
+
+            JSeparator sep8 = new JSeparator();
+            sep6.setMinimumSize(new Dimension(2, 2));
+            this.add(sep8, "spanx, growx");
+
+            text0 = "[6] Students with invalid project choices...";
             text1 = "[a] will not participate in any projects";
             text2 = "[b] will be allocated to their pre-assigned projects";
 
@@ -625,6 +636,7 @@ public class ConfigPanel extends JPanel {
             GurobiConfig.Constraints.addFixedStudsToMostWantedProj = this.fixedStuds.three.isSelected();
 
             GurobiConfig.Constraints.studWantsProj = this.studWantsProj.check.isSelected();
+            GurobiConfig.Constraints.studentHasRightStudyProgram = this.teacherWantsStudent.check.isSelected();
 
             GurobiConfig.Constraints.invalids = this.invalids.check.isSelected();
             GurobiConfig.Constraints.ignoreInvalids = this.invalids.one.isSelected();

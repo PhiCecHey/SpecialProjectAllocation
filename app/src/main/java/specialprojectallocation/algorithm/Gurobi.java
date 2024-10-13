@@ -625,8 +625,7 @@ public class Gurobi {
 
     /**
      * Alternative to constrStudHasRightStudyProgram: only students who study one of the project's accepted study
-     * programs
-     * should be assigned to the project.
+     * programs should be assigned to the project.
      */
     private void prefStudsHasRightStudyProgram() { // TODO: test
         for (int s = 0; s < this.allocs.numStuds(); ++s) {

@@ -142,18 +142,12 @@ public class GurobiConfig {
          */
         public static final boolean projectPerStudent = true;
 
-        /*public static boolean minProjectPerStudent = false; // obsolete
-        public static boolean maxProjectPerStudent = false; // obsolete
-        public static int maxNumProjectsPerStudent = 1; // obsolete
-        public static int minNumProjectsPerStudent = 1; // obsolete */
         /*
          * Sets the minimum and maximum amount of students a project can have. These values are project specific and
          * dependent on the project's minimum and maximum amount of students required and allowed. If the project cannot
          * get enough students, it will be unavailable and no students will be assigned to this project.
          */
         public static final boolean studentsPerProject = true;
-        //public static boolean minStudentsPerProject = false;
-        //public static boolean maxStudentsPerProject = false;
 
         /**
          * Enabling this constraint causes students who are in a projects fixed students list to get assigned to that
@@ -202,13 +196,13 @@ public class GurobiConfig {
          * This constraint ensures that only students who study one of the project's accepted study programs can be
          * assigned to the project.
          */
-        public static final boolean studentHasRightStudyProgram = true;
+        public static boolean studentHasRightStudyProgram = true;
 
         /**
-         * This constraint ensures that only the maximum amount of students from a per study program can be assigned to
+         * This constraint ensures that only the maximum amount of students from per study program can be assigned to
          * the project. This value is project and study program dependent.
          */
-        public static final boolean studentsPerStudy = true;
+        public static boolean studentsPerStudy = true;
     }
 
     public static class Preferences {
@@ -243,8 +237,8 @@ public class GurobiConfig {
         public static double proj4 = 40.0;
 
         /**
-         * This constraint ensures that only students who study in one of a project's accepted study programs are
-         * assigned to the project.
+         * TODO: alternative to: This constraint ensures that only students who study in one of a project's accepted study programs are
+         *       assigned to the project. not in use
          */
         public static final boolean studentHasRightStudyProgram = false;
 
@@ -254,19 +248,19 @@ public class GurobiConfig {
         public static final double penStudentHasRightStudyProgram = -100; // TODO: use
 
         /**
+         * Alternative to TODO
+         */
+        public static boolean studentsPerStudy = true; // TODO
+        // TODO penalizes a student participating in a project if not right study program. used for alternative to above
+        //  constraint
+        public static double penStudsPerStudy = -100;
+
+        /**
          * A study program's priority in a project. If a study program is assigned the highest priority (priority 1),
          * then studyPrio1 will be multiplied by the respective indicator variable regarding all the students that
          * have that study program.
          */
         public static boolean studyPrio = true;
-
-        /**
-         * Alternative to TODO
-         */
-        public static final boolean studentsPerStudy = true; // TODO add to gui
-        // TODO penalizes a student participating in a project if not right study program. used for alternative to above
-        //  constraint
-        public static double penStudsPerStudy = -100;
 
         /**
          * Value added to the score of a teacher's first choice study program. The higher the value, the more likely
