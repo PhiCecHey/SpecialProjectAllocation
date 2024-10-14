@@ -86,18 +86,16 @@ public class ResultsPanel extends JPanel {
         int length = this.fSearch.getText().length();
         while (offset != -1) {
             try {
-                if (this.numHighlights == 1) {
+                if (this.numHighlights % 5 == 0) {
                     this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.orange);
-                } else if (this.numHighlights == 2) {
-                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.green);
-                } else if (this.numHighlights == 3) {
-                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.red);
-                } else if (this.numHighlights == 4) {
-                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.yellow);
-                } else if (this.numHighlights == 5) {
-                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.blue);
-                } else {
+                } else if (this.numHighlights % 5 == 1) {
                     this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.cyan);
+                } else if (this.numHighlights % 5 == 2) {
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.yellow);
+                } else if (this.numHighlights % 5 == 3) {
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.lightGray);
+                } else {
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
                 }
                 this.area.getHighlighter().addHighlight(offset, offset + length, this.painter);
                 offset = this.area.getText().indexOf(this.fSearch.getText(), offset + 1);

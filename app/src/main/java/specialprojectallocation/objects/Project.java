@@ -34,7 +34,6 @@ public class Project {
      * @param gr    array of groups with StudyProgram priorities and maximum number of students
      * @param fixed string with names and matrictulation numbers of the students that are to be assigned to this
      *              project regardless of any priorities or restrictions
-     * @throws AbbrevTakenException throws exception if there exists a project with the same abbreviation already
      */
     private Project(@NotNull String ab, int min, int max, Group[] gr, String fixed) {
         this.abbrev = ab.strip();
@@ -236,22 +235,18 @@ public class Project {
      * the second-highest priority etc. so that the Gurobi Solver is not biased towards teachers who filled out the servey the way they were supposed to.
      */
     private void normalizeGroupPrios() {
-        Arrays.sort(this.groups);
-        ArrayList<Integer> prioChangedAtIndex = new ArrayList<>(); // e.g. {0, 3, 4} means group0 should get prio1, groups1-3 should get prio2, group4 should get prio3
-        for (int i = 0; i < this.groups.length - 1; i++) {
-            if (this.groups[i].compareTo(this.groups[i + 1]) > 0) {
-                prioChangedAtIndex.add(i);
-            }
+        ArrayList<Group>[] groups = new ArrayList[]{new ArrayList<Group>(), new ArrayList<Group>(), new ArrayList<Group>(), new ArrayList<Group>(), new ArrayList<Group>()}; //groups[0]: all groups with priority 1, groups[4]: all groups with priority 5
+        for (Group g : this.groups) {
+            groups[g.prio() - 1].add(g);
         }
-
-        int prio = 1;
-        int lastChange = 0;
-        for (Integer nextChange : prioChangedAtIndex) {
-            while (lastChange <= nextChange) {
-                this.groups[lastChange].prio(prio);
-                lastChange++;
+        int prio = 0;
+        for (ArrayList<Group> a : groups) {
+            if (!a.isEmpty()) {
+                prio++;
             }
-            prio++;
+            for (Group g : a) {
+                g.prio(prio);
+            }
         }
     }
 }

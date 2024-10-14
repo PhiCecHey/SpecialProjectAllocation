@@ -61,6 +61,7 @@ public class Group implements Comparable<Group> {
 
     @Override
     public int compareTo(@NotNull Group group) {
-        return Integer.compare(this.prio, group.prio);
+        var debug = Integer.compare(this.prio, group.prio);
+        return debug;
     }
 }
