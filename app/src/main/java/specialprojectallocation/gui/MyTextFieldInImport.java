@@ -30,7 +30,6 @@ public class MyTextFieldInImport extends JTextField {
 
                 public void warn() {
                     button.setBackground(Colors.blueTransp);
-                    Gui.saveConfigs.setBackground(Colors.blueTransp);
                 }
             });
         }

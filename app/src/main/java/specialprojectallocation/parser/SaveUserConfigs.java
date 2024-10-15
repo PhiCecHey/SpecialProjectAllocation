@@ -46,9 +46,9 @@ public class SaveUserConfigs {
         return fileExists;
     }
 
-    public static void saveConfigs(JFrame frame, boolean lightTheme, int fontSize) throws IOException {
+    public static void saveConfigs(JFrame frame, boolean lightTheme, int fontSize, String userConfOut) throws IOException {
         SaveUserConfigs.init(frame, true);
-        BufferedWriter bw = new BufferedWriter(new FileWriter(Calculation.userConfOut));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(userConfOut));
         for (String text : SaveUserConfigs.contentsOfFields) {
             bw.write(text + "\n");
         }
@@ -62,11 +62,11 @@ public class SaveUserConfigs {
 
     @NotNull
     @Contract("_ -> new")
-    public static ThemeFont applyConfigs(JFrame frame) throws IOException, NullPointerException {
+    public static ThemeFont applyConfigs(JFrame frame, String userConfIn) throws IOException, NullPointerException {
         SaveUserConfigs.init(frame, false);
         boolean lightTheme;
         int fontSize;
-        BufferedReader br = new BufferedReader(new FileReader(Calculation.userConfIn));
+        BufferedReader br = new BufferedReader(new FileReader(userConfIn));
         for (JTextField field : SaveUserConfigs.fields) {
             field.setText(br.readLine());
         }

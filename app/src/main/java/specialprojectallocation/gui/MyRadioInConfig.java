@@ -23,7 +23,6 @@ public class MyRadioInConfig extends JRadioButton {
 
                 public void warn() {
                     button.setBackground(Colors.yellowTransp);
-                    Gui.saveConfigs.setBackground(Colors.blueTransp);
                 }
             });
         }

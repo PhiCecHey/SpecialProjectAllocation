@@ -10,6 +10,7 @@ import specialprojectallocation.parser.ThemeFont;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.io.ObjectInputFilter;
 
 /**
  * Vectors and icons by <a href="https://www.svgrepo.com" target="_blank">SVG Repo</a>
@@ -17,18 +18,16 @@ import java.io.IOException;
 public class Gui {
     static JFrame frame;
     static JPanel help;
-    static JPanel imports;
-    static JPanel config;
-    static JPanel results;
+    static ImportsPanel imports;
+    static ConfigPanel config;
+    static ResultsPanel results;
     static JTabbedPane pane;
     static boolean lightTheme = true;
     static int fontSize = 22;
-    static JButton theme, plus, minus, zero, maximize, saveConfigs, applyConfigs;
+    static JButton theme, plus, minus, zero, maximize;
     private static ImageIcon moon = new ImageIcon(), plusDark = new ImageIcon(), circleDark = new ImageIcon(), minusDark
             = new ImageIcon(), maximizeDark = new ImageIcon(), sun = new ImageIcon(), plusLight = new ImageIcon(),
-            circleLight = new ImageIcon(), minusLight = new ImageIcon(), maximizeLight = new ImageIcon(),
-            applyConfigsLight = new ImageIcon(), applyConfigsDark = new ImageIcon(), saveConfigsLight = new ImageIcon(),
-            saveConfigsDark = new ImageIcon();
+            circleLight = new ImageIcon(), minusLight = new ImageIcon(), maximizeLight = new ImageIcon();
 
     public static void init() {
         FlatLightLaf.setup();
@@ -42,6 +41,36 @@ public class Gui {
         Gui.pane = new JTabbedPane();
         Gui.frame.add(pane, "cell 0 0, span 1 5");
 
+        JSeparator sep = new JSeparator(SwingConstants.VERTICAL);
+        sep.setMinimumSize(new Dimension(2, 1));
+        Gui.frame.add(sep, "cell 1 0, growy, spany, wrap");
+
+        Gui.moon = new ImageIcon(ClassLoader.getSystemResource("icons/moon-light.png"));
+        Gui.plusDark = new ImageIcon(ClassLoader.getSystemResource("icons/plus-light.png"));
+        Gui.circleDark = new ImageIcon(ClassLoader.getSystemResource("icons/o-light.png"));
+        Gui.minusDark = new ImageIcon(ClassLoader.getSystemResource("icons/minus-light.png"));
+        Gui.maximizeDark = new ImageIcon(ClassLoader.getSystemResource("icons/maximize-light.png"));
+        Gui.sun = new ImageIcon(ClassLoader.getSystemResource("icons/sun-dark.png"));
+        Gui.plusLight = new ImageIcon(ClassLoader.getSystemResource("icons/plus-dark.png"));
+        Gui.circleLight = new ImageIcon(ClassLoader.getSystemResource("icons/o-dark.png"));
+        Gui.minusLight = new ImageIcon(ClassLoader.getSystemResource("icons/minus-dark.png"));
+        Gui.maximizeLight = new ImageIcon(ClassLoader.getSystemResource("icons/maximize-dark.png"));
+
+        Gui.theme = new JButton(moon);
+        Gui.theme.setToolTipText("Toggle light/ dark mode");
+        Gui.frame.add(Gui.theme, "cell 2 0, top");
+        Gui.theme.addActionListener(ae -> {
+            Gui.changeTheme(!Gui.lightTheme);
+        });
+        Gui.plus = new JButton(plusDark);
+        Gui.plus.setToolTipText("Increase font size");
+        Gui.zero = new JButton(circleDark);
+        Gui.zero.setToolTipText("Reset font size");
+        Gui.minus = new JButton(minusDark);
+        Gui.minus.setToolTipText("Decrease font size");
+        Gui.maximize = new JButton(maximizeDark);
+        Gui.maximize.setToolTipText("Resize graphical elements");
+
         Gui.help = new HelpPanel();
         Gui.config = new ConfigPanel();
         JScrollPane p = new JScrollPane(config);
@@ -52,56 +81,11 @@ public class Gui {
         Gui.pane.addTab("Config", p);
         Gui.pane.addTab("Results", Gui.results);
 
-        JSeparator sep = new JSeparator(SwingConstants.VERTICAL);
-        sep.setMinimumSize(new Dimension(2, 1));
-        Gui.frame.add(sep, "cell 1 0, growy, spany, wrap");
-
-        try {
-            Gui.moon = new ImageIcon(ClassLoader.getSystemResource("icons/moon-light.png"));
-            Gui.plusDark = new ImageIcon(ClassLoader.getSystemResource("icons/plus-light.png"));
-            Gui.circleDark = new ImageIcon(ClassLoader.getSystemResource("icons/o-light.png"));
-            Gui.minusDark = new ImageIcon(ClassLoader.getSystemResource("icons/minus-light.png"));
-            Gui.maximizeDark = new ImageIcon(ClassLoader.getSystemResource("icons/maximize-light.png"));
-            Gui.applyConfigsDark = new ImageIcon(ClassLoader.getSystemResource("icons/apply-light.png"));
-            Gui.saveConfigsDark = new ImageIcon(ClassLoader.getSystemResource("icons/save-light.png"));
-            Gui.sun = new ImageIcon(ClassLoader.getSystemResource("icons/sun-dark.png"));
-            Gui.plusLight = new ImageIcon(ClassLoader.getSystemResource("icons/plus-dark.png"));
-            Gui.circleLight = new ImageIcon(ClassLoader.getSystemResource("icons/o-dark.png"));
-            Gui.minusLight = new ImageIcon(ClassLoader.getSystemResource("icons/minus-dark.png"));
-            Gui.maximizeLight = new ImageIcon(ClassLoader.getSystemResource("icons/maximize-dark.png"));
-            Gui.applyConfigsLight = new ImageIcon(ClassLoader.getSystemResource("icons/apply-dark.png"));
-            Gui.saveConfigsLight = new ImageIcon(ClassLoader.getSystemResource("icons/save-dark.png"));
-        } catch (Exception e) {
-            System.out.println("Icons could not be found in resource folder.");
-        }
-
-        Gui.theme = new JButton(moon);
-        Gui.theme.setToolTipText("Toggle light/ dark mode");
-        Gui.frame.add(Gui.theme, "cell 2 0, top");
-        Gui.theme.addActionListener(ae -> {
-            Gui.changeTheme(!Gui.lightTheme);
-            Gui.saveConfigs.setBackground(Colors.blueTransp);
-        });
-        Gui.plus = new JButton(plusDark);
-        Gui.plus.setToolTipText("Increase font size");
-        Gui.zero = new JButton(circleDark);
-        Gui.zero.setToolTipText("Reset font size");
-        Gui.minus = new JButton(minusDark);
-        Gui.minus.setToolTipText("Decrease font size");
-        Gui.maximize = new JButton(maximizeDark);
-        Gui.maximize.setToolTipText("Resize graphical elements");
-        Gui.saveConfigs = new JButton(saveConfigsDark);
-        Gui.saveConfigs.setToolTipText("Save user configs.\nRequires \"Config File - Output\" and \"Parse Files\" to be pressed.");
-        Gui.applyConfigs = new JButton(applyConfigsDark);
-        Gui.applyConfigs.setToolTipText("Apply user configs.\nRequires \"Config File - Input\" and \"Parse Files\" to be pressed.");
         Gui.frame.add(Gui.plus, "cell 2 0, top");
         Gui.frame.add(Gui.zero, "cell 2 0, top");
         Gui.frame.add(Gui.minus, "cell 2 0, top");
         Gui.frame.add(Gui.maximize, "cell 2 0, top");
-        Gui.frame.add(Gui.applyConfigs, "cell 2 0, top");
-        Gui.frame.add(Gui.saveConfigs, "cell 2 0, top");
         Gui.addFontSizeSwitcher();
-        Gui.addSaveConfigs();
 
         frame.pack();
         frame.setLocationRelativeTo(null);
@@ -118,6 +102,8 @@ public class Gui {
                 Gui.changeFontSize(child, size);
             }
         }
+        imports.applyConfigs.setPreferredSize(imports.bConfigIn.getSize());
+        imports.saveConfigs.setPreferredSize(imports.bConfigIn.getSize());
     }
 
     private static void addFontSizeSwitcher() {
@@ -125,13 +111,13 @@ public class Gui {
         Gui.minus.addActionListener(ae -> Gui.changeFontSize(Gui.frame, Gui.frame.getFont().getSize() - 1));
         Gui.zero.addActionListener(ae -> Gui.changeFontSize(Gui.frame, 22));
         Gui.maximize.addActionListener(ae -> {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 5; i++) {
                 SwingUtilities.updateComponentTreeUI(Gui.frame);
             }
         });
     }
 
-    private static void changeTheme(boolean lightTheme) {
+    static void changeTheme(boolean lightTheme) {
         Gui.lightTheme = lightTheme;
         if (!lightTheme) {
             FlatDarkLaf.setup();
@@ -140,8 +126,8 @@ public class Gui {
             Gui.zero.setIcon(Gui.circleLight);
             Gui.minus.setIcon(Gui.minusLight);
             Gui.maximize.setIcon(Gui.maximizeLight);
-            Gui.applyConfigs.setIcon(Gui.applyConfigsLight);
-            Gui.saveConfigs.setIcon(Gui.saveConfigsLight);
+            imports.applyConfigs.setIcon(imports.applyConfigsLight);
+            imports.saveConfigs.setIcon(imports.saveConfigsLight);
         } else {
             FlatLightLaf.setup();
             Gui.theme.setIcon(Gui.moon);
@@ -149,41 +135,9 @@ public class Gui {
             Gui.zero.setIcon(Gui.circleDark);
             Gui.minus.setIcon(Gui.minusDark);
             Gui.maximize.setIcon(Gui.maximizeDark);
-            Gui.applyConfigs.setIcon(Gui.applyConfigsDark);
-            Gui.saveConfigs.setIcon(Gui.saveConfigsDark);
+            imports.applyConfigs.setIcon(imports.applyConfigsDark);
+            imports.saveConfigs.setIcon(imports.saveConfigsDark);
         }
         SwingUtilities.updateComponentTreeUI(Gui.frame);
-    }
-
-    private static void addSaveConfigs() {
-        Gui.applyConfigs.addActionListener(ae -> {
-            ThemeFont themeFont = null;
-            boolean worked = true;
-            try {
-                themeFont = SaveUserConfigs.applyConfigs(Gui.frame);
-            } catch (NullPointerException | IOException e) {
-                worked = false;
-                Gui.applyConfigs.setBackground(Colors.redTransp);
-            }
-            if(worked){
-                Gui.changeTheme(themeFont.lightTheme);
-                changeFontSize(Gui.frame, themeFont.fontSize);
-                Gui.applyConfigs.setBackground(Colors.greenTransp);
-            }
-        });
-
-        Gui.saveConfigs.addActionListener(ae -> {
-            boolean worked = true;
-            try {
-                SaveUserConfigs.saveConfigs(Gui.frame, Gui.lightTheme, Gui.fontSize);
-            } catch (IOException | NullPointerException e) {
-                Gui.saveConfigs.setBackground(Colors.redTransp);
-                worked = false;
-            }
-            if(worked){
-                Gui.saveConfigs.setBackground(Colors.greenTransp);
-                Gui.applyConfigs.setBackground(Colors.blueTransp);
-            }
-        });
     }
 }

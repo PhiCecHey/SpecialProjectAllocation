@@ -29,7 +29,7 @@ public class MyTextFieldInResults extends JTextField {
                 }
 
                 public void warn() {
-                    Gui.saveConfigs.setBackground(Colors.blueTransp);
+
                 }
             });
         }
