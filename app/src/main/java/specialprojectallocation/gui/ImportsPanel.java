@@ -26,8 +26,8 @@ public class ImportsPanel extends JPanel {
     final JLabel lConfigOut;
     final MyTextFieldInImport fRegistration;
     final MyTextFieldInImport fSelection;
-    final MyTextFieldInImport fConfigIn;
-    final MyTextFieldInImport fConfigOut;
+    final JTextField fConfigIn;
+    final JTextField fConfigOut;
     final JButton read;
     final JButton bRegistration;
     public final JButton bSelection;
@@ -47,8 +47,8 @@ public class ImportsPanel extends JPanel {
         this.lConfigOut = new JLabel("Config File - Output (not required):");
         this.fRegistration = new MyTextFieldInImport();
         this.fSelection = new MyTextFieldInImport();
-        this.fConfigIn = new MyTextFieldInImport();
-        this.fConfigOut = new MyTextFieldInImport();
+        this.fConfigIn = new JTextField();
+        this.fConfigOut = new JTextField();
         this.bRegistration = new JButton("...");
         this.bSelection = new JButton("...");
         this.bConfigIn = new JButton("...");
@@ -153,8 +153,8 @@ public class ImportsPanel extends JPanel {
         this.read.addActionListener(ae -> {
             this.logs.setText("");
             Calculation.clearLog();
-            Calculation.projReg = new File(this.fRegistration.getText()); // TODO only parse if field not empty
-            Calculation.projSel = new File(this.fSelection.getText()); // TODO only parse if field not empty
+            Calculation.projReg = new File(this.fRegistration.getText());
+            Calculation.projSel = new File(this.fSelection.getText());
             int worked;
             try {
                 worked = RegisterProject.read(Calculation.projReg, GurobiConfig.ProjectAdministration.csvDelim);
