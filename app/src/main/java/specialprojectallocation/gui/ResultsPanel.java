@@ -64,8 +64,10 @@ public class ResultsPanel extends JPanel {
 
         this.bcalc.addActionListener(ae -> {
             try {
+                Calculation.clearLog();
                 Calculation.gurobi = new Gurobi();
             } catch (GRBException e) { // TODO
+                Calculation.appendToLog(e.getMessage());
                 area.append(e + "\n");
             }
             area.append(Calculation.gurobiResultsGui + "\n");

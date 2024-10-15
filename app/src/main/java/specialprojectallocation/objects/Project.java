@@ -192,11 +192,9 @@ public class Project {
             if (split.length > 1) {
                 imma = split[1].trim();
             }
-            Student student = Student.findStudentByImma(imma);
-            if (student == null) student = Student.findStudentByImma(name);
-            if (student == null) student = Student.findStudentByName(name, false);
-            if (student == null) student = Student.findStudentByName(imma, false);
+            Student student = Student.findStudentByImma(imma, true);
             if (student == null) student = Student.findStudentByName(name, true);
+            if (student == null) student = Student.findStudentByImma(name, true);
             if (student == null) student = Student.findStudentByName(imma, true);
 
             this.fixedStuds[i] = student;
@@ -231,11 +229,16 @@ public class Project {
 
     /**
      * Not all teachers might give their highest-priority group the highest priority which causes the Gurobi Solver to
-     * prefer allocations where teachers did so. This normalization will give all highest-priority projects the highest priority, all second-highest prioriy projects
-     * the second-highest priority etc. so that the Gurobi Solver is not biased towards teachers who filled out the survey the way they were supposed to.
+     * prefer allocations where teachers did so. This normalization will give all highest-priority projects the
+     * highest priority, all second-highest prioriy projects
+     * the second-highest priority etc. so that the Gurobi Solver is not biased towards teachers who filled out the
+     * survey the way they were supposed to.
      */
     private void normalizeGroupPrios() {
-        ArrayList<Group>[] groups = new ArrayList[]{new ArrayList<Group>(), new ArrayList<Group>(), new ArrayList<Group>(), new ArrayList<Group>(), new ArrayList<Group>()}; //groups[0]: all groups with priority 1, groups[4]: all groups with priority 5
+        ArrayList<Group>[] groups = new ArrayList[]{new ArrayList<Group>(), new ArrayList<Group>(),
+                                                    new ArrayList<Group>(), new ArrayList<Group>(),
+                                                    new ArrayList<Group>()}; //groups[0]: all groups with priority 1,
+        // groups[4]: all groups with priority 5
         for (Group g : this.groups) {
             groups[g.prio() - 1].add(g);
         }

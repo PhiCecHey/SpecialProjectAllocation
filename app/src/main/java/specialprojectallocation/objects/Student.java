@@ -44,7 +44,7 @@ public class Student {
      */
     @NotNull
     public static Student findOrCreate(String imma, String na, StudyProgram stu) {
-        Student student = Student.findStudentByImma(imma);
+        Student student = Student.findStudentByImma(imma, false);
         if (student != null) {
             student.immatNum = imma;
 
@@ -215,11 +215,12 @@ public class Student {
     /**
      * Checks all Student objects created and returns the one with the same matriculation number.
      *
-     * @param immatNum of the student to be found
+     * @param immatNum     of the student to be found
+     * @param experimental if student could not be found, try a more elaborate search with contains instead of equals
      * @return Student object with respective matriculation number. Returns null if there is no such student.
      */
     @Nullable
-    public static Student findStudentByImma(String immatNum) {
+    public static Student findStudentByImma(String immatNum, boolean experimental) {
         immatNum = immatNum.trim();
         if (immatNum.isEmpty()) {
             return null;
@@ -229,6 +230,15 @@ public class Student {
                 return s;
             }
         }
+
+        if (experimental) {
+            for (Student s : Calculation.students) {
+                if (immatNum.contains(s.immatNum)) {
+                    return s;
+                }
+            }
+        }
+
         return null;
     }
 

@@ -166,8 +166,7 @@ public class GurobiConfig {
         public static boolean ignoreInvalids = false;
 
         /**
-         * Students wiht invalid project choices will only be assigned to projects in which they are listed as fixed
-         * students.
+         * Students with invalid project choices will only be allocated to projects which they are pre-assigned to.
          */
         public static boolean addInvalidsToFixed = false;
 
@@ -237,7 +236,8 @@ public class GurobiConfig {
         public static double proj4 = 40.0;
 
         /**
-         * TODO: alternative to: This constraint ensures that only students who study in one of a project's accepted study programs are
+         * TODO: alternative to: This constraint ensures that only students who study in one of a project's accepted
+         * study programs are
          *       assigned to the project. not in use
          */
         public static final boolean studentHasRightStudyProgram = false;

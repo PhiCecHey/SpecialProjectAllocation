@@ -718,6 +718,7 @@ public class ConfigPanel extends JPanel {
             }
 
             GurobiConfig.Preferences.studyPrio = this.weightRegProj.check.isSelected();
+            GurobiConfig.Constraints.studentsPerStudy = this.weightRegProj.check.isSelected();
             if (this.weightRegProj.check.isSelected()) {
                 try {
                     this.weightRegProj.field1.setBackground(test.getBackground());
