@@ -2,7 +2,6 @@ package specialprojectallocation.parser;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import specialprojectallocation.Calculation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,7 +45,8 @@ public class SaveUserConfigs {
         return fileExists;
     }
 
-    public static void saveConfigs(JFrame frame, boolean lightTheme, int fontSize, String userConfOut) throws IOException {
+    public static void saveConfigs(JFrame frame, boolean lightTheme, int fontSize, String userConfOut)
+    throws IOException {
         SaveUserConfigs.init(frame, true);
         BufferedWriter bw = new BufferedWriter(new FileWriter(userConfOut));
         for (String text : SaveUserConfigs.contentsOfFields) {
@@ -74,8 +74,10 @@ public class SaveUserConfigs {
         for (JToggleButton button : SaveUserConfigs.buttons) {
             if (button instanceof JCheckBox) {
                 lastCheckBox = (JCheckBox) button;
+                button.setEnabled(true);
+            } else {
+                button.setEnabled(lastCheckBox != null && lastCheckBox.isSelected());
             }
-            button.setEnabled(lastCheckBox != null && lastCheckBox.isSelected());
             button.setSelected(br.readLine().equals("1"));
         }
         String line = br.readLine();
