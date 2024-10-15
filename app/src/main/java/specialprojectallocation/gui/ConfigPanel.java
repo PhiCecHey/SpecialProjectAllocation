@@ -50,8 +50,11 @@ public class ConfigPanel extends JPanel {
             Calculation.clearGurobi();
             projectAdminPanel.save();
             projectSelectionPanel.save();
-            constraintsPanel.save();
-            save.setBackground(Colors.blueTransp);
+            if (constraintsPanel.save()) {
+                save.setBackground(Colors.greenTransp);
+            } else {
+                save.setBackground(Colors.redTransp);
+            }
         });
     }
 
@@ -258,8 +261,10 @@ public class ConfigPanel extends JPanel {
         }
 
         void save() {
+            JTextField test = new JTextField();
             GurobiConfig.ProjectAdministration.csvDelim = this.fCsvDelim.getText().toCharArray()[0];
             try {
+                this.fNumCharsAbbrev.setBackground(test.getBackground());
                 GurobiConfig.ProjectAdministration.numCharsAbbrev = Integer.parseInt(this.fNumCharsAbbrev.getText());
             } catch (NumberFormatException e) {
                 this.fNumCharsAbbrev.setBackground(Colors.redTransp);
@@ -660,7 +665,10 @@ public class ConfigPanel extends JPanel {
             this.add(this.invalids);
         }
 
-        void save() {
+        boolean save() {
+            boolean noErrors = true;
+            JTextField test = new JTextField();
+
             GurobiConfig.Constraints.fixedStuds = this.fixedStuds.check.isSelected();
             GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj = this.fixedStuds.one.isSelected();
             GurobiConfig.Constraints.addFixedStudsToAllSelectedProj = this.fixedStuds.two.isSelected();
@@ -676,64 +684,83 @@ public class ConfigPanel extends JPanel {
             GurobiConfig.Preferences.selectedProjs = this.weightSelectedProj.check.isSelected();
             if (this.weightSelectedProj.check.isSelected()) {
                 try {
+                    this.weightSelectedProj.field1.setBackground(test.getBackground());
                     GurobiConfig.Preferences.proj1 = Double.parseDouble(this.weightSelectedProj.field1.getText());
                 } catch (NumberFormatException e) {
                     this.weightSelectedProj.field1.setBackground(Colors.redTransp);
                     this.weightSelectedProj.field1.setText(Double.toString(GurobiConfig.Preferences.proj1));
+                    noErrors = false;
                 }
                 try {
+                    this.weightSelectedProj.field2.setBackground(test.getBackground());
                     GurobiConfig.Preferences.proj2 = Double.parseDouble(this.weightSelectedProj.field2.getText());
                 } catch (NumberFormatException e) {
                     this.weightSelectedProj.field2.setBackground(Colors.redTransp);
                     this.weightSelectedProj.field2.setText(Double.toString(GurobiConfig.Preferences.proj2));
+                    noErrors = false;
                 }
                 try {
+                    this.weightSelectedProj.field3.setBackground(test.getBackground());
                     GurobiConfig.Preferences.proj3 = Double.parseDouble(this.weightSelectedProj.field3.getText());
                 } catch (NumberFormatException e) {
                     this.weightSelectedProj.field3.setBackground(Colors.redTransp);
                     this.weightSelectedProj.field3.setText(Double.toString(GurobiConfig.Preferences.proj3));
+                    noErrors = false;
                 }
                 try {
+                    this.weightSelectedProj.field4.setBackground(test.getBackground());
                     GurobiConfig.Preferences.proj4 = Double.parseDouble(this.weightSelectedProj.field4.getText());
                 } catch (NumberFormatException e) {
                     this.weightSelectedProj.field4.setBackground(Colors.redTransp);
                     this.weightSelectedProj.field4.setText(Double.toString(GurobiConfig.Preferences.proj4));
+                    noErrors = false;
                 }
             }
 
             GurobiConfig.Preferences.studyPrio = this.weightRegProj.check.isSelected();
             if (this.weightRegProj.check.isSelected()) {
                 try {
+                    this.weightRegProj.field1.setBackground(test.getBackground());
                     GurobiConfig.Preferences.studyPrio1 = Double.parseDouble(this.weightRegProj.field1.getText());
                 } catch (NumberFormatException e) {
                     this.weightRegProj.field1.setBackground(Colors.redTransp);
                     this.weightRegProj.field1.setText(Double.toString(GurobiConfig.Preferences.studyPrio1));
+                    noErrors = false;
                 }
                 try {
+                    this.weightRegProj.field2.setBackground(test.getBackground());
                     GurobiConfig.Preferences.studyPrio2 = Double.parseDouble(this.weightRegProj.field2.getText());
                 } catch (NumberFormatException e) {
                     this.weightRegProj.field2.setBackground(Colors.redTransp);
                     this.weightRegProj.field2.setText(Double.toString(GurobiConfig.Preferences.studyPrio2));
+                    noErrors = false;
                 }
                 try {
+                    this.weightRegProj.field3.setBackground(test.getBackground());
                     GurobiConfig.Preferences.studyPrio3 = Double.parseDouble(this.weightRegProj.field3.getText());
                 } catch (NumberFormatException e) {
                     this.weightRegProj.field3.setBackground(Colors.redTransp);
                     this.weightRegProj.field3.setText(Double.toString(GurobiConfig.Preferences.studyPrio3));
+                    noErrors = false;
                 }
                 try {
+                    this.weightRegProj.field4.setBackground(test.getBackground());
                     GurobiConfig.Preferences.studyPrio4 = Double.parseDouble(this.weightRegProj.field4.getText());
                 } catch (NumberFormatException e) {
                     this.weightRegProj.field4.setBackground(Colors.redTransp);
                     this.weightRegProj.field4.setText(Double.toString(GurobiConfig.Preferences.studyPrio4));
+                    noErrors = false;
                 }
                 try {
+                    this.weightRegProj.field5.setBackground(test.getBackground());
                     GurobiConfig.Preferences.studyPrio5 = Double.parseDouble(this.weightRegProj.field5.getText());
                 } catch (NumberFormatException e) {
                     this.weightRegProj.field5.setBackground(Colors.redTransp);
                     this.weightRegProj.field5.setText(Double.toString(GurobiConfig.Preferences.studyPrio5));
+                    noErrors = false;
                 }
             }
+            return noErrors;
         }
     }
 }
