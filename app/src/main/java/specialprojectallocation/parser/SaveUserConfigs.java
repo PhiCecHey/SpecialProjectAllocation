@@ -46,7 +46,7 @@ public class SaveUserConfigs {
         return fileExists;
     }
 
-    public static void saveConfigs(JFrame frame, boolean lightTheme, int fontSize) throws IOException{
+    public static void saveConfigs(JFrame frame, boolean lightTheme, int fontSize) throws IOException {
         SaveUserConfigs.init(frame, true);
         BufferedWriter bw = new BufferedWriter(new FileWriter(Calculation.userConfOut));
         for (String text : SaveUserConfigs.contentsOfFields) {
@@ -70,7 +70,12 @@ public class SaveUserConfigs {
         for (JTextField field : SaveUserConfigs.fields) {
             field.setText(br.readLine());
         }
+        JCheckBox lastCheckBox = null;
         for (JToggleButton button : SaveUserConfigs.buttons) {
+            if (button instanceof JCheckBox) {
+                lastCheckBox = (JCheckBox) button;
+            }
+            button.setEnabled(lastCheckBox != null && lastCheckBox.isSelected());
             button.setSelected(br.readLine().equals("1"));
         }
         String line = br.readLine();

@@ -7,7 +7,7 @@ import specialprojectallocation.Calculation;
  * A Project object contains several Groups. A Group states how many participants from a study program can
  * participate in a project with what priority (1-5, 1 is highest).
  */
-public class Group implements Comparable<Group> {
+public class Group {
     private final StudyProgram studyProgram;
     private final int maxNumStuds; // maximum number of students allowed from that study program
     private int prio; // priority (1-5, 1: high, 5: low) of a study program within a project
@@ -57,11 +57,5 @@ public class Group implements Comparable<Group> {
      */
     public boolean checkStudy(@NotNull Student student) {
         return this.studyProgram.equals(student.studyProgram());
-    }
-
-    @Override
-    public int compareTo(@NotNull Group group) {
-        var debug = Integer.compare(this.prio, group.prio);
-        return debug;
     }
 }

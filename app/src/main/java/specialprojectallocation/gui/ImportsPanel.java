@@ -93,10 +93,10 @@ public class ImportsPanel extends JPanel {
         this.read.addActionListener(ae -> {
             this.logs.setText("");
             Calculation.clearLog();
-            Calculation.userConfIn = this.fConfigIn.getText();
-            Calculation.userConfOut = this.fConfigOut.getText();
-            Calculation.projReg = new File(this.fRegistration.getText());
-            Calculation.projSel = new File(this.fSelection.getText());
+            Calculation.userConfIn = this.fConfigIn.getText();// TODO dont parse here
+            Calculation.userConfOut = this.fConfigOut.getText(); // TODO dont parse here
+            Calculation.projReg = new File(this.fRegistration.getText()); // TODO only parse if field not empty
+            Calculation.projSel = new File(this.fSelection.getText()); // TODO only parse if field not empty
             int worked;
             try {
                 worked = RegisterProject.read(Calculation.projReg, GurobiConfig.ProjectAdministration.csvDelim);

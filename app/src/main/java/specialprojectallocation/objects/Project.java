@@ -64,7 +64,7 @@ public class Project {
      * @param gr    array of groups with StudyProgram priorities and maximum number of students
      * @param fixed string with names and matrictulation numbers of the students that are to be assigned to this
      *              project regardless of any priorities or restrictions
-     * @return
+     * @return TODO
      */
     @NotNull
     public static Project findOrCreateProject(String ab, int min, int max, Group[] gr, String fixed) {
@@ -232,7 +232,7 @@ public class Project {
     /**
      * Not all teachers might give their highest-priority group the highest priority which causes the Gurobi Solver to
      * prefer allocations where teachers did so. This normalization will give all highest-priority projects the highest priority, all second-highest prioriy projects
-     * the second-highest priority etc. so that the Gurobi Solver is not biased towards teachers who filled out the servey the way they were supposed to.
+     * the second-highest priority etc. so that the Gurobi Solver is not biased towards teachers who filled out the survey the way they were supposed to.
      */
     private void normalizeGroupPrios() {
         ArrayList<Group>[] groups = new ArrayList[]{new ArrayList<Group>(), new ArrayList<Group>(), new ArrayList<Group>(), new ArrayList<Group>(), new ArrayList<Group>()}; //groups[0]: all groups with priority 1, groups[4]: all groups with priority 5
