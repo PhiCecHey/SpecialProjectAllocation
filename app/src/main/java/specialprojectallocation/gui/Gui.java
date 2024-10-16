@@ -126,8 +126,6 @@ public class Gui {
             Gui.zero.setIcon(Gui.circleLight);
             Gui.minus.setIcon(Gui.minusLight);
             Gui.maximize.setIcon(Gui.maximizeLight);
-            imports.applyConfigs.setIcon(imports.applyConfigsLight);
-            imports.saveConfigs.setIcon(imports.saveConfigsLight);
         } else {
             FlatLightLaf.setup();
             Gui.theme.setIcon(Gui.moon);
@@ -135,8 +133,6 @@ public class Gui {
             Gui.zero.setIcon(Gui.circleDark);
             Gui.minus.setIcon(Gui.minusDark);
             Gui.maximize.setIcon(Gui.maximizeDark);
-            imports.applyConfigs.setIcon(imports.applyConfigsDark);
-            imports.saveConfigs.setIcon(imports.saveConfigsDark);
         }
         SwingUtilities.updateComponentTreeUI(Gui.frame);
     }

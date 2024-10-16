@@ -1,6 +1,8 @@
 package specialprojectallocation.objects;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import specialprojectallocation.Calculation;
 
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 public class StudyProgram {
     // idiation of the study program. E.g. NHM for Natural Hazards and risks in structural engineering M.sc.
     private final String id;
+    private final String nameWithoutID;
     // list of all created StudyPrograms
     private static final ArrayList<StudyProgram> allPrograms = new ArrayList<>();
 
@@ -22,8 +25,9 @@ public class StudyProgram {
      * @param id identification of the study program. E.g. NHM for Natural Hazards and risks in structural
      *           engineering M.sc.
      */
-    private StudyProgram(String id) {
+    private StudyProgram(String id, String name) {
         this.id = id;
+        this.nameWithoutID = name;
         StudyProgram.allPrograms.add(this);
     }
 
@@ -35,16 +39,37 @@ public class StudyProgram {
      * @return created or found StudyProgram with respective id
      */
     @NotNull
-    public static StudyProgram findOrCreate(String id) {
+    public static StudyProgram findOrCreate(String id, String name) {
         for (StudyProgram studyProgram : StudyProgram.allPrograms) {
             if (studyProgram.id.equals(id)) {
                 return studyProgram;
             }
         }
-        StudyProgram studyProgram = new StudyProgram(id);
+        StudyProgram studyProgram = new StudyProgram(id, name);
         StudyProgram.allPrograms.add(studyProgram);
         Calculation.studyProgramID(id);
         return studyProgram;
+    }
+
+    @Nullable
+    public static StudyProgram findByName(String name) {
+        for (StudyProgram studyProgram : StudyProgram.allPrograms) {
+            if (name.toLowerCase().contains(studyProgram.nameWithoutID.toLowerCase())) {
+                return studyProgram;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    @Contract(pure = true)
+    public static StudyProgram findByID(String id) {
+        for (StudyProgram studyProgram : StudyProgram.allPrograms) {
+            if (studyProgram.id.equals(id)) {
+                return studyProgram;
+            }
+        }
+        return null;
     }
 
     /**

@@ -28,15 +28,13 @@ public class ImportsPanel extends JPanel {
     final MyTextFieldInImport fSelection;
     final JTextField fConfigIn;
     final JTextField fConfigOut;
-    final JButton read;
+    final JButton parse;
     final JButton bRegistration;
     public final JButton bSelection;
     final JButton bConfigIn;
     final JButton bConfigOut;
     final JTextArea logs;
     final JButton saveConfigs, applyConfigs;
-    ImageIcon applyConfigsLight = new ImageIcon(), applyConfigsDark = new ImageIcon(), saveConfigsLight
-            = new ImageIcon(), saveConfigsDark = new ImageIcon();
 
     ImportsPanel() {
         this.setLayout(new MigLayout());
@@ -53,25 +51,21 @@ public class ImportsPanel extends JPanel {
         this.bSelection = new JButton("...");
         this.bConfigIn = new JButton("...");
         this.bConfigOut = new JButton("...");
-        this.read = new JButton("Parse Files");
-        MyTextFieldInImport.anyFieldChanged(this.read);
+        this.parse = new JButton("Parse Files");
+        MyTextFieldInImport.anyFieldChanged(this.parse);
         this.logs = new JTextArea();
         this.logs.setLineWrap(false);
 
-        this.applyConfigsDark = new ImageIcon(ClassLoader.getSystemResource("icons/apply-light.png"));
-        this.saveConfigsDark = new ImageIcon(ClassLoader.getSystemResource("icons/save-light.png"));
-        this.applyConfigsLight = new ImageIcon(ClassLoader.getSystemResource("icons/apply-dark.png"));
-        this.saveConfigsLight = new ImageIcon(ClassLoader.getSystemResource("icons/save-dark.png"));
-        this.saveConfigs = new JButton(this.saveConfigsDark);
+        this.saveConfigs = new JButton("Export");
         this.saveConfigs.setToolTipText("Save user configs.");
-        this.applyConfigs = new JButton(this.applyConfigsDark);
+        this.applyConfigs = new JButton("Apply");
         this.applyConfigs.setToolTipText("Apply user configs.");
         this.addSaveConfigs();
 
         this.add(this.lConfigIn);
         this.add(this.fConfigIn, "grow, width 100%");
         this.add(this.bConfigIn);
-        this.add(this.applyConfigs, "wrap");
+        this.add(this.applyConfigs, "growx, wrap");
         this.add(this.lConfigOut);
         this.add(this.fConfigOut, "grow, width 100%");
         this.add(this.bConfigOut);
@@ -88,7 +82,7 @@ public class ImportsPanel extends JPanel {
         this.add(this.lSelection);
         this.add(this.fSelection, "grow, width 100%");
         this.add(this.bSelection, "wrap");
-        this.add(this.read, "gapy 20pt, spanx, center");
+        this.add(this.parse, "gapy 20pt, spanx, center");
         this.add(new JLabel("Error messages:"), "wrap, gapy 20pt");
         JScrollPane scroll = new JScrollPane(this.logs);
         this.add(scroll, "spanx, width 100%, height 100%");
@@ -150,7 +144,7 @@ public class ImportsPanel extends JPanel {
     }
 
     private void readFiles() {
-        this.read.addActionListener(ae -> {
+        this.parse.addActionListener(ae -> {
             this.logs.setText("");
             Calculation.clearLog();
             Calculation.projReg = new File(this.fRegistration.getText());
@@ -209,7 +203,8 @@ public class ImportsPanel extends JPanel {
                 this.fSelection.setBackground(Colors.redTransp);
             }
             this.logs.append(Calculation.log());
-            this.read.setBackground(Colors.transp);
+            JButton test = new JButton();
+            this.parse.setBackground(test.getBackground());
             Project.setAllFixed();
         });
     }

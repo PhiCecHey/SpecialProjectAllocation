@@ -4,20 +4,20 @@ import gurobi.GRBVar;
 import specialprojectallocation.objects.Project;
 import specialprojectallocation.objects.Student;
 
-class Allocation {
+public class Allocation {
     private final GRBVar grbVar;
     private double score = 1;
     private final Student student;
     private final Project project;
     private boolean fixedStudent;
 
-    Allocation(final Student s, final Project p, final GRBVar g) {
+    public Allocation(final Student s, final Project p, final GRBVar g) {
         this.student = s;
         this.project = p;
         this.grbVar = g;
     }
 
-    double score() {
+    public double score() {
         return this.score;
     }
 
@@ -30,15 +30,15 @@ class Allocation {
         return this.grbVar;
     }
 
-    Project project() {
+    public Project project() {
         return this.project;
     }
 
-    Student student() {
+    public Student student() {
         return this.student;
     }
 
-    boolean getStudentFixed() {
+    public boolean getStudentFixed() {
         return this.fixedStudent;
     }
 

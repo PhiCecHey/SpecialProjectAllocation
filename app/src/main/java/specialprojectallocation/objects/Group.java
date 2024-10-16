@@ -16,13 +16,14 @@ public class Group {
      * Creates a Group object, stating how many participants from a study program can participate in a project with
      * what priority.
      *
-     * @param program     study program
+     * @param programID   study program's abbrev/ ID
+     * @param programName study program's name (without ID)
      * @param maxNumStuds maximum number of students allowed from that study program
      * @param prio        priority (1-5, 1: high, 5: low) of a study program within a project
      */
-    public Group(String program, int maxNumStuds, int prio) {
-        this.studyProgram = StudyProgram.findOrCreate(program);
-        Calculation.studyProgramID(program);
+    public Group(String programID, String programName, int maxNumStuds, int prio) {
+        this.studyProgram = StudyProgram.findOrCreate(programID, programName);
+        Calculation.studyProgramID(programID);
         this.maxNumStuds = maxNumStuds;
         this.prio = prio;
     }

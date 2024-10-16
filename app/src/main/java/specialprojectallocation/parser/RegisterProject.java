@@ -42,7 +42,9 @@ public class RegisterProject extends MyParser {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(csv))) {
             String line = bufferedReader.readLine();
             if (!RegisterProject.evalHeading(line)) {
-                Calculation.appendToLog("RegisterProject: Could not evaluate first row of RegisterProjectFile! Wrong file or wrong " + "delim in config tab?");
+                Calculation.appendToLog(
+                        "RegisterProject: Could not evaluate first row of RegisterProjectFile! Wrong file or wrong "
+                        + "delim in config tab?");
                 return 2;
             }
 
@@ -60,9 +62,11 @@ public class RegisterProject extends MyParser {
                     Group[] groups = RegisterProject.createGroups(cells, maxNum);
 
                     // generates new project and adds it to all projects
-                    Project.findOrCreateProject(cells[RegisterProject.abbrev], minNum, maxNum, groups, cells[RegisterProject.fixed]);
+                    Project.findOrCreateProject(cells[RegisterProject.abbrev], minNum, maxNum, groups,
+                                                cells[RegisterProject.fixed]);
                 } catch (IndexOutOfBoundsException e) {
-                    Calculation.appendToLog("RegisterProject: Possibly wrong file? Else maybe weird character in moodle file.");
+                    Calculation.appendToLog(
+                            "RegisterProject: Possibly wrong file? Else maybe weird character in moodle file.");
                     return 2;
                 }
             }
@@ -77,7 +81,8 @@ public class RegisterProject extends MyParser {
      * @return maximum number of students in the respective project
      */
     private static int getMaxNum(@NotNull String[] cells) {
-        boolean oneStudent = cells[RegisterProject.var].toLowerCase().contains(GurobiConfig.ProjectAdministration.varOneStudent);
+        boolean oneStudent = cells[RegisterProject.var].toLowerCase()
+                .contains(GurobiConfig.ProjectAdministration.varOneStudent);
 
         int maxNum = oneStudent ? 1 : Integer.MAX_VALUE;
         if (cells.length > RegisterProject.maxNum) {
@@ -113,9 +118,12 @@ public class RegisterProject extends MyParser {
                 RegisterProject.fixed = i;
             } else if (cell.contains(GurobiConfig.ProjectAdministration.listOfPrograms)) {
                 if (RegisterProject.listOfPrograms == -1) RegisterProject.listOfPrograms = i; // marks last program
-                String abbrev = cell.split(GurobiConfig.ProjectAdministration.listOfPrograms)[1].replace("->", "");
-                abbrev = abbrev.split(GurobiConfig.ProjectAdministration.delimProgramAbbrev)[0].trim().toLowerCase();
-                RegisterProject.studyPrograms.add(new AbbrevAllowedMaxPrio(abbrev, i));
+                String abbrevNameString = cell.split(GurobiConfig.ProjectAdministration.listOfPrograms)[1].replace("->",
+                                                                                                                   "");
+                String[] abbrevName = abbrevNameString.split(GurobiConfig.ProjectAdministration.delimProgramAbbrev);
+                String abbrev = abbrevName[0].trim().toLowerCase();
+                String name = abbrevName[1].trim().toLowerCase().replace("\"", "").replace("\'", "");
+                RegisterProject.studyPrograms.add(new AbbrevAllowedMaxPrio(abbrev, name, i));
                 Calculation.studyProgramID(abbrev);
             }
         }
@@ -141,7 +149,8 @@ public class RegisterProject extends MyParser {
                 }
             }
         }
-        return (RegisterProject.abbrev != -1 && RegisterProject.minNum != -1 && RegisterProject.maxNum != -1 && RegisterProject.var != -1 && RegisterProject.fixed != -1);
+        return (RegisterProject.abbrev != -1 && RegisterProject.minNum != -1 && RegisterProject.maxNum != -1
+                && RegisterProject.var != -1 && RegisterProject.fixed != -1);
     }
 
     /**
@@ -160,13 +169,14 @@ public class RegisterProject extends MyParser {
         for (AbbrevAllowedMaxPrio entry : RegisterProject.studyPrograms) {
             if (cells[entry.allowed].contains("1")) {
                 int groupMax, groupPrio;
-                StudyProgram program = null;
                 try {
                     groupMax = Integer.parseInt(cells[entry.num]);
                 } catch (NumberFormatException e) {
                     groupMax = projMax;
                     if (errorLogged.contains(projAbbrev + "max")) continue;
-                    Calculation.appendToLog("Warning: Error parsing " + GurobiConfig.ProjectAdministration.maxGroup + " in project " + projAbbrev);
+                    Calculation.appendToLog(
+                            "Warning: Error parsing " + GurobiConfig.ProjectAdministration.maxGroup + " in project "
+                            + projAbbrev);
                     errorLogged.add(projAbbrev + "max");
                 }
                 try {
@@ -174,10 +184,12 @@ public class RegisterProject extends MyParser {
                 } catch (NumberFormatException e) {
                     groupPrio = 3;
                     if (errorLogged.contains(projAbbrev + "prio")) continue;
-                    Calculation.appendToLog("Warning: Error parsing " + GurobiConfig.ProjectAdministration.prioGroup + " in project " + projAbbrev);
+                    Calculation.appendToLog(
+                            "Warning: Error parsing " + GurobiConfig.ProjectAdministration.prioGroup + " in project "
+                            + projAbbrev);
                     errorLogged.add(projAbbrev + "prio");
                 }
-                groups.add(new Group(entry.abbrev, groupMax, groupPrio));
+                groups.add(new Group(entry.abbrev, entry.name, groupMax, groupPrio));
             }
         }
         return groups.toArray(new Group[0]);

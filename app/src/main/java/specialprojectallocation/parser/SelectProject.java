@@ -53,7 +53,7 @@ public class SelectProject extends MyParser {
                 String studProg = cells[SelectProject.studProg];
 
                 // also adds student to list of all students
-                Student student = Student.findOrCreate(imma, name, StudyProgram.findOrCreate(studProg));
+                Student student = Student.findOrCreate(imma, name, StudyProgram.findByName(studProg));
                 student.selectProjStr(cells[SelectProject.first], cells[SelectProject.second],
                                       cells[SelectProject.third], cells[SelectProject.fourth]);
             } catch (IndexOutOfBoundsException e) {

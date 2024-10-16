@@ -164,13 +164,14 @@ public class Gurobi {
             return print.toString();
         }
 
-        print.append("\n-------------------- SCORE MATRIX --------------------\n");
+        print.append(
+                "\n---------------------------------------- SCORE MATRIX ----------------------------------------\n");
 
         // maximum score:
         double max = 0;
-        for (int p = 0; p < this.allocs.numProjs(); ++p) {
+        for (int s = 0; s < this.allocs.numStuds(); ++s) {
             double m = 0;
-            for (int s = 0; s < this.allocs.numStuds(); ++s) {
+            for (int p = 0; p < this.allocs.numProjs(); ++p) {
                 if (m < this.allocs.get(p, s).score()) {
                     m = this.allocs.get(p, s).score();
                 }
@@ -194,7 +195,7 @@ public class Gurobi {
             }
         }
         print.append("\nCurrent score: \t\t").append(cur);
-        print.append("\nDifference: \t\t").append(Math.abs(max - cur)).append("\n");
+        print.append("\nDifference: \t\t").append(Math.round(Math.abs(max - cur))).append("\n");
 
         if (max == 0 && cur == 0) {
             return null;
@@ -210,8 +211,9 @@ public class Gurobi {
         if (tui) {
             indent = "\t\t\t";
         }
-        print.append("......................................................");
-        print.append("\n" + "Abbrevs/Immas" + "\t").append(immas);
+        print.append(
+                "----------------------------------------------------------------------------------------------------------");
+        print.append("\n" + "Projects/Students" + "\t").append(immas);
         for (int p = 0; p < this.allocs.numProjs(); ++p) {
             StringBuilder str = new StringBuilder(indent);
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
@@ -242,9 +244,10 @@ public class Gurobi {
             print.append("\n").append(Gurobi.exactNumOfChars(this.allocs.get(p, 0).project().abbrev())).append(str);
         }
 
-        print.append("\n\n--------------------- ALLOCATION ---------------------");
+        print.append(
+                "\n\n----------------------------------------- ALLOCATION -----------------------------------------");
 
-        print.append("\n" + "Abbrevs/Immas" + "\t").append(immas);
+        print.append("\n" + "Projects/Students" + "\t").append(immas);
 
         indent = "";
         if (tui) {
@@ -308,12 +311,12 @@ public class Gurobi {
             this.constrMaxProjPerStud();
         }
         if (GurobiConfig.Constraints.studentsPerProject) {
-            //this.constrStudsPerProj();
+            this.constrStudsPerProj();
         }
         if (GurobiConfig.Constraints.studentHasRightStudyProgram) {
             this.constrStudHasRightStudyProgram();
         }
-        if (GurobiConfig.Constraints.studentsPerStudy) { // TODO: why true? gui?
+        if (GurobiConfig.Constraints.studentsPerStudy) {
             this.constrStudsPerStudy();
         }
         if (GurobiConfig.Constraints.fixedStuds) {
@@ -362,7 +365,7 @@ public class Gurobi {
                 // ignore student if invalid selections should be ignored and student has invalid selection
                 Student student = this.allocs.getStud(s);
                 int min = 1;
-                if (GurobiConfig.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())) {
+                if (Student.checkStudentInInvalid(student.immatNum())) {
                     min = 0;
                 }
                 expr = new GRBLinExpr();
@@ -382,7 +385,7 @@ public class Gurobi {
      * Every student whose project selection is valid must get a maximum of 1 project, unless they have several fixed
      * projects, then the maximum is increased to that amount.
      */
-    private void constrMaxProjPerStud() { // TODO: test
+    private void constrMaxProjPerStud() {
         try {
             GRBLinExpr expr;
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
@@ -393,41 +396,34 @@ public class Gurobi {
                 Student student = this.allocs.getStud(s);
                 int projPerStud = 1;
 
-                if (GurobiConfig.Constraints.fixedStuds) {
-                    if (GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
-                        // several projects allowed. only add stud to fixed projs
-                        projPerStud = Math.max(1, student.numFixedProject());
-                    } else if (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj) {
-                        // several projects allowed. only add stud to fixed projs that stud selected
-                        projPerStud = Math.max(1, student.numFixedWantedProject());
-                    } else if (GurobiConfig.Constraints.addFixedStudsToMostWantedProj) {
-                        // only one proj allowed. only add stud to most wanted fixed proj
-                        projPerStud = 1; // redundant, here for better readability
+                // ignore students with invalid selections
+                if (Student.checkStudentInInvalid(student.immatNum())) {
+                    if (GurobiConfig.Constraints.ignoreInvalids) {
+                        // students with invalid project choices should not be allocated to any projects
+                        String st = "maxProjPerStud" + s;
+                        this.model.addConstr(expr, GRB.LESS_EQUAL, 0, st);
+                        continue;
+                    } else if (GurobiConfig.Constraints.addInvalidsToFixed) {
+                        // students with invalid project choices should be allocated to the projects they are
+                        // pre-assigned to
+                        projPerStud = 0;
+                    } else if (GurobiConfig.Constraints.assignInvalidsToProjects) {
+                        // students with invalid project choices should be allocated to projects as far as possible
+                        projPerStud = 1;
                     }
                 }
 
-                // ignore students with invalid selections
-                if (GurobiConfig.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())) {
-                    if (GurobiConfig.Constraints.ignoreInvalids) {
-                        projPerStud = 0;
-                    }
-                    if (GurobiConfig.Constraints.addInvalidsToFixed) {
-                        projPerStud = 0;
-                        if (GurobiConfig.Constraints.fixedStuds) {
-                            if (GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
-                                // several projects allowed. only add stud to fixed projs
-                                projPerStud = Math.max(0, student.numFixedProject());
-                            } else if (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj) {
-                                // several projects allowed. only add stud to fixed projs that stud selected
-                                projPerStud = Math.max(0, student.numFixedWantedProject());
-                            } else if (GurobiConfig.Constraints.addFixedStudsToMostWantedProj) {
-                                // only one proj allowed. only add stud to most wanted fixed proj
-                                if (student.numFixedProject() != 0) {
-                                    projPerStud = 1;
-                                } else {
-                                    projPerStud = 0; // redundant, here for better readability
-                                }
-                            }
+                if (GurobiConfig.Constraints.fixedStuds) {
+                    if (GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
+                        // several projects allowed. only add stud to fixed projs
+                        projPerStud = Math.max(projPerStud, student.numFixedProject());
+                    } else if (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj) {
+                        // several projects allowed. only add stud to fixed projs that stud selected
+                        projPerStud = Math.max(projPerStud, student.numFixedWantedProject());
+                    } else if (GurobiConfig.Constraints.addFixedStudsToMostWantedProj) {
+                        // only one proj allowed. only add stud to most wanted fixed proj
+                        if (student.numFixedProject() > 0) { // check if student is pre-assigned to a project
+                            projPerStud = 1; // only set to 1, if student is pre-assigned to a project
                         }
                     }
                 }
@@ -441,7 +437,7 @@ public class Gurobi {
     }
 
 
-    /*
+    /**
      * Sets the minimum and maximum amount of students a project can have. These values are project specific and
      * dependent on the project's minimum and maximum amount of students required and allowed. If the project cannot
      * get enough students, it will be unavailable and no students will be assigned to this project.
@@ -484,25 +480,25 @@ public class Gurobi {
             GRBLinExpr expr;
             for (int s = 0; s < this.allocs.numStuds(); ++s) {
                 Student student = this.allocs.getStud(s);
-                if (GurobiConfig.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum())) {
+                if (Student.checkStudentInInvalid(student.immatNum()) && (GurobiConfig.Constraints.ignoreInvalids
+                                                                          || GurobiConfig.Constraints.addInvalidsToFixed)) {
                     continue;
                 }
+
                 expr = new GRBLinExpr();
+                boolean wantsProj = false;
                 for (int p = 0; p < this.allocs.numProjs(); ++p) {
                     Allocation alloc = this.allocs.get(p, s);
                     Project project = alloc.project();
-                    // TODO
-                    /*
-                     * if (student.wantsProject(project)
-                     * || (Config.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj
-                     * && project.isFixed(student))) {
-                     */
                     if (student.wantsProject(project)) {
-                        expr.addTerm(1.0, alloc.grbVar());
+                        expr.addTerm(1, alloc.grbVar());
+                        wantsProj = true;
                     }
                 }
-                String st = "studWantsProj" + s;
-                this.model.addConstr(expr, GRB.GREATER_EQUAL, 1, st);
+                if (wantsProj) {
+                    String st = "studWantsProj" + s;
+                    this.model.addConstr(expr, GRB.GREATER_EQUAL, 1, st);
+                }
             }
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
@@ -575,21 +571,21 @@ public class Gurobi {
                     expr = new GRBLinExpr();
                     Allocation alloc = this.allocs.get(p, s);
                     Student student = this.allocs.getStud(s);
-                    boolean constraint = false;
+
+                    boolean studentGetsProj = (project.isFixed(student)
+                                               && GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj)
+                                              || (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj
+                                                  && project.isFixedAndStudentsWish(student)) || (
+                                                      GurobiConfig.Constraints.addFixedStudsToMostWantedProj
+                                                      && project.isFixedAndStudentsHighestWish(student));
+
+
                     // ignore students with invalid selections
-                    if (!(GurobiConfig.Constraints.invalids && Student.checkStudentInInvalid(student.immatNum()))
-                        && project.isFixed(student)) {
-                        if (GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
-                            constraint = true;
-                        } else if (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj
-                                   && project.isFixedAndStudentsWish(student)) {
-                            constraint = true;
-                        } else if (GurobiConfig.Constraints.addFixedStudsToMostWantedProj
-                                   && project.isFixedAndStudentsHighestWish(student)) {
-                            constraint = true;
-                        }
+                    if (GurobiConfig.Constraints.ignoreInvalids && Student.checkStudentInInvalid(student.immatNum())) {
+                        studentGetsProj = false;
                     }
-                    if (constraint) {
+
+                    if (studentGetsProj) {
                         alloc.setStudentFixed();
                         String st = "fixedStuds" + p + s;
                         expr.addTerm(1.0, alloc.grbVar());
@@ -692,7 +688,7 @@ public class Gurobi {
                 // TODO: student invalid project selection, see Student.java
                 boolean found = false;
                 for (Student st : Calculation.studentsWithInvalidSelection) {
-                    if (Objects.equals(st.immatNum(), student.immatNum())) {
+                    if (st.immatNum().equals(student.immatNum())) {
                         found = true;
                         break;
                     }
@@ -709,11 +705,11 @@ public class Gurobi {
      * will be added to the allocation's score etc.
      */
     private void prefStudyPrio() {
-        for (int p = 0; p < this.allocs.numProjs(); p++) {
-            Project project = this.allocs.getProj(p);
-            for (int s = 0; s < this.allocs.numStuds(); s++) {
+        for (int s = 0; s < this.allocs.numStuds(); s++) {
+            Student student = this.allocs.getStud(s);
+            for (int p = 0; p < this.allocs.numProjs(); p++) {
                 Allocation alloc = this.allocs.get(p, s);
-                Student student = alloc.student();
+                Project project = alloc.project();
                 for (Group group : project.groups()) {
                     var g = group;
                     if (student.studyProgram().equals(group.studyProgram())) {
@@ -727,12 +723,9 @@ public class Gurobi {
                             alloc.addToScore(GurobiConfig.Preferences.studyPrio4);
                         } else if (group.prio() == 5) {
                             alloc.addToScore(GurobiConfig.Preferences.studyPrio5);
-                        } else {
-                            var debug = 4;
                         }
                     }
                 }
-                var debug = 4; // TODO: test
             }
         }
     }

@@ -156,11 +156,6 @@ public class GurobiConfig {
         public static boolean studWantsProj = true;
 
         /**
-         * Students with invalid project choices will be treated differently, options available in GUI.
-         */
-        public static boolean invalids = false;
-
-        /**
          * Students with invalid project choices will not be assigned to any projects.
          */
         public static boolean ignoreInvalids = false;
@@ -169,6 +164,12 @@ public class GurobiConfig {
          * Students with invalid project choices will only be allocated to projects which they are pre-assigned to.
          */
         public static boolean addInvalidsToFixed = false;
+
+        /**
+         * Students with invalid project choices will be allocated according to their project choices as far as that
+         * is possible.
+         */
+        public static boolean assignInvalidsToProjects = true;
 
         /**
          * Add students, who are in a project's fixed students list, to the respective project.

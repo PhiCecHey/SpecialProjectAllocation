@@ -288,7 +288,7 @@ public class ConfigPanel extends JPanel {
         final CheckThreeRadios fixedStuds;
         final Check studWantsProj;
         final Check teacherWantsStudent;
-        final CheckTwoRadios invalids;
+        final ThreeRadios invalids;
         final CheckFourFields weightSelectedProj;
         final CheckFiveFields weightRegProj;
 
@@ -334,10 +334,11 @@ public class ConfigPanel extends JPanel {
             }
 
             private void addButtonFunct() {
+                JTextField test = new JTextField();
                 this.check.addActionListener(ae -> {
                     if (this.check.isSelected()) {
                         field.setEditable(true);
-                        field.setBackground(Colors.transp);
+                        field.setBackground(test.getBackground());
                     } else {
                         field.setEditable(false);
                         field.setBackground(Colors.greyTransp);
@@ -511,6 +512,43 @@ public class ConfigPanel extends JPanel {
             }
         }
 
+        static class ThreeRadios extends JPanel {
+            final JLabel label;
+            final MyRadioInConfig one, two, three;
+
+            ThreeRadios(String l, String b1, String b2, String b3) {
+                this.setLayout(new MigLayout());
+                this.label = new JLabel(l);
+                this.add(this.label, "wrap");
+                this.one = new MyRadioInConfig();
+                this.one.setSelected(true);
+                this.two = new MyRadioInConfig();
+                this.three = new MyRadioInConfig();
+                this.add(this.one, "cell 0 1, spanx, split 2");
+                this.add(new JLabel(b1));
+                this.add(this.two, "cell 0 2, spanx, split 2");
+                this.add(new JLabel(b2));
+                this.add(this.three, "cell 0 3, spanx, split 2");
+                this.add(new JLabel(b3));
+                addButtonFunct();
+            }
+
+            private void addButtonFunct() {
+                this.one.addActionListener(ae -> {
+                    two.setSelected(!one.isSelected());
+                    three.setSelected(!one.isSelected());
+                });
+                this.two.addActionListener(ae -> {
+                    one.setSelected(!two.isSelected());
+                    three.setSelected(!two.isSelected());
+                });
+                this.three.addActionListener(ae -> {
+                    one.setSelected(!three.isSelected());
+                    two.setSelected(!three.isSelected());
+                });
+            }
+        }
+
         static class CheckTwoRadios extends JPanel {
             final MyCheckboxInConfig check;
             final JLabel label;
@@ -584,12 +622,16 @@ public class ConfigPanel extends JPanel {
 
             String text0 = "[1] If a student has been pre-assigned to multiple projects, they will be allocated to";
             String text1 = "[a] all projects, that they have been pre-assigned to (ignores [2])";
-            String text2 = "[b] all projects, that they have been pre-assigned to and that they have chosen";
+            String text2 =
+                    "[b] all projects, that they have been pre-assigned to and that they have chosen (in conflict "
+                    + "with [6 b])";
             String text3 = "[c] the project, that they have been pre-assigned to and that they prefer most";
 
             this.fixedStuds = new CheckThreeRadios(text0, text1, text2, text3);
 
-            this.studWantsProj = new Check("[2] Students are exclusively allocated to projects they have chosen");
+            this.studWantsProj = new Check(
+                    "[2] Students are exclusively allocated to projects they have chosen (in conflict with [1 a] and "
+                    + "[6 b])");
             this.studWantsProj.setToolTipText(""); // TODO
 
             text0 = "[3] Students' project priorities";
@@ -658,10 +700,11 @@ public class ConfigPanel extends JPanel {
             this.add(sep8, "spanx, growx");
 
             text0 = "[6] Students with invalid project choices...";
-            text1 = "[a] will not participate in any projects";
-            text2 = "[b] will be allocated to their pre-assigned projects";
+            text1 = "[a] will be allocated according to their invalid project choices if possible";
+            text2 = "[b] will be allocated to their pre-assigned projects (ignores [2] and [1 b])";
+            text3 = "[c] will not participate in any projects (ignores [1])";
 
-            this.invalids = new CheckTwoRadios(text0, text1, text2, false);
+            this.invalids = new ThreeRadios(text0, text1, text2, text3);
             this.add(this.invalids);
         }
 
@@ -677,9 +720,9 @@ public class ConfigPanel extends JPanel {
             GurobiConfig.Constraints.studWantsProj = this.studWantsProj.check.isSelected();
             GurobiConfig.Constraints.studentHasRightStudyProgram = this.teacherWantsStudent.check.isSelected();
 
-            GurobiConfig.Constraints.invalids = this.invalids.check.isSelected();
-            GurobiConfig.Constraints.ignoreInvalids = this.invalids.one.isSelected();
+            GurobiConfig.Constraints.assignInvalidsToProjects = this.invalids.one.isSelected();
             GurobiConfig.Constraints.addInvalidsToFixed = this.invalids.two.isSelected();
+            GurobiConfig.Constraints.ignoreInvalids = this.invalids.three.isSelected();
 
             GurobiConfig.Preferences.selectedProjs = this.weightSelectedProj.check.isSelected();
             if (this.weightSelectedProj.check.isSelected()) {

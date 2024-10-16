@@ -92,34 +92,48 @@ public class Student {
     /**
      * Sets student's first, second, third, fourth project wishes, based on the SelectProject Moodle file.
      *
-     * @param firstStr  project abbrev with the highest priority
-     * @param secondStr project abbrev with the second-highest priority
-     * @param thirdStr  project abbrev with the third-highest priority
-     * @param fourthStr project abbrev with the lowest priority
+     * @param first  project abbrev with the highest priority
+     * @param second project abbrev with the second-highest priority
+     * @param third  project abbrev with the third-highest priority
+     * @param fourth project abbrev with the lowest priority
      */
-    public void selectProjStr(String firstStr, String secondStr, String thirdStr, String fourthStr) {
+    public void selectProjStr(@NotNull String first, String second, String third, String fourth) {
         Project firstPr = null, secondPr = null, thirdPr = null, fourthPr = null;
+        String firstStr, secondStr, thirdStr, fourthStr;
+        try {
+            firstStr = first.split(" : ")[1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            firstStr = first;
+        }
+        try {
+            secondStr = second.split(" : ")[1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            secondStr = second;
+        }
+        try {
+            thirdStr = third.split(" : ")[1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            thirdStr = third;
+        }
+        try {
+            fourthStr = fourth.split(" : ")[1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            fourthStr = fourth;
+        }
         for (Project project : Calculation.projects) {
-            if (firstStr.contains(project.abbrev())) {
+            if (firstStr.equals(project.abbrev())) {
                 firstPr = project;
-            } else if (secondStr.contains(project.abbrev())) {
+            } else if (secondStr.equals(project.abbrev())) {
                 secondPr = project;
-            } else if (thirdStr.contains(project.abbrev())) {
+            } else if (thirdStr.equals(project.abbrev())) {
                 thirdPr = project;
-            } else if (fourthStr.contains(project.abbrev())) {
+            } else if (fourthStr.equals(project.abbrev())) {
                 fourthPr = project;
             }
         }
         if (firstPr == null || secondPr == null || thirdPr == null || fourthPr == null) {
             // invalid project selection. punishment?
-            boolean found = false;
-            for (Student student : Calculation.studentsWithInvalidSelection) {
-                if (Objects.equals(student.immatNum, this.immatNum)) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
+            if (!Calculation.studentsWithInvalidSelection.contains(this)) {
                 Calculation.studentsWithInvalidSelection.add(this);
             }
         }
