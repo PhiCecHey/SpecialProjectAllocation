@@ -135,14 +135,55 @@ public class ConfigPanel extends JPanel {
         }
 
         void save() {
-            GurobiConfig.ProjectSelection.csvDelim = this.fCsvDelim.getText().toCharArray()[0];
-            GurobiConfig.ProjectSelection.fullName = this.fName.getText();
-            GurobiConfig.ProjectSelection.first = this.fFirst.getText();
-            GurobiConfig.ProjectSelection.second = this.fSecond.getText();
-            GurobiConfig.ProjectSelection.third = this.fThird.getText();
-            GurobiConfig.ProjectSelection.fourth = this.fFourth.getText();
-            GurobiConfig.ProjectSelection.studProg = this.fStudProg.getText();
-            GurobiConfig.ProjectSelection.immaNum = this.fIimmatNum.getText();
+            JTextField test = new JTextField();
+            this.fCsvDelim.setBackground(test.getBackground());
+            if (!this.fCsvDelim.getText().isEmpty()) {
+                GurobiConfig.ProjectSelection.csvDelim = this.fCsvDelim.getText().toCharArray()[0];
+            } else {
+                this.fCsvDelim.setBackground(Colors.redTransp);
+            }
+            this.fName.setBackground(test.getBackground());
+            if (!this.fName.getText().isEmpty()) {
+                GurobiConfig.ProjectSelection.fullName = this.fName.getText();
+            } else {
+                this.fName.setBackground(Colors.redTransp);
+            }
+            this.fFirst.setBackground(test.getBackground());
+            if (!this.fFirst.getText().isEmpty()) {
+                GurobiConfig.ProjectSelection.first = this.fFirst.getText();
+            } else {
+                this.fFirst.setBackground(Colors.redTransp);
+            }
+            this.fSecond.setBackground(test.getBackground());
+            if (!this.fSecond.getText().isEmpty()) {
+                GurobiConfig.ProjectSelection.second = this.fSecond.getText();
+            } else {
+                this.fSecond.setBackground(Colors.redTransp);
+            }
+            this.fThird.setBackground(test.getBackground());
+            if (!this.fThird.getText().isEmpty()) {
+                GurobiConfig.ProjectSelection.third = this.fThird.getText();
+            } else {
+                this.fThird.setBackground(Colors.redTransp);
+            }
+            this.fFourth.setBackground(test.getBackground());
+            if (!this.fFourth.getText().isEmpty()) {
+                GurobiConfig.ProjectSelection.fourth = this.fFourth.getText();
+            } else {
+                this.fFourth.setBackground(Colors.redTransp);
+            }
+            this.fStudProg.setBackground(test.getBackground());
+            if (!this.fStudProg.getText().isEmpty()) {
+                GurobiConfig.ProjectSelection.studProg = this.fStudProg.getText();
+            } else {
+                this.fStudProg.setBackground(Colors.redTransp);
+            }
+            this.fIimmatNum.setBackground(test.getBackground());
+            if (!this.fIimmatNum.getText().isEmpty()) {
+                GurobiConfig.ProjectSelection.immaNum = this.fIimmatNum.getText();
+            } else {
+                this.fIimmatNum.setBackground(Colors.redTransp);
+            }
         }
     }
 
@@ -262,24 +303,83 @@ public class ConfigPanel extends JPanel {
 
         void save() {
             JTextField test = new JTextField();
-            GurobiConfig.ProjectAdministration.csvDelim = this.fCsvDelim.getText().toCharArray()[0];
+            this.fCsvDelim.setBackground(test.getBackground());
+            if (!this.fCsvDelim.getText().isEmpty()) {
+                GurobiConfig.ProjectAdministration.csvDelim = this.fCsvDelim.getText().toCharArray()[0];
+            } else {
+                this.fCsvDelim.setBackground(Colors.redTransp);
+            }
+
+            this.fNumCharsAbbrev.setBackground(test.getBackground());
             try {
-                this.fNumCharsAbbrev.setBackground(test.getBackground());
                 GurobiConfig.ProjectAdministration.numCharsAbbrev = Integer.parseInt(this.fNumCharsAbbrev.getText());
             } catch (NumberFormatException e) {
                 this.fNumCharsAbbrev.setBackground(Colors.redTransp);
                 this.fNumCharsAbbrev.setText(Integer.toString(GurobiConfig.ProjectAdministration.numCharsAbbrev));
             }
-            GurobiConfig.ProjectAdministration.abbrev = this.fAbbrev.getText();
-            GurobiConfig.ProjectAdministration.var = this.fVar.getText();
-            GurobiConfig.ProjectAdministration.varOneStudent = this.fVarOneStudent.getText();
-            GurobiConfig.ProjectAdministration.maxNum = this.fMaxNum.getText();
-            // Config.ProjectAdministration.mainGroup = this.fMainGroup.getText();
-            // Config.ProjectAdministration.mainMaxNum = this.fMainMaxNum.getText();
-            GurobiConfig.ProjectAdministration.fixed = this.fFixed.getText();
-            GurobiConfig.ProjectAdministration.delimFixedStuds = this.fDelimFixedStuds.getText();
-            GurobiConfig.ProjectAdministration.delimFixedStudsNameImma = this.fDelimFixedStudsNameImma.getText();
-            GurobiConfig.ProjectAdministration.quotes = this.fQuotes.getText().toCharArray()[0];
+
+            this.fAbbrev.setBackground(test.getBackground());
+            if (!this.fAbbrev.getText().isEmpty()) {
+                GurobiConfig.ProjectAdministration.abbrev = this.fAbbrev.getText();
+            } else {
+                this.fAbbrev.setBackground(Colors.redTransp);
+            }
+
+            this.fVar.setBackground(test.getBackground());
+            if (!this.fVar.getText().isEmpty()) {
+                GurobiConfig.ProjectAdministration.var = this.fVar.getText();
+            } else {
+                this.fVar.setBackground(Colors.redTransp);
+            }
+
+            this.fVarOneStudent.setBackground(test.getBackground());
+            if (!this.fVarOneStudent.getText().isEmpty()) {
+                GurobiConfig.ProjectAdministration.varOneStudent = this.fVarOneStudent.getText();
+            } else {
+                this.fVarOneStudent.setBackground(Colors.redTransp);
+            }
+
+            this.fMinNum.setBackground(test.getBackground());
+            if (!this.fMinNum.getText().isEmpty()) {
+                GurobiConfig.ProjectAdministration.minNum = this.fMinNum.getText();
+            } else {
+                this.fMinNum.setBackground(Colors.redTransp);
+            }
+
+            this.fMaxNum.setBackground(test.getBackground());
+            if (!this.fMaxNum.getText().isEmpty()) {
+                GurobiConfig.ProjectAdministration.maxNum = this.fMaxNum.getText();
+            } else {
+                this.fMaxNum.setBackground(Colors.redTransp);
+            }
+
+            this.fFixed.setBackground(test.getBackground());
+            if (!this.fFixed.getText().isEmpty()) {
+                GurobiConfig.ProjectAdministration.fixed = this.fFixed.getText();
+            } else {
+                this.fFixed.setBackground(Colors.redTransp);
+            }
+
+            this.fDelimFixedStuds.setBackground(test.getBackground());
+            if (!this.fDelimFixedStuds.getText().isEmpty()) {
+                GurobiConfig.ProjectAdministration.delimFixedStuds = this.fDelimFixedStuds.getText();
+            } else {
+                this.fDelimFixedStuds.setBackground(Colors.redTransp);
+            }
+
+            this.fDelimFixedStudsNameImma.setBackground(test.getBackground());
+            if (!this.fDelimFixedStudsNameImma.getText().isEmpty()) {
+                GurobiConfig.ProjectAdministration.delimFixedStudsNameImma = this.fDelimFixedStudsNameImma.getText();
+            } else {
+                this.fDelimFixedStudsNameImma.setBackground(Colors.redTransp);
+            }
+
+            this.fQuotes.setBackground(test.getBackground());
+            if (!this.fQuotes.getText().isEmpty()) {
+                GurobiConfig.ProjectAdministration.quotes = this.fQuotes.getText().toCharArray()[0];
+            } else {
+                this.fQuotes.setBackground(Colors.redTransp);
+            }
         }
     }
 

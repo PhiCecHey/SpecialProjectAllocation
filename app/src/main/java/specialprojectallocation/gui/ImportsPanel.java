@@ -22,17 +22,14 @@ import static specialprojectallocation.gui.Gui.changeFontSize;
 public class ImportsPanel extends JPanel {
     final JLabel lRegistration;
     final JLabel lSelection;
-    final JLabel lConfigIn;
-    final JLabel lConfigOut;
+    final JLabel lConfig;
     final MyTextFieldInImport fRegistration;
     final MyTextFieldInImport fSelection;
-    final JTextField fConfigIn;
-    final JTextField fConfigOut;
+    final JTextField fConfig;
     final JButton parse;
     final JButton bRegistration;
     public final JButton bSelection;
-    final JButton bConfigIn;
-    final JButton bConfigOut;
+    final JButton bConfig;
     final JTextArea logs;
     final JButton saveConfigs, applyConfigs;
 
@@ -41,16 +38,13 @@ public class ImportsPanel extends JPanel {
 
         this.lRegistration = new JLabel("Project Registration File (CSV):");
         this.lSelection = new JLabel("Project Selection File (CSV):");
-        this.lConfigIn = new JLabel("Config File - Input (not required):");
-        this.lConfigOut = new JLabel("Config File - Output (not required):");
+        this.lConfig = new JLabel("Config File (not required):");
         this.fRegistration = new MyTextFieldInImport();
         this.fSelection = new MyTextFieldInImport();
-        this.fConfigIn = new JTextField();
-        this.fConfigOut = new JTextField();
+        this.fConfig = new JTextField();
         this.bRegistration = new JButton("...");
         this.bSelection = new JButton("...");
-        this.bConfigIn = new JButton("...");
-        this.bConfigOut = new JButton("...");
+        this.bConfig = new JButton("...");
         this.parse = new JButton("Parse Files");
         MyTextFieldInImport.anyFieldChanged(this.parse);
         this.logs = new JTextArea();
@@ -62,13 +56,10 @@ public class ImportsPanel extends JPanel {
         this.applyConfigs.setToolTipText("Apply user configs.");
         this.addSaveConfigs();
 
-        this.add(this.lConfigIn);
-        this.add(this.fConfigIn, "grow, width 100%");
-        this.add(this.bConfigIn);
-        this.add(this.applyConfigs, "growx, wrap");
-        this.add(this.lConfigOut);
-        this.add(this.fConfigOut, "grow, width 100%");
-        this.add(this.bConfigOut);
+        this.add(this.lConfig);
+        this.add(this.fConfig, "growx, width 100%, split 5, spanx");
+        this.add(this.bConfig);
+        this.add(this.applyConfigs);
         this.add(this.saveConfigs, "wrap");
 
         JSeparator sep1 = new JSeparator();
@@ -79,10 +70,13 @@ public class ImportsPanel extends JPanel {
         this.add(this.lRegistration);
         this.add(this.fRegistration, "grow, width 100%");
         this.add(this.bRegistration, "wrap");
+
         this.add(this.lSelection);
         this.add(this.fSelection, "grow, width 100%");
         this.add(this.bSelection, "wrap");
+
         this.add(this.parse, "gapy 20pt, spanx, center");
+
         this.add(new JLabel("Error messages:"), "wrap, gapy 20pt");
         JScrollPane scroll = new JScrollPane(this.logs);
         this.add(scroll, "spanx, width 100%, height 100%");
@@ -97,32 +91,38 @@ public class ImportsPanel extends JPanel {
             ThemeFont themeFont = null;
             boolean worked = true;
             try {
-                themeFont = SaveUserConfigs.applyConfigs(Gui.frame, this.fConfigIn.getText());
+                themeFont = SaveUserConfigs.applyConfigs(Gui.frame, this.fConfig.getText());
             } catch (NullPointerException | IOException e) {
                 worked = false;
-                this.fConfigIn.setBackground(Colors.redTransp);
+                this.fConfig.setBackground(Colors.redTransp);
+                this.applyConfigs.setBackground(Colors.redTransp);
             }
             if (worked) {
                 Gui.changeTheme(themeFont.lightTheme);
                 // else the button doesnt resize for unknown reason
                 Gui.changeFontSize(Gui.frame, themeFont.fontSize + 1); // resize button
                 Gui.changeFontSize(Gui.frame, themeFont.fontSize - 1); // resize button
-                this.fConfigIn.setBackground(Colors.greenTransp);
-                JTextField test = new JTextField();
-                this.fConfigOut.setBackground(test.getBackground());
+                this.fConfig.setBackground(Colors.greenTransp);
+                this.applyConfigs.setBackground(Colors.greenTransp);
+                JButton test = new JButton();
+                this.saveConfigs.setBackground(test.getBackground());
             }
         });
 
         this.saveConfigs.addActionListener(ae -> {
             boolean worked = true;
             try {
-                SaveUserConfigs.saveConfigs(Gui.frame, Gui.lightTheme, Gui.fontSize, this.fConfigOut.getText());
+                SaveUserConfigs.saveConfigs(Gui.frame, Gui.lightTheme, Gui.fontSize, this.fConfig.getText());
             } catch (IOException | NullPointerException e) {
-                this.fConfigOut.setBackground(Colors.redTransp);
+                this.fConfig.setBackground(Colors.redTransp);
+                this.saveConfigs.setBackground(Colors.redTransp);
                 worked = false;
             }
             if (worked) {
-                this.fConfigOut.setBackground(Colors.greenTransp);
+                this.fConfig.setBackground(Colors.greenTransp);
+                this.saveConfigs.setBackground(Colors.greenTransp);
+                JButton test = new JButton();
+                this.applyConfigs.setBackground(test.getBackground());
             }
         });
     }

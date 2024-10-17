@@ -82,7 +82,7 @@ public class GurobiConfig {
         /**
          * string contained in column header of the column composed of the projects' minimum number of participants
          */
-        public static final String minNum = "Q21_4.3.2";
+        public static String minNum = "Q21_4.3.2";
         /**
          * string contained in column header of the column composed of the projects' maximum number of participants
          */

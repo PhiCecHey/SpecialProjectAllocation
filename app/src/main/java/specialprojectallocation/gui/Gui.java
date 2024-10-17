@@ -4,13 +4,9 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
-import specialprojectallocation.parser.SaveUserConfigs;
-import specialprojectallocation.parser.ThemeFont;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
-import java.io.ObjectInputFilter;
 
 /**
  * Vectors and icons by <a href="https://www.svgrepo.com" target="_blank">SVG Repo</a>
@@ -102,8 +98,8 @@ public class Gui {
                 Gui.changeFontSize(child, size);
             }
         }
-        imports.applyConfigs.setPreferredSize(imports.bConfigIn.getSize());
-        imports.saveConfigs.setPreferredSize(imports.bConfigIn.getSize());
+        imports.applyConfigs.setPreferredSize(imports.bConfig.getSize());
+        imports.saveConfigs.setPreferredSize(imports.bConfig.getSize());
     }
 
     private static void addFontSizeSwitcher() {
