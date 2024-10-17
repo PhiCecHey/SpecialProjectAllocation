@@ -131,15 +131,15 @@ public class ResultsPanel extends JPanel {
         while (offset != -1) {
             try {
                 if (this.numHighlights % 5 == 0) {
-                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.orange);
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Colors.redTransp);
                 } else if (this.numHighlights % 5 == 1) {
-                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.cyan);
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Colors.blueTransp);
                 } else if (this.numHighlights % 5 == 2) {
-                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.yellow);
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Colors.greenTransp);
                 } else if (this.numHighlights % 5 == 3) {
-                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.lightGray);
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Colors.yellowTransp);
                 } else {
-                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
+                    this.painter = new DefaultHighlighter.DefaultHighlightPainter(Colors.greyTransp);
                 }
                 this.area.getHighlighter().addHighlight(offset, offset + length, this.painter);
                 offset = this.area.getText().indexOf(this.fSearch.getText(), offset + 1);
