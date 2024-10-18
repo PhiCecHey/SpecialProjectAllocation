@@ -133,7 +133,13 @@ public class Student {
         }
         if (firstPr == null || secondPr == null || thirdPr == null || fourthPr == null) {
             // invalid project selection. punishment?
-            if (!Calculation.studentsWithInvalidSelection.contains(this)) {
+            boolean found = false;
+            for (Student student : Calculation.studentsWithInvalidSelection) {
+                if (!student.immatNum.equals(this.immatNum)) {
+                    found = true;
+                }
+            }
+            if (!found) {
                 Calculation.studentsWithInvalidSelection.add(this);
             }
         }

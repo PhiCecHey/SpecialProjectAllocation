@@ -685,7 +685,6 @@ public class Gurobi {
             if (student.totalScore()
                 < GurobiConfig.Preferences.proj1 + GurobiConfig.Preferences.proj2 + GurobiConfig.Preferences.proj3
                   + GurobiConfig.Preferences.proj4) {
-                // TODO: student invalid project selection, see Student.java
                 boolean found = false;
                 for (Student st : Calculation.studentsWithInvalidSelection) {
                     if (st.immatNum().equals(student.immatNum())) {

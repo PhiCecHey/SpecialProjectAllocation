@@ -828,12 +828,9 @@ public class ConfigPanel extends JPanel {
             this.add(this.invalids);
 
             // deselect one, if another is selected
-            ConstraintsPanel.onlyOneCanBeSelected(this.fixedStuds.one, this.studWantsProj.check);
-            ConstraintsPanel.onlyOneCanBeSelected(this.studWantsProj.check, this.invalids.two);
-            ConstraintsPanel.onlyOneCanBeSelected(this.invalids.two, this.fixedStuds.two);
-            ConstraintsPanel.onlyOneCanBeSelected(this.invalids.three, this.fixedStuds.one);
-            ConstraintsPanel.onlyOneCanBeSelected(this.invalids.three, this.fixedStuds.two);
-            ConstraintsPanel.onlyOneCanBeSelected(this.invalids.three, this.fixedStuds.three);
+            //ConstraintsPanel.onlyOneCanBeSelected(this.fixedStuds.one, this.studWantsProj.check);
+            //ConstraintsPanel.onlyOneCanBeSelected(this.studWantsProj.check, this.invalids.two);
+            //ConstraintsPanel.onlyOneCanBeSelected(this.invalids.two, this.fixedStuds.two);
         }
 
         static void onlyOneCanBeSelected(@NotNull JToggleButton one, @NotNull JToggleButton two) {
