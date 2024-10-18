@@ -172,12 +172,6 @@ public class GurobiConfig {
         public static boolean assignInvalidsToProjects = true;
 
         /**
-         * Add students, who are in a project's fixed students list, to the respective project.
-         * If students were listed as fixed students in several projects, options are available.
-         */
-        public static boolean fixedStuds = true;
-
-        /**
          * Add fixed students to all those projects, even those they did not select.
          */
         public static boolean addFixedStudsToProjEvenIfStudDidntSelectProj = true;

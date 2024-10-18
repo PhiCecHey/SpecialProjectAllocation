@@ -319,7 +319,9 @@ public class Gurobi {
         if (GurobiConfig.Constraints.studentsPerStudy) {
             this.constrStudsPerStudy();
         }
-        if (GurobiConfig.Constraints.fixedStuds) {
+        if (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj
+            || GurobiConfig.Constraints.addFixedStudsToMostWantedProj
+            || GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
             this.constrFixedStudents(); // includes upper bound for projPerStud
         }
         if (GurobiConfig.Constraints.studWantsProj) {
@@ -413,18 +415,16 @@ public class Gurobi {
                     }
                 }
 
-                if (GurobiConfig.Constraints.fixedStuds) {
-                    if (GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
-                        // several projects allowed. only add stud to fixed projs
-                        projPerStud = Math.max(projPerStud, student.numFixedProject());
-                    } else if (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj) {
-                        // several projects allowed. only add stud to fixed projs that stud selected
-                        projPerStud = Math.max(projPerStud, student.numFixedWantedProject());
-                    } else if (GurobiConfig.Constraints.addFixedStudsToMostWantedProj) {
-                        // only one proj allowed. only add stud to most wanted fixed proj
-                        if (student.numFixedProject() > 0) { // check if student is pre-assigned to a project
-                            projPerStud = 1; // only set to 1, if student is pre-assigned to a project
-                        }
+                if (GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj) {
+                    // several projects allowed. only add stud to fixed projs
+                    projPerStud = Math.max(projPerStud, student.numFixedProject());
+                } else if (GurobiConfig.Constraints.addFixedStudsToAllSelectedProj) {
+                    // several projects allowed. only add stud to fixed projs that stud selected
+                    projPerStud = Math.max(projPerStud, student.numFixedWantedProject());
+                } else if (GurobiConfig.Constraints.addFixedStudsToMostWantedProj) {
+                    // only one proj allowed. only add stud to most wanted fixed proj
+                    if (student.numFixedProject() > 0) { // check if student is pre-assigned to a project
+                        projPerStud = 1; // only set to 1, if student is pre-assigned to a project
                     }
                 }
 

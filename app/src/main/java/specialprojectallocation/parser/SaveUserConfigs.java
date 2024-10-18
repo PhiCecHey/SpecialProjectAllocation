@@ -70,14 +70,8 @@ public class SaveUserConfigs {
         for (JTextField field : SaveUserConfigs.fields) {
             field.setText(br.readLine());
         }
-        JCheckBox lastCheckBox = null;
+
         for (JToggleButton button : SaveUserConfigs.buttons) {
-            if (button instanceof JCheckBox) {
-                lastCheckBox = (JCheckBox) button;
-                button.setEnabled(true);
-            } else {
-                button.setEnabled(lastCheckBox != null && lastCheckBox.isSelected());
-            }
             button.setSelected(br.readLine().equals("1"));
         }
         String line = br.readLine();

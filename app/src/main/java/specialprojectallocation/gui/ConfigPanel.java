@@ -1,6 +1,7 @@
 package specialprojectallocation.gui;
 
 import net.miginfocom.swing.MigLayout;
+import org.jetbrains.annotations.NotNull;
 import specialprojectallocation.Calculation;
 import specialprojectallocation.GurobiConfig;
 
@@ -385,7 +386,7 @@ public class ConfigPanel extends JPanel {
 
     static class ConstraintsPanel extends JPanel {
         final JLabel gurobiConf;
-        final CheckThreeRadios fixedStuds;
+        final ThreeRadios fixedStuds;
         final Check studWantsProj;
         final Check teacherWantsStudent;
         final ThreeRadios invalids;
@@ -498,6 +499,8 @@ public class ConfigPanel extends JPanel {
                     }
                 });
             }
+
+
         }
 
         static class CheckFiveFields extends JPanel {
@@ -558,6 +561,8 @@ public class ConfigPanel extends JPanel {
                     }
                 });
             }
+
+
         }
 
         static class CheckThreeRadios extends JPanel {
@@ -610,6 +615,8 @@ public class ConfigPanel extends JPanel {
                     two.setSelected(!three.isSelected());
                 });
             }
+
+
         }
 
         static class ThreeRadios extends JPanel {
@@ -635,18 +642,29 @@ public class ConfigPanel extends JPanel {
 
             private void addButtonFunct() {
                 this.one.addActionListener(ae -> {
+                    this.one.setBackground(Colors.transparent);
+                    this.two.setBackground(Colors.transparent);
+                    this.three.setBackground(Colors.transparent);
                     two.setSelected(!one.isSelected());
                     three.setSelected(!one.isSelected());
                 });
                 this.two.addActionListener(ae -> {
+                    this.one.setBackground(Colors.transparent);
+                    this.two.setBackground(Colors.transparent);
+                    this.three.setBackground(Colors.transparent);
                     one.setSelected(!two.isSelected());
                     three.setSelected(!two.isSelected());
                 });
                 this.three.addActionListener(ae -> {
+                    this.one.setBackground(Colors.transparent);
+                    this.two.setBackground(Colors.transparent);
+                    this.three.setBackground(Colors.transparent);
                     one.setSelected(!three.isSelected());
                     two.setSelected(!three.isSelected());
                 });
             }
+
+
         }
 
         static class CheckTwoRadios extends JPanel {
@@ -712,6 +730,8 @@ public class ConfigPanel extends JPanel {
                 this.one.addActionListener(ae -> two.setSelected(!one.isSelected()));
                 this.two.addActionListener(ae -> one.setSelected(!two.isSelected()));
             }
+
+
         }
 
         ConstraintsPanel() {
@@ -727,11 +747,11 @@ public class ConfigPanel extends JPanel {
                     + "with [6 b])";
             String text3 = "[c] the project, that they have been pre-assigned to and that they prefer most";
 
-            this.fixedStuds = new CheckThreeRadios(text0, text1, text2, text3);
+            this.fixedStuds = new ThreeRadios(text0, text1, text2, text3);
 
             this.studWantsProj = new Check(
                     "[2] Students are exclusively allocated to projects they have chosen (in conflict with [1 a] and "
-                    + "[6 b])");
+                    + "[6 b])", false);
             this.studWantsProj.setToolTipText(""); // TODO
 
             text0 = "[3] Students' project priorities";
@@ -806,19 +826,48 @@ public class ConfigPanel extends JPanel {
 
             this.invalids = new ThreeRadios(text0, text1, text2, text3);
             this.add(this.invalids);
+
+            // deselect one, if another is selected
+            ConstraintsPanel.onlyOneCanBeSelected(this.fixedStuds.one, this.studWantsProj.check);
+            ConstraintsPanel.onlyOneCanBeSelected(this.studWantsProj.check, this.invalids.two);
+            ConstraintsPanel.onlyOneCanBeSelected(this.invalids.two, this.fixedStuds.two);
+            ConstraintsPanel.onlyOneCanBeSelected(this.invalids.three, this.fixedStuds.one);
+            ConstraintsPanel.onlyOneCanBeSelected(this.invalids.three, this.fixedStuds.two);
+            ConstraintsPanel.onlyOneCanBeSelected(this.invalids.three, this.fixedStuds.three);
+        }
+
+        static void onlyOneCanBeSelected(@NotNull JToggleButton one, @NotNull JToggleButton two) {
+            one.addActionListener(ae -> {
+                one.setBackground(Colors.transparent);
+                if (one.isSelected()) {
+                    if (two.isSelected()) {
+                        two.setSelected(false);
+                        two.setBackground(Colors.redTransp);
+                    }
+                }
+            });
+            two.addActionListener(ae -> {
+                two.setBackground(Colors.transparent);
+                if (one.isSelected()) {
+                    if (one.isSelected()) {
+                        one.setSelected(false);
+                        one.setBackground(Colors.redTransp);
+                    }
+                }
+            });
         }
 
         boolean save() {
             boolean noErrors = true;
             JTextField test = new JTextField();
 
-            GurobiConfig.Constraints.fixedStuds = this.fixedStuds.check.isSelected();
             GurobiConfig.Constraints.addFixedStudsToProjEvenIfStudDidntSelectProj = this.fixedStuds.one.isSelected();
             GurobiConfig.Constraints.addFixedStudsToAllSelectedProj = this.fixedStuds.two.isSelected();
             GurobiConfig.Constraints.addFixedStudsToMostWantedProj = this.fixedStuds.three.isSelected();
 
             GurobiConfig.Constraints.studWantsProj = this.studWantsProj.check.isSelected();
             GurobiConfig.Constraints.studentHasRightStudyProgram = this.teacherWantsStudent.check.isSelected();
+            GurobiConfig.Constraints.studentsPerStudy = this.teacherWantsStudent.check.isSelected();
 
             GurobiConfig.Constraints.assignInvalidsToProjects = this.invalids.one.isSelected();
             GurobiConfig.Constraints.addInvalidsToFixed = this.invalids.two.isSelected();
@@ -861,7 +910,6 @@ public class ConfigPanel extends JPanel {
             }
 
             GurobiConfig.Preferences.studyPrio = this.weightRegProj.check.isSelected();
-            GurobiConfig.Constraints.studentsPerStudy = this.weightRegProj.check.isSelected();
             if (this.weightRegProj.check.isSelected()) {
                 try {
                     this.weightRegProj.field1.setBackground(test.getBackground());
