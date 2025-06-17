@@ -33,3 +33,5 @@ build
 files
 .vscode
 .idea
+release
+*.code-workspace
